@@ -10,7 +10,7 @@ import TanyaShoppingAssistant from "@/components/tanya-shopping-assistant/tanya-
 const Home = () => {
   return (
     <div className="flex flex-col h-[94vh] overflow-hidden">
-      {/* Fixed Header */}
+      {/* Fixed Header page */}
       <div className="fixed z-50">
         <Header />
       </div>
