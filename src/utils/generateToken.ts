@@ -1,7 +1,9 @@
+// for graphQL queries
+
 import axios from "axios";
 
 export const generateToken = async (): Promise<string | null> => {
-  
+
   const URL = import.meta.env.VITE_TOKEN_URL;
   const clientId = import.meta.env.VITE_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
@@ -42,3 +44,4 @@ export const generateToken = async (): Promise<string | null> => {
     return null;
   }
 };
+ 
