@@ -1,4 +1,3 @@
-import Header from "@/components/header";
 import CategoriesList from "@/components/categories/categories-list";
 import NewAarrivals from "@/components/products/new-arrivals/new-arrivals";
 import BestSellarsInKitchen from "@/components/products/kitchen/best-sellars-in-kitchen";
@@ -10,11 +9,6 @@ import TanyaShoppingAssistant from "@/components/tanya-shopping-assistant/tanya-
 const Home = () => {
   return (
     <div className="flex flex-col h-[94vh] overflow-hidden">
-      {/* Fixed Header page */}
-      <div className="fixed z-50">
-        <Header />
-      </div>
-
       {/* Main Content */}
       <div className="flex flex-col mt-[6rem] h-full">
         {/* Categories Section (Fixed) */}
