@@ -34,12 +34,12 @@ const CategoryProductCard = ({
           <img
             src={product.masterVariant.images[0].url}
             alt={product.name}
-            className="w-2/3 h-2/3 object-cover"
+            className="w-3/4 h-3/4 object-cover"
           />
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <div className="flex justify-between gap-2">
-            <p className="font-bold text-[20px]">{product.name}</p>
+            <p className="font-bold text-[20px] line-clamp-1">{product.name}</p>
             <div className="flex gap-2">
               <Icon
                 icon="mdi:heart-outline"
