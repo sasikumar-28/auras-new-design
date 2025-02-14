@@ -13,11 +13,12 @@ export default function Header({
   isProductCard: boolean;
 }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  // const [searchResults, setSearchResults] = useState([]);
 
   const handleSearch = async () => {
     const results = await getSearchResults(searchQuery);
-    setSearchResults(results);
+    console.log(results, "results");
+    // setSearchResults(results);
   };
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function Header({
       handleSearch();
     }
     if (searchQuery.length === 0) {
-      setSearchResults([]);
+      // setSearchResults([]);
     }
   }, [searchQuery]);
 
