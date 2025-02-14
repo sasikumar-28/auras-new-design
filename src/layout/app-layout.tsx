@@ -36,7 +36,10 @@ const AppLayout = () => {
             sortFilter ? "ml-56" : productCard ? "ml-28" : "ml-36"
           }`}
         >
-          <Header width={sortFilter ? "78" : productCard ? "78" : "88"} />
+          <Header
+            isSortFilter={sortFilter ? true : false}
+            isProductCard={productCard ? true : false}
+          />
         </div>
         {sortFilter && <Sidebar isRightSidebar={true} />}
         {productCard && <ProductDetailSidebar />}

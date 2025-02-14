@@ -1,12 +1,39 @@
 "use client";
 import cartIcon from "@/assets/header-icons/cart-icon.png";
 import profileImage from "@/assets/header-icons/profile-image.png";
+import { getSearchResults } from "@/utils";
 import { Icon } from "@iconify/react";
+import { useEffect, useState } from "react";
 
-export default function Header({ width = "78" }: { width?: string }) {
+export default function Header({
+  isSortFilter,
+  isProductCard,
+}: {
+  isSortFilter: boolean;
+  isProductCard: boolean;
+}) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = async () => {
+    const results = await getSearchResults(searchQuery);
+    setSearchResults(results);
+  };
+
+  useEffect(() => {
+    if (searchQuery.length > 2) {
+      handleSearch();
+    }
+    if (searchQuery.length === 0) {
+      setSearchResults([]);
+    }
+  }, [searchQuery]);
+
   return (
     <div
-      className={`p-4 flex justify-between items-center gap-4 w-[${width}vw] `}
+      className={`p-4 flex justify-between items-center gap-4
+         ${isSortFilter ? "w-[78vw]" : isProductCard ? "w-[78vw]" : "w-[88vw]"}
+         `}
     >
       <div className=" w-full">
         <div className="relative">
@@ -22,6 +49,7 @@ export default function Header({ width = "78" }: { width?: string }) {
             type="text"
             placeholder="Search"
             className="border rounded-full w-full bg-[#EFEFEF] pl-12 pr-6 py-3"
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
