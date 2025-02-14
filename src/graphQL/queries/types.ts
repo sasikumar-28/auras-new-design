@@ -1,7 +1,7 @@
 export interface Category {
   id: string;
   key: string;
-  name: string;  // Now a string type for the localized name
+  name: string; // Now a string type for the localized name
 }
 
 export interface CategoriesResponse {
@@ -23,10 +23,12 @@ export interface Product {
         centAmount: number;
       };
     }[];
-    images: {
-      url: string;
-    }[];
+    images: Image[];
   };
+}
+
+export interface Image {
+  url: string;
 }
 
 export interface ProductsByCategoryResponse {

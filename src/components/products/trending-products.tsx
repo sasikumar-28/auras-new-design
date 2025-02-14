@@ -2,7 +2,7 @@ import useProductsByCategory from "@/hooks/useProductsByCategory";
 
 const TrendingProducts = () => {
   const { products, loading, error } = useProductsByCategory({
-    limit: 1,   // Number of products per category
+    limit: 1, // Number of products per category
   });
 
   if (loading) return <div>Loading trending products...</div>;
@@ -16,7 +16,7 @@ const TrendingProducts = () => {
       <div className="grid grid-cols-4 gap-4">
         {products.map((product) => (
           <div className="">
-            <div className="flex bg-white p-4 drop-shadow-lg rounded-xl h-24 gap-9">
+            <div className="flex bg-white p-4 drop-shadow-lg rounded-xl h-24 gap-9 flex-col sm:flex-row">
               <img
                 src={product.masterVariant.images[0].url}
                 alt="Product 1"
