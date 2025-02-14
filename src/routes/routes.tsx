@@ -4,7 +4,7 @@ import AppLayout from "@/layout/app-layout";
 import NotFound from "@/components/not-found";
 import Home from "@/pages/home";
 import ProductListingPage from "@/pages/productListingPage";
-
+import ProductDetailsPage from "@/pages/productDetailsPage";
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -18,6 +18,10 @@ const routes = createBrowserRouter([
       {
         path: "/product-listing",
         element: <ProductListingPage />,
+      },
+      {
+        path: "/product/:id",
+        element: <ProductDetailsPage />,
       },
     ],
   },

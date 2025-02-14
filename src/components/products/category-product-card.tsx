@@ -1,5 +1,6 @@
 import { Product } from "@/graphQL/queries/types";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useNavigate } from "react-router-dom";
 
 const backgroundColors = [
   "#FEC877",
@@ -12,12 +13,15 @@ const CategoryProductCard = ({
   product,
   index,
   className,
+  categoryId,
 }: {
   product: Product;
   index: number;
   className: string;
+  categoryId: string;
 }) => {
   const randomColor = backgroundColors[index % backgroundColors.length];
+  const navigate = useNavigate();
   return (
     <div
       className={className}
@@ -27,7 +31,9 @@ const CategoryProductCard = ({
       <div
         className={`bg-[${randomColor}] cursor-pointer`}
         onClick={() => {
-          console.log(product.id);
+          navigate(
+            `/product/${product.id}?category=${categoryId}&productCard=true`
+          );
         }}
       >
         <div className="flex justify-center items-center">
@@ -35,6 +41,7 @@ const CategoryProductCard = ({
             src={product.masterVariant.images[0].url}
             alt={product.name}
             className="w-3/4 h-3/4 object-cover"
+            style={{ borderRadius: "10px" }}
           />
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-4">

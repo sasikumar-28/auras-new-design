@@ -86,11 +86,11 @@ export function Sidebar({
             <img width={80} src={commerceCatalystLogo} alt="auras-logo" />
           </div>
           <div className="mt-4 flex flex-col gap-2 items-center w-5/6 text-left">
-            {filterData.map((filter) => (
-              <div className="ml-2" key={filter.label}>
+            {filterData.map((filter, index) => (
+              <div className="ml-2" key={index}>
                 <p className="text-md font-bold mb-2">{filter.label}</p>
-                {filter.options.slice(0, 6).map((option) => (
-                  <div className="ml-2 mb-2" key={option.name}>
+                {filter.options.slice(0, 6).map((option, i) => (
+                  <div className="ml-2 mb-2" key={i}>
                     <div className="flex items-center gap-2 pl-3 text-wrap">
                       <Checkbox className="data-[state=checked]:bg-white border-white data-[state=checked]:text-[#552864] rounded-[4px]" />
                       <p className="text-[13px]">{option.name}</p>

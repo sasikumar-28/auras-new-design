@@ -3,16 +3,10 @@ import cartIcon from "@/assets/header-icons/cart-icon.png";
 import profileImage from "@/assets/header-icons/profile-image.png";
 import { Icon } from "@iconify/react";
 
-export default function Header({
-  isRightSidebar,
-}: {
-  isRightSidebar?: boolean;
-}) {
+export default function Header({ width = "78" }: { width?: string }) {
   return (
     <div
-      className={`p-4 flex justify-between items-center gap-4 ${
-        isRightSidebar ? "w-[78vw]" : "w-[88vw]"
-      }`}
+      className={`p-4 flex justify-between items-center gap-4 w-[${width}vw] `}
     >
       <div className=" w-full">
         <div className="relative">
