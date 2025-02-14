@@ -31,6 +31,7 @@ const CategoryProductCard = ({
       <div
         className={`bg-[${randomColor}] cursor-pointer`}
         onClick={() => {
+          localStorage.setItem("product", JSON.stringify(product));
           navigate(
             `/product/${product.id}?category=${categoryId}&productCard=true`
           );
