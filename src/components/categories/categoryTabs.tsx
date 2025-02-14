@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CategoriesResponse, Category } from "@/graphQL/queries/types";
 import { Icon } from "@iconify/react";
 import BreadCrumb from "../breadcrumb/BreadCrumb";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useProductsByCategory from "@/hooks/useProductsByCategory";
 import CategoryProductCard from "../products/category-product-card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu";
 
 const CategoryTabs = ({ data }: { data: CategoriesResponse }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
-  const { products, loading, error } = useProductsByCategory({
+  const { products } = useProductsByCategory({
     limit: 100, // Number of products per category
     offset: 1, // Starting point for fetching
     categoryId: categoryFromUrl,
@@ -51,14 +58,30 @@ const CategoryTabs = ({ data }: { data: CategoriesResponse }) => {
         </div>
 
         {/* Sort Icon with Badge */}
-        <div className="relative bg-[#B93284] rounded-full p-2 cursor-pointer">
-          <Icon
-            icon="mdi:sort"
-            className="text-white text-2xl transition"
-            height={17}
-            width={17}
-          />
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="relative bg-[#B93284] rounded-full p-2 cursor-pointer">
+              <Icon
+                icon="mdi:sort"
+                className="text-white text-2xl transition"
+                height={17}
+                width={17}
+              />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className=" bg-white w-fit rounded-lg"
+            style={{ borderRadius: "20px" }}
+          >
+            <DropdownMenuGroup>
+              <DropdownMenuItem>Price: High to Low</DropdownMenuItem>
+              <DropdownMenuItem>Price: Low to High</DropdownMenuItem>
+              <DropdownMenuItem>Popularity</DropdownMenuItem>
+              <DropdownMenuItem>Relevance</DropdownMenuItem>
+              <DropdownMenuItem>Newest Arrivals</DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Breadcrumb Component */}
