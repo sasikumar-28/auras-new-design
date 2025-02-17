@@ -1,6 +1,8 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-
+import { useSelector } from "react-redux";
 const ProductDetailSidebar = () => {
+  const product = useSelector((state: any) => state.product.product);
+  console.log(product, "the product");
   return (
     <div className="bg-[#F2DCF9] flex flex-col justify-around gap-4 h-[100vh] w-[17vw] p-4">
       <div className="flex flex-col gap-2 p-2">
@@ -9,9 +11,17 @@ const ProductDetailSidebar = () => {
       </div>
       <div className="bg-gradient-to-b from-[#2C2C2C] to-[#444444] rounded-xl p-4 gap-y-4 text-3xl flex flex-col">
         <div className="text-white">
-          <span className="text-sm align-top">$</span>
-          <span className="font-bold">989</span>
-          <span className="text-sm align-top">99</span>
+          <span className="font-bold">
+            {product?.masterVariant?.prices[0].value.centAmount.toLocaleString(
+              "en-US",
+              {
+                style: "currency",
+                currency: product?.masterVariant?.prices[0].value.currencyCode,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              }
+            )}
+          </span>
         </div>
         <div className="text-white flex items-center gap-2 text-xs">
           <span className=""> Quantity: </span>
@@ -50,7 +60,17 @@ const ProductDetailSidebar = () => {
         <div className="flex gap-2 justify-start">
           <div>
             <div className=" font-bold">Google Pixel 7 Pro</div>
-            <div className="text-xs">Price: $999</div>
+            <div className="text-xs">
+              Price:
+              {product?.masterVariant?.prices[0].value.centAmount.toLocaleString(
+                "en-US",
+                {
+                  style: "currency",
+                  currency:
+                    product?.masterVariant?.prices[0].value.currencyCode,
+                }
+              )}
+            </div>
           </div>
           <div className="bg-gradient-to-b cursor-pointer rounded-full from-[#B93284] to-[#F2DCF9] p-1 h-10 w-10 flex items-center justify-center">
             <Icon icon="mdi:arrow-right" width="24" height="24" color="white" />

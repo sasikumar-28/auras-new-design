@@ -4,8 +4,14 @@ import { GET_CATEGORIES } from "@/graphQL/queries/queries";
 import { CategoriesResponse, Product } from "@/graphQL/queries/types";
 import { useQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
+import { setProducts as setProductsAction } from "@/store/reducers/productReducer";
+import { Icon } from "@iconify/react/dist/iconify.js";
+
 const ProductDetailsPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const [product, setProduct] = useState<Product | null>(null);
   const categoryFromUrl = searchParams.get("category");
@@ -14,14 +20,16 @@ const ProductDetailsPage = () => {
   const { loading, error, data } = useQuery<CategoriesResponse>(GET_CATEGORIES);
   const initialActiveTab =
     data?.categories.results.findIndex((c) => c.id === categoryFromUrl) ?? 0;
-
   const [activeTab, setActiveTab] = useState(initialActiveTab);
+
   useEffect(() => {
     setActiveTab(initialActiveTab);
     const product = localStorage.getItem("product");
     if (product) {
-      setProduct(JSON.parse(product));
-      console.log(JSON.parse(product));
+      const parsedProduct = JSON.parse(product);
+      setProduct(parsedProduct);
+      dispatch(setProductsAction(parsedProduct));
+      console.log(parsedProduct);
     }
   }, [categoryFromUrl, data]);
 
@@ -54,20 +62,16 @@ const ProductDetailsPage = () => {
       />
       <div className="p-4 mt-4 overflow-y-auto h-[73vh]">
         <div className="flex gap-4 w-full">
-          <div className="max-w-[600px]">
+          <div className="max-w-[560px]">
             <img
               src={product?.masterVariant.images[selectedImageIndex].url}
               alt=""
-              className="w-full h-[500px] object-cover"
+              className="w-full h-[400px] object-cover rounded-xl"
             />
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-center mt-2">
               {product?.masterVariant.images.map((image, index) => (
                 <div
-                  className={`w-1/4 ${
-                    selectedImageIndex === index
-                      ? "border-2 border-[#552864] rounded-xl"
-                      : ""
-                  }`}
+                  className={`w-1/6 border-2 border-[#B93284] rounded-xl p-2`}
                   onClick={() => setSelectedImageIndex(index)}
                 >
                   <img
@@ -78,14 +82,42 @@ const ProductDetailsPage = () => {
                 </div>
               ))}
             </div>
+            <div
+              onClick={() => navigate(-1)}
+              className="flex gap-2 justify-center mt-2 text-sm underline text-[#B93284] cursor-pointer"
+            >
+              Go Back
+            </div>
           </div>
           <div className="flex flex-col gap-2 p-3">
-            <h1 className="text-2xl font-bold">{product?.name}</h1>
-            <div className="flex gap-2">
-              <div>Price</div>
-              <div>${product?.masterVariant.prices[0].value.centAmount}</div>
+            <div
+              onClick={() => navigate(-1)}
+              className="mb-2 text-md underline text-[#B93284] cursor-pointer"
+            >
+              Visit Store
             </div>
+            <h1 className="text-2xl font-bold">{product?.name}</h1>
+            <div className="flex gap-2 font-sm mt-4 mb-4">
+              <div>Price</div>
+              <div>
+                {product?.masterVariant.prices[0].value.centAmount.toLocaleString(
+                  "en-US",
+                  {
+                    style: "currency",
+                    currency:
+                      product?.masterVariant.prices[0].value.currencyCode,
+                  }
+                )}
+              </div>
+            </div>
+            <div className="text-md font-bold">About this item:</div>
             <p>{product?.description}</p>
+          </div>
+          <div className="flex flex-col gap-2 p-3">
+            <Icon
+              icon="mdi:heart-outline"
+              className="text-2xl cursor-pointer"
+            />
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import profileImage from "@/assets/header-icons/profile-image.png";
 import { getSearchResults } from "@/utils";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Header({
   isSortFilter,
@@ -12,6 +13,7 @@ export default function Header({
   isSortFilter: boolean;
   isProductCard: boolean;
 }) {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   // const [searchResults, setSearchResults] = useState([]);
 
@@ -58,7 +60,13 @@ export default function Header({
       <div className="flex gap-6">
         <div className="flex items-center gap-2 bg-[#2C2C2C] rounded-full px-2 ">
           <div className="p-2  bg-[#B93284] rounded-full ">
-            <img width={45} src={cartIcon} alt="cart" />
+            <img
+              onClick={() => navigate("/cart")}
+              width={45}
+              src={cartIcon}
+              alt="cart"
+              className="cursor-pointer"
+            />
           </div>
           <p className="text-white text-sm">4</p>
           <p className="text-gray-500 text-sm">|</p>
