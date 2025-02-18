@@ -37,7 +37,25 @@ const CartPage = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 h-full">
-            <div>Subtotal (4 items):900</div>
+            <div>
+              Subtotal (
+              {cartItems.reduce(
+                (acc: number, item: any) => acc + item.quantity,
+                0
+              )}{" "}
+              items):{" "}
+              {cartItems
+                .reduce(
+                  (acc: number, item: any) =>
+                    acc + item?.masterVariant?.prices[0].value.centAmount || 0,
+                  0
+                )
+                .toLocaleString("en-US", {
+                  style: "currency",
+                  currency:
+                    cartItems[0]?.masterVariant?.prices[0].value.currencyCode,
+                })}
+            </div>
             <div>
               <Button className="bg-[#B93284] h-[50px] hover:bg-[#a02973] text-white rounded-xl text-2xl px-6 py-3 flex items-center gap-2">
                 Proceed to Buy

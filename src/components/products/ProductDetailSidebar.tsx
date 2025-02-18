@@ -48,7 +48,8 @@ const ProductDetailSidebar = () => {
                 dispatch(
                   setProductsAction({
                     ...product,
-                    quantity: product?.quantity - 1,
+                    quantity:
+                      product?.quantity - 1 <= 0 ? 0 : product?.quantity - 1,
                   })
                 )
               }
