@@ -1,8 +1,11 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setProducts as setProductsAction } from "@/store/reducers/productReducer";
+import { addToCart } from "@/store/reducers/cartReducer";
+
 const ProductDetailSidebar = () => {
   const product = useSelector((state: any) => state.product.product);
-  console.log(product, "the product");
+  const dispatch = useDispatch();
   return (
     <div className="bg-[#F2DCF9] flex flex-col justify-around gap-4 h-[100vh] w-[17vw] p-4">
       <div className="flex flex-col gap-2 p-2">
@@ -26,13 +29,40 @@ const ProductDetailSidebar = () => {
         <div className="text-white flex items-center gap-2 text-xs">
           <span className=""> Quantity: </span>
           <div className="bg-gray-600 rounded-xl px-2 flex items-center gap-2">
-            <div>+</div>
-            <div>1</div>
-            <div>-</div>
+            <div
+              onClick={() =>
+                dispatch(
+                  setProductsAction({
+                    ...product,
+                    quantity: product?.quantity + 1,
+                  })
+                )
+              }
+              className="cursor-pointer"
+            >
+              +
+            </div>
+            <div>{product?.quantity || 1}</div>
+            <div
+              onClick={() =>
+                dispatch(
+                  setProductsAction({
+                    ...product,
+                    quantity: product?.quantity - 1,
+                  })
+                )
+              }
+              className="cursor-pointer"
+            >
+              -
+            </div>
           </div>
         </div>
         <div className="flex flex-col">
-          <div className="bg-[#B93284] text-xs text-white rounded-t-xl h-14 flex items-center justify-center gap-2 cursor-pointer">
+          <div
+            onClick={() => dispatch(addToCart(product))}
+            className="bg-[#B93284] text-xs text-white rounded-t-xl h-14 flex items-center justify-center gap-2 cursor-pointer"
+          >
             <Icon icon="solar:cart-plus-broken" width="24" height="24" />
             Add to Cart
           </div>

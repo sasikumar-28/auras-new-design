@@ -7,26 +7,13 @@ import { GET_CATEGORIES } from "@/graphQL/queries/queries";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ProductCard from "@/components/cart/productCard";
-
-const dummyCartItems = [
-  {
-    id: 1,
-    name: "Product 1",
-    price: 100,
-    image: "images/categories-images/Furniture.webp",
-  },
-  {
-    id: 2,
-    name: "Product 2",
-    price: 200,
-    image: "images/categories-images/Furniture.webp",
-  },
-];
+import { useSelector } from "react-redux";
 
 const CartPage = () => {
   const [searchParams] = useSearchParams();
   //   const [cartItems, setCartItems] = useState(dummyCartItems);
-  const cartItems = dummyCartItems;
+  const cartItems = useSelector((state: any) => state.cart.cart);
+  console.log(cartItems, "the cart items");
   const categoryFromUrl = searchParams.get("category");
   const { data } = useQuery<CategoriesResponse>(GET_CATEGORIES);
   const initialActiveTab =
@@ -61,8 +48,8 @@ const CartPage = () => {
         </div>
         {/* Cart Items */}
         <div className="flex flex-col gap-4 mt-6">
-          {cartItems.map((item) => (
-            <ProductCard key={item.id} product={item} />
+          {cartItems.map((item: any, index: number) => (
+            <ProductCard key={index} product={item} />
           ))}
         </div>
       </div>

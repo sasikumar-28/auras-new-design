@@ -9,10 +9,33 @@ export const cartSlice = createSlice({
     setCart: (state, action) => {
       state.cart = action.payload;
     },
+    addToCart: (state, action) => {
+      const existingItem = state.cart.find(
+        (item) => item.id === action.payload.id
+      );
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        state.cart.push({ ...action.payload, quantity: 1 });
+      }
+    },
+    removeFromCart: (state, action) => {
+      const existingItem = state.cart.find(
+        (item) => item.id === action.payload.id
+      );
+      if (existingItem) {
+        existingItem.quantity -= 1;
+        if (existingItem.quantity === 0) {
+          state.cart = state.cart.filter(
+            (item) => item.id !== action.payload.id
+          );
+        }
+      }
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setCart } = cartSlice.actions;
+export const { setCart, addToCart, removeFromCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

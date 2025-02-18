@@ -10,9 +10,9 @@ const ProductCard = ({ product }: { product: any }) => {
         <div>
           <Checkbox className="rounded-lg" />
         </div>
-        <div>
+        <div className="w-[150px]">
           <img
-            src={product?.image}
+            src={product?.masterVariant.images[0].url}
             alt={product?.name}
             className="h-[100px] w-[100px] rounded-xl ml-4"
           />
@@ -21,6 +21,7 @@ const ProductCard = ({ product }: { product: any }) => {
       <div className="flex justify-between gap-2 w-full p-2">
         <div>
           <div>{product?.name}</div>
+          <div>Best Seller</div>
           <div>{product?.price}</div>
         </div>
         <div>

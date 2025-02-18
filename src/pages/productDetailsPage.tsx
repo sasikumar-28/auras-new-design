@@ -28,7 +28,7 @@ const ProductDetailsPage = () => {
     if (product) {
       const parsedProduct = JSON.parse(product);
       setProduct(parsedProduct);
-      dispatch(setProductsAction(parsedProduct));
+      dispatch(setProductsAction({ ...parsedProduct, quantity: 1 }));
       console.log(parsedProduct);
     }
   }, [categoryFromUrl, data]);
@@ -71,6 +71,7 @@ const ProductDetailsPage = () => {
             <div className="flex gap-2 justify-center mt-2">
               {product?.masterVariant.images.map((image, index) => (
                 <div
+                  key={index}
                   className={`w-1/6 border-2 border-[#B93284] rounded-xl p-2`}
                   onClick={() => setSelectedImageIndex(index)}
                 >
