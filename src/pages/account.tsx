@@ -6,10 +6,12 @@ import TabCard from "@/components/profile/tabCard";
 import { GET_CATEGORIES } from "@/graphQL/queries/queries";
 import { CategoriesResponse } from "@/graphQL/queries/types";
 import { useQuery } from "@apollo/client";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { useNavigate } from "react-router-dom";
+import ShowAddress from "@/components/address/ShowAddress";
+import ShowDetails from "@/components/login/showDetails";
+
 const Account = () => {
   const { data } = useQuery<CategoriesResponse>(GET_CATEGORIES);
   const [activeTab, setActiveTab] = useState(-1);
@@ -64,10 +66,10 @@ const Account = () => {
             />
           </div>
           <div className="h-full w-[1px] bg-gray-200 mx-8"></div>
-          <div>
+          <div className="w-full">
             {selectedTab === "orders" && "Your Orders"}
-            {selectedTab === "login" && "Login & Security"}
-            {selectedTab === "address" && "Your Address"}
+            {selectedTab === "login" && <ShowDetails />}
+            {selectedTab === "address" && <ShowAddress />}
           </div>
         </div>
       </div>
