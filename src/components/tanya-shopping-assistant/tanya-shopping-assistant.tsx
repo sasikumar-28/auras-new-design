@@ -12,6 +12,7 @@ import dotsHorizontal from "@/assets/tanya-chatbot/dots-horizontal.png";
 import arrowDown from "@/assets/tanya-chatbot/arrow-down.png";
 import { getAccessToken } from "@/utils/getAccessToken";
 
+
 const TanyaShoppingAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
