@@ -21,7 +21,7 @@ const Account = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="mt-20 w-full h-[calc(100vh-200px)]">
+    <div className="mt-20 w-full h-[calc(100vh-200px)] p-4">
       <CategoryTabs
         data={data}
         activeTab={activeTab}
@@ -30,39 +30,44 @@ const Account = () => {
       <div className="p-4 h-full">
         <div className="text-2xl my-3 font-bold">YOUR ACCOUNT</div>
         <div className="flex gap-4 h-full">
-          <div className="flex h-full justify-around items-center flex-col">
+          <div className="flex h-5/6 justify-around items-center flex-col">
+            <div className="h-[1px] w-full bg-gray-200"></div>
             <TabCard
               title="Orders"
-              description="Orders"
-              icon={<OrdersIcon />}
+              description="Track, return, or buy things again"
+              icon={<OrdersIcon active={selectedTab === "orders"} />}
               onClick={() => {
                 setSelectedTab("orders");
                 navigate("/account?tab=orders");
               }}
+              active={selectedTab === "orders"}
             />
             <TabCard
               title="Login & Security"
-              description="Login & Security"
-              icon={<LockIcon />}
+              description="Edit login, name, and mobile no"
+              icon={<LockIcon active={selectedTab === "login"} />}
               onClick={() => {
                 setSelectedTab("login");
                 navigate("/account?tab=login");
               }}
+              active={selectedTab === "login"}
             />
             <TabCard
               title="Your Address"
-              description="Your Address"
-              icon={<AddressIcon />}
+              description="Edit address for orders details"
+              icon={<AddressIcon active={selectedTab === "address"} />}
               onClick={() => {
                 setSelectedTab("address");
                 navigate("/account?tab=address");
               }}
+              active={selectedTab === "address"}
             />
           </div>
+          <div className="h-full w-[1px] bg-gray-200 mx-8"></div>
           <div>
-            {selectedTab === "orders" && "orders"}
-            {selectedTab === "login" && "login"}
-            {selectedTab === "address" && "address"}
+            {selectedTab === "orders" && "Your Orders"}
+            {selectedTab === "login" && "Login & Security"}
+            {selectedTab === "address" && "Your Address"}
           </div>
         </div>
       </div>

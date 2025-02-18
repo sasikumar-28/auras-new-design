@@ -1,4 +1,4 @@
-const LockIcon = () => {
+const LockIcon = ({ active }: { active: boolean }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +12,7 @@ const LockIcon = () => {
           data-name="Path 7307"
           d="M28.1,9c4.355,0,6.533,0,7.886,1.353s1.353,3.531,1.353,7.886v9.239c0,4.355,0,6.533-1.353,7.886s-3.531,1.353-7.886,1.353H14.239c-4.355,0-6.533,0-7.886-1.353S5,31.833,5,27.478V18.239c0-4.355,0-6.533,1.353-7.886S9.884,9,14.239,9H28.1Z"
           transform="translate(0 7.858)"
-          fill="#552864"
+          fill={active ? "#552864" : "#1d1d1d"}
           opacity="0.1"
         />
         <path
@@ -21,7 +21,7 @@ const LockIcon = () => {
           d="M15.619,16.31A2.31,2.31,0,1,1,13.31,14,2.31,2.31,0,0,1,15.619,16.31Z"
           transform="translate(7.858 14.407)"
           fill="none"
-          stroke="#552864"
+          stroke={active ? "#552864" : "#1d1d1d"}
           strokeWidth="2"
         />
         <path
@@ -30,8 +30,8 @@ const LockIcon = () => {
           d="M28.1,9c4.355,0,6.533,0,7.886,1.353s1.353,3.531,1.353,7.886v9.239c0,4.355,0,6.533-1.353,7.886s-3.531,1.353-7.886,1.353H14.239c-4.355,0-6.533,0-7.886-1.353S5,31.833,5,27.478V18.239c0-4.355,0-6.533,1.353-7.886S9.884,9,14.239,9H28.1Z"
           transform="translate(0 7.858)"
           fill="none"
-          stroke="#552864"
-          stroke-linejoin="round"
+          stroke={active ? "#552864" : "#1d1d1d"}
+          strokeLinejoin="round"
           strokeWidth="2"
         />
         <path
@@ -40,9 +40,9 @@ const LockIcon = () => {
           d="M9,16.858V7.619A4.619,4.619,0,0,1,13.619,3h4.764a4.475,4.475,0,0,1,4.475,4.475h0v.144"
           transform="translate(5.239)"
           fill="none"
-          stroke="#552864"
+          stroke={active ? "#552864" : "#1d1d1d"}
           strokeLinecap="round"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
           strokeWidth="2"
         />
       </g>
