@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
 export const cartSlice = createSlice({
@@ -9,25 +10,25 @@ export const cartSlice = createSlice({
     setCart: (state, action) => {
       state.cart = action.payload;
     },
-    addToCart: (state, action) => {
-      const existingItem = state.cart.find(
-        (item) => item.id === action.payload.id
+    addToCart: (state, action: any) => {
+      const existingItem: any = state.cart.find(
+        (item: any) => item.id === action.payload.id
       );
       if (existingItem) {
         existingItem.quantity = action.payload.quantity;
       } else {
-        state.cart.push({ ...action.payload });
+        state.cart.push(action.payload ?? {});
       }
     },
-    removeFromCart: (state, action) => {
-      const existingItem = state.cart.find(
-        (item) => item.id === action.payload.id
+    removeFromCart: (state, action: any) => {
+      const existingItem: any = state.cart.find(
+        (item: any) => item.id === action.payload.id
       );
       if (existingItem) {
         existingItem.quantity -= 1;
         if (existingItem.quantity === 0) {
           state.cart = state.cart.filter(
-            (item) => item.id !== action.payload.id
+            (item: any) => item.id !== action.payload.id
           );
         }
       }

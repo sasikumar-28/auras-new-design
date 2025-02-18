@@ -2,8 +2,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { Checkbox } from "../ui/checkbox";
 import { useDispatch } from "react-redux";
 import { removeFromCart } from "@/store/reducers/cartReducer";
-
-const ProductCard = ({ product }: { product: any }) => {
+import { Product } from "@/graphQL/queries/types";
+const ProductCard = ({ product }: { product: Product }) => {
   const dispatch = useDispatch();
   return (
     <div
@@ -47,7 +47,9 @@ const ProductCard = ({ product }: { product: any }) => {
             <div className="border-l-2 border-gray-300 h-full"></div>
             <div
               className="cursor-pointer"
-              onClick={() => dispatch(removeFromCart(product))}
+              onClick={() => {
+                dispatch(removeFromCart(product as Product & void));
+              }}
             >
               Delete
             </div>

@@ -7,7 +7,7 @@ const showDetails = () => {
   };
   return (
     <div>
-      <div>Login & Security</div>
+      <div className="text-2xl font-bold">Login & Security</div>
       <div className="flex flex-col gap-8 w-full my-4">
         <div className="flex justify-between items-center">
           <div>

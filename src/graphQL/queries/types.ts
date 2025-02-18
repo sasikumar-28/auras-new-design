@@ -16,6 +16,7 @@ export interface Product {
   key: string;
   name: string;
   description?: string;
+  quantity?: number;
   masterVariant: {
     prices: {
       value: {

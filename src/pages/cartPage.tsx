@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CategoryTabs from "@/components/categories/categoryTabs";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";

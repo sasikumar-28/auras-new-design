@@ -11,6 +11,7 @@ import { useSearchParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import ShowAddress from "@/components/address/ShowAddress";
 import ShowDetails from "@/components/login/showDetails";
+import ShowOrders from "@/components/orders/ShowOrders";
 
 const Account = () => {
   const { data } = useQuery<CategoriesResponse>(GET_CATEGORIES);
@@ -67,7 +68,7 @@ const Account = () => {
           </div>
           <div className="h-full w-[1px] bg-gray-200 mx-8"></div>
           <div className="w-full">
-            {selectedTab === "orders" && "Your Orders"}
+            {selectedTab === "orders" && <ShowOrders />}
             {selectedTab === "login" && <ShowDetails />}
             {selectedTab === "address" && <ShowAddress />}
           </div>
