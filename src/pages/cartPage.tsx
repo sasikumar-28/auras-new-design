@@ -53,7 +53,8 @@ const CartPage = () => {
                 .toLocaleString("en-US", {
                   style: "currency",
                   currency:
-                    cartItems[0]?.masterVariant?.prices[0].value.currencyCode,
+                    cartItems[0]?.masterVariant?.prices[0].value.currencyCode ??
+                    "USD",
                 })}
             </div>
             <div>

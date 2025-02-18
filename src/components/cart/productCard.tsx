@@ -32,24 +32,55 @@ const ProductCard = ({ product }: { product: any }) => {
           <div className="text-xs text-gray-400">
             Eligible for free shipping
           </div>
-          <div className="flex gap-2 text-[#B93284]">
+          <div className="flex gap-4 text-[#B93284]">
             <div className="flex gap-2 cursor-auto">
               <Icon icon="solar:cart-plus-broken" width="24" height="24" />
-              <div>{product.quantity}</div>
+              <div
+                className=" text-black rounded-md px-2 flex items-center gap-2"
+                style={{ borderRadius: "2px", border: "1px solid #B93284" }}
+              >
+                <span className="cursor-pointer">-</span>
+                {product.quantity}
+                <span className="cursor-pointer">+</span>
+              </div>
             </div>
+            <div className="border-l-2 border-gray-300 h-full"></div>
             <div
               className="cursor-pointer"
               onClick={() => dispatch(removeFromCart(product))}
             >
               Delete
             </div>
+            <div className="border-l-2 border-gray-300 h-full"></div>
             <div className="cursor-pointer">Save for Later</div>
+            <div className="border-l-2 border-gray-300 h-full"></div>
             <div className="cursor-pointer">Share</div>
           </div>
-          {/* <div>{product?.price}</div> */}
         </div>
         <div>
-          <div>Price</div>
+          <div className="flex flex-col gap-2 items-end justify-center">
+            <div className="text-xs text-[#B93284]">Limited time Deal</div>
+            <div className="text-2xl font-bold">
+              {product?.masterVariant?.prices[0].value.centAmount.toLocaleString(
+                "en-US",
+                {
+                  style: "currency",
+                  currency:
+                    product?.masterVariant?.prices[0].value.currencyCode,
+                }
+              )}
+            </div>
+            <div className="text-xs text-gray-400 line-through">
+              {product?.masterVariant?.prices[0].value.centAmount.toLocaleString(
+                "en-US",
+                {
+                  style: "currency",
+                  currency:
+                    product?.masterVariant?.prices[0].value.currencyCode,
+                }
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
