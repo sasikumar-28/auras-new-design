@@ -8,6 +8,12 @@ import { useDispatch } from "react-redux";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { setProducts as setProductsAction } from "@/store/reducers/productReducer";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import {
+  currencyFormatter,
+  displayData,
+  imageUrlArray,
+  priceFormatter,
+} from "@/utils/helper";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
@@ -53,7 +59,7 @@ const ProductDetailsPage = () => {
             }&sortFilter=true`,
           },
           {
-            name: product?.name || "Product",
+            name: displayData(product?.name ?? "Product"),
             link: `/product/${id}?category=${
               data?.categories.results[activeTab]?.id || ""
             }&productCard=true`,
@@ -63,26 +69,30 @@ const ProductDetailsPage = () => {
       <div className="p-4 mt-4 overflow-y-auto h-[73vh]">
         <div className="flex gap-4 w-full">
           <div className="max-w-[560px]">
-            <img
-              src={product?.masterVariant.images[selectedImageIndex].url}
-              alt=""
-              className="w-full h-[400px] object-cover rounded-xl"
-            />
-            <div className="flex gap-2 justify-center mt-2">
-              {product?.masterVariant.images.map((image, index) => (
-                <div
-                  key={index}
-                  className={`w-1/6 border-2 border-[#B93284] rounded-xl p-2`}
-                  onClick={() => setSelectedImageIndex(index)}
-                >
-                  <img
-                    src={image.url}
-                    alt=""
-                    className="rounded-xl object-cover w-full"
-                  />
+            {product && (
+              <>
+                <img
+                  src={imageUrlArray(product)[selectedImageIndex]}
+                  alt=""
+                  className="w-full h-[400px] object-cover rounded-xl"
+                />
+                <div className="flex gap-2 justify-center mt-2">
+                  {imageUrlArray(product).map((image, index) => (
+                    <div
+                      key={index}
+                      className={`w-1/6 border-2 border-[#B93284] rounded-xl p-2`}
+                      onClick={() => setSelectedImageIndex(index)}
+                    >
+                      <img
+                        src={image}
+                        alt=""
+                        className="rounded-xl object-cover w-full"
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </>
+            )}
             <div
               onClick={() => navigate(-1)}
               className="flex gap-2 justify-center mt-2 text-sm underline text-[#B93284] cursor-pointer"
@@ -97,22 +107,23 @@ const ProductDetailsPage = () => {
             >
               Visit Store
             </div>
-            <h1 className="text-2xl font-bold">{product?.name}</h1>
+            {product?.name && (
+              <h1 className="text-2xl font-bold">
+                {displayData(product?.name)}
+              </h1>
+            )}
             <div className="flex gap-2 font-sm mt-4 mb-4">
               <div>Price</div>
               <div>
-                {product?.masterVariant.prices[0].value.centAmount.toLocaleString(
-                  "en-US",
-                  {
-                    style: "currency",
-                    currency:
-                      product?.masterVariant.prices[0].value.currencyCode,
-                  }
-                )}
+                {product &&
+                  currencyFormatter(
+                    priceFormatter(product)?.centAmount || 0,
+                    priceFormatter(product)?.currencyCode || "USD"
+                  )}
               </div>
             </div>
             <div className="text-md font-bold">About this item:</div>
-            <p>{product?.description}</p>
+            {product?.description && <p>{displayData(product?.description)}</p>}
           </div>
           <div className="flex flex-col gap-2 p-3">
             <Icon
@@ -122,7 +133,6 @@ const ProductDetailsPage = () => {
           </div>
         </div>
       </div>
-      <div></div>
     </div>
   );
 };

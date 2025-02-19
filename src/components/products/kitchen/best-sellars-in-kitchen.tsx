@@ -1,5 +1,5 @@
 import useProductsByCategory from "@/hooks/useProductsByCategory";
-
+import { Product } from "@/graphQL/queries/types";
 const BestSellarsInKitchen = () => {
   const { products, loading, error } = useProductsByCategory({
     limit: 4, // Number of products per category
@@ -14,7 +14,7 @@ const BestSellarsInKitchen = () => {
     <div className="bg-[#F2F2F2] p-5 rounded-xl mb-6">
       <h2 className="text-xl font-semibold mb-4">Best Sellars in Kitchen</h2>
       <div className="grid grid-cols-4 gap-4">
-        {products.map((product: any) => (
+        {products.map((product: Product) => (
           <div className="">
             <div className="flex bg-white p-4 drop-shadow-lg rounded-xl h-24 gap-9">
               <img

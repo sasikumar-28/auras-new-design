@@ -3,6 +3,12 @@ import { Checkbox } from "../ui/checkbox";
 import { useDispatch } from "react-redux";
 import { removeFromCart } from "@/store/reducers/cartReducer";
 import { Product } from "@/graphQL/queries/types";
+import {
+  imageUrlArray,
+  displayData,
+  priceFormatter,
+  currencyFormatter,
+} from "@/utils/helper";
 const ProductCard = ({ product }: { product: Product }) => {
   const dispatch = useDispatch();
   return (
@@ -16,8 +22,8 @@ const ProductCard = ({ product }: { product: Product }) => {
         </div>
         <div className="w-[150px]">
           <img
-            src={product?.masterVariant.images[0].url}
-            alt={product?.name}
+            src={imageUrlArray(product)[0]}
+            alt={displayData(product?.name)}
             className="h-[100px] w-[100px] rounded-xl ml-4"
           />
         </div>
@@ -25,7 +31,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="flex justify-between gap-2 w-full p-2">
         <div className="flex flex-col gap-2">
           <div>
-            {product?.name}{" "}
+            {displayData(product?.name)}{" "}
             <span className="text-xs text-[#B93284]">In stock</span>
           </div>
           <div className="text-xs text-gray-400">in Fashion Best Seller</div>
@@ -63,23 +69,15 @@ const ProductCard = ({ product }: { product: Product }) => {
           <div className="flex flex-col gap-2 items-end justify-center">
             <div className="text-xs text-[#B93284]">Limited time Deal</div>
             <div className="text-2xl font-bold">
-              {product?.masterVariant?.prices[0].value.centAmount.toLocaleString(
-                "en-US",
-                {
-                  style: "currency",
-                  currency:
-                    product?.masterVariant?.prices[0].value.currencyCode,
-                }
+              {currencyFormatter(
+                priceFormatter(product)?.centAmount || 0,
+                priceFormatter(product)?.currencyCode || "USD"
               )}
             </div>
             <div className="text-xs text-gray-400 line-through">
-              {product?.masterVariant?.prices[0].value.centAmount.toLocaleString(
-                "en-US",
-                {
-                  style: "currency",
-                  currency:
-                    product?.masterVariant?.prices[0].value.currencyCode,
-                }
+              {currencyFormatter(
+                priceFormatter(product)?.centAmount || 0,
+                priceFormatter(product)?.currencyCode || "USD"
               )}
             </div>
           </div>

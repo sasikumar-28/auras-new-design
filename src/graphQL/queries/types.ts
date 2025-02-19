@@ -40,3 +40,72 @@ export interface ProductsByCategoryResponse {
     results: Product[];
   };
 }
+export interface LocalizedString {
+  "de-DE": string;
+  "en-GB": string;
+  "en-US": string;
+}
+
+export interface CategoryHierarchy {
+  lvl0: string[];
+  lvl1: string[];
+  lvl2: string[];
+}
+
+export interface CategoryKeys {
+  "de-DE": string[];
+  "en-GB": string[];
+  "en-US": string[];
+}
+
+export interface Variant {
+  id: string;
+  key: string;
+  sku: string;
+  attributes: {
+    color: LocalizedString;
+    finish?: LocalizedString;
+  };
+  searchableAttributes: {
+    color: LocalizedString;
+  };
+  images: string[];
+  prices: {
+    [currency: string]: {
+      min: number;
+      max: number;
+      priceValues: {
+        id: string;
+        value: number;
+      }[];
+    };
+  };
+  isInStock: boolean;
+  inventory: {
+    [channel: string]: number;
+  };
+}
+
+export interface SearchProduct {
+  productType: string;
+  name: LocalizedString;
+  description: LocalizedString;
+  key: string;
+  slug: LocalizedString;
+  categories: {
+    "de-DE": CategoryHierarchy;
+    "en-GB": CategoryHierarchy;
+    "en-US": CategoryHierarchy;
+  };
+  categoryKeys: CategoryKeys;
+  attributes?: {
+    productspec: LocalizedString;
+  };
+  createdAt: string;
+  masterVariantID: string;
+  categoryPageId: string[];
+  variantIDs: string[];
+  _tags: string[];
+  variants: Variant[];
+  objectID: string;
+}

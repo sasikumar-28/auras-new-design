@@ -1,34 +1,40 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Product } from "@/graphQL/queries/types";
+
+interface CartState {
+  cart: Product[];
+}
+
+const initialState: CartState = {
+  cart: [],
+};
 
 export const cartSlice = createSlice({
   name: "cart",
-  initialState: {
-    cart: [],
-  },
+  initialState,
   reducers: {
-    setCart: (state, action) => {
+    setCart: (state, action: PayloadAction<Product[]>) => {
       state.cart = action.payload;
     },
-    addToCart: (state, action: any) => {
-      const existingItem: any = state.cart.find(
-        (item: any) => item.id === action.payload.id
+    addToCart: (state, action: PayloadAction<Product>) => {
+      const existingItem = state.cart.find(
+        (item) => item.id === action.payload.id
       );
       if (existingItem) {
         existingItem.quantity = action.payload.quantity;
       } else {
-        state.cart.push(action.payload ?? {});
+        state.cart.push(action.payload);
       }
     },
-    removeFromCart: (state, action: any) => {
-      const existingItem: any = state.cart.find(
-        (item: any) => item.id === action.payload.id
+    removeFromCart: (state, action: PayloadAction<{ id: string }>) => {
+      const existingItem = state.cart.find(
+        (item) => item.id === action.payload.id
       );
-      if (existingItem) {
+      if (existingItem && existingItem.quantity) {
         existingItem.quantity -= 1;
         if (existingItem.quantity === 0) {
           state.cart = state.cart.filter(
-            (item: any) => item.id !== action.payload.id
+            (item) => item.id !== action.payload.id
           );
         }
       }

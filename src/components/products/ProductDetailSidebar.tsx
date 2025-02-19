@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useSelector, useDispatch } from "react-redux";
 import { setProducts as setProductsAction } from "@/store/reducers/productReducer";
 import { addToCart } from "@/store/reducers/cartReducer";
+import { currencyFormatter, priceFormatter } from "@/utils/helper";
 
 const ProductDetailSidebar = () => {
   const product = useSelector((state: any) => state.product.product);
@@ -15,15 +17,11 @@ const ProductDetailSidebar = () => {
       <div className="bg-gradient-to-b from-[#2C2C2C] to-[#444444] rounded-xl p-4 gap-y-4 text-3xl flex flex-col">
         <div className="text-white">
           <span className="font-bold">
-            {product?.masterVariant?.prices[0].value.centAmount.toLocaleString(
-              "en-US",
-              {
-                style: "currency",
-                currency: product?.masterVariant?.prices[0].value.currencyCode,
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              }
-            )}
+            {product &&
+              currencyFormatter(
+                priceFormatter(product)?.centAmount || 0,
+                priceFormatter(product)?.currencyCode || "USD"
+              )}
           </span>
         </div>
         <div className="text-white flex items-center gap-2 text-xs">

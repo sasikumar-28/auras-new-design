@@ -3,7 +3,7 @@ import CategoryTabs from "@/components/categories/categoryTabs";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { CategoriesResponse } from "@/graphQL/queries/types";
+import { CategoriesResponse, Product } from "@/graphQL/queries/types";
 import { GET_CATEGORIES } from "@/graphQL/queries/queries";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -41,13 +41,13 @@ const CartPage = () => {
             <div>
               Subtotal (
               {cartItems.reduce(
-                (acc: number, item: any) => acc + item.quantity,
+                (acc: number, item: Product) => acc + (item.quantity || 0),
                 0
               )}{" "}
               items):{" "}
               {cartItems
                 .reduce(
-                  (acc: number, item: any) =>
+                  (acc: number, item: Product) =>
                     acc + item?.masterVariant?.prices[0].value.centAmount || 0,
                   0
                 )
@@ -68,7 +68,7 @@ const CartPage = () => {
         </div>
         {/* Cart Items */}
         <div className="flex flex-col gap-4 mt-6">
-          {cartItems.map((item: any, index: number) => (
+          {cartItems.map((item: Product, index: number) => (
             <ProductCard key={index} product={item} />
           ))}
         </div>

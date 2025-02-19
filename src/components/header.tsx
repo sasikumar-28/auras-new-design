@@ -5,7 +5,7 @@ import { getSearchResults } from "@/utils";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { SearchProduct } from "@/graphQL/queries/types";
 export default function Header({
   isSortFilter,
   isProductCard,
@@ -15,12 +15,12 @@ export default function Header({
 }) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  // const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
 
   const handleSearch = async () => {
-    const results = await getSearchResults(searchQuery);
+    const results: SearchProduct[] = await getSearchResults(searchQuery);
     console.log(results, "results");
-    // setSearchResults(results);
+    setSearchResults(results);
   };
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function Header({
       handleSearch();
     }
     if (searchQuery.length === 0) {
-      // setSearchResults([]);
+      setSearchResults([]);
     }
   }, [searchQuery]);
 
@@ -54,6 +54,32 @@ export default function Header({
             className="border rounded-full w-full bg-[#EFEFEF] pl-12 pr-6 py-3"
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+        </div>
+        <div className="absolute top-16 left-0 w-4/6 bg-white rounded-xl">
+          {searchResults.map((result, index) => (
+            <div key={index} className="p-4 border-b cursor-pointer">
+              <div
+                className="flex items-center gap-2"
+                onClick={() => {
+                  localStorage.setItem("product", JSON.stringify(result));
+                  setSearchQuery("");
+                  navigate(
+                    `/product/${result?.objectID}?category=${result?.categoryPageId[0]}&productCard=true`
+                  );
+                  setSearchResults([]);
+                }}
+              >
+                <img
+                  src={result.variants[0].images[0]}
+                  alt={result.name["en-US"]}
+                  className="w-10 h-10 rounded-full"
+                />
+                <p className="text-gray-500 hover:underline">
+                  {result.name["en-US"]}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

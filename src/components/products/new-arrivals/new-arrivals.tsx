@@ -1,4 +1,5 @@
 import useProductsByCategory from "@/hooks/useProductsByCategory";
+import { Product } from "@/graphQL/queries/types";
 
 const NewAarrivals = () => {
   const { products, loading, error } = useProductsByCategory({
@@ -14,7 +15,7 @@ const NewAarrivals = () => {
     <div className="bg-[#F2F2F2] p-5 rounded-xl mb-32">
       <h2 className="text-xl font-semibold mb-4">New Arrivals</h2>
       <div className="grid grid-cols-4 gap-4">
-        {products.map((product: any) => (
+        {products.map((product: Product) => (
           <div className="">
             <div className="flex bg-white p-4 drop-shadow-lg rounded-xl h-24 gap-9">
               <img
