@@ -11,14 +11,24 @@ import tanyaChatBotIcon from "@/assets/tanya-chatbot/chat-with-tanya.png";
 import dotsHorizontal from "@/assets/tanya-chatbot/dots-horizontal.png";
 import arrowDown from "@/assets/tanya-chatbot/arrow-down.png";
 import { getAccessToken } from "@/utils/getAccessToken";
+import { getSearchResults } from "@/utils";
+import { SearchProduct } from "@/graphQL/queries/types";
+import { displayData, imageUrlArray } from "@/utils/helper";
+import { useNavigate } from "react-router-dom";
 
 const TanyaShoppingAssistant = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [inputText, setInputText] = useState("");
   const [whom, setWhom] = useState("");
   const [chatHistory, setChatHistory] = useState<
-    { query: string; response: string; potentialQuestions: string[] }[]
+    {
+      query: string;
+      response: string;
+      potentialQuestions: string[];
+      products: SearchProduct[];
+    }[]
   >([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +69,7 @@ const TanyaShoppingAssistant = () => {
     setInputText("");
     setChatHistory((prev) => [
       ...prev,
-      { query: newQuery, response: "", potentialQuestions: [] },
+      { query: newQuery, response: "", potentialQuestions: [], products: [] },
     ]);
 
     try {
@@ -93,7 +103,10 @@ const TanyaShoppingAssistant = () => {
         }
       );
       const { response, potentialQuestions } = res.data;
-
+      if (res.data.keywords) {
+        getKeywords(res.data.keywords);
+        // getKeywords("sofa");
+      }
       setChatHistory((prev) =>
         prev.map((msg, idx) =>
           idx === prev.length - 1
@@ -105,6 +118,37 @@ const TanyaShoppingAssistant = () => {
       console.error("Error sending message to Tanya:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getKeywords = async (keywords: string[] | string) => {
+    if (typeof keywords === "string") {
+      const splitedKeywords = keywords.split(",");
+      for (const keyword of splitedKeywords) {
+        const results = await getSearchResults(keyword);
+        if (results.length > 0) {
+          setChatHistory((prev) =>
+            prev.map((msg, idx) =>
+              idx === prev.length - 1
+                ? { ...msg, products: [...(msg.products || []), ...results] }
+                : msg
+            )
+          );
+        }
+      }
+    } else {
+      for (const keyword of keywords) {
+        const results = await getSearchResults(keyword);
+        if (results.length > 0) {
+          setChatHistory((prev) =>
+            prev.map((msg, idx) =>
+              idx === prev.length - 1
+                ? { ...msg, products: [...(msg.products || []), ...results] }
+                : msg
+            )
+          );
+        }
+      }
     }
   };
 
@@ -143,7 +187,7 @@ const TanyaShoppingAssistant = () => {
         {/* Chat Body */}
         <div
           ref={scrollRef}
-          className="h-[calc(100vh-310px)] overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar"
+          className="h-5/6 overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar"
         >
           <p className="text-sm text-[#000000] bg-[#F1DCFF] rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4">
             Hey there! I'm Tanya, your new AI shopping assistant. Think of me as
@@ -187,6 +231,35 @@ const TanyaShoppingAssistant = () => {
                     className="text-sm text-[#232323] bg-[#FFFFFF] drop-shadow-md px-7 py-4 rounded-r-xl rounded-bl-2xl w-5/6"
                     dangerouslySetInnerHTML={{ __html: chat.response }}
                   />
+                </div>
+              )}
+              {chat.products?.length > 0 && (
+                <div className="flex justify-end">
+                  <div className="text-sm my-2 text-[#232323] bg-[#FFFFFF] drop-shadow-md px-7 py-4 rounded-r-xl rounded-bl-2xl w-5/6">
+                    <div className="font-semibold">Here are some options</div>
+                    {chat.products.map((product) => (
+                      <div
+                        key={product.objectID}
+                        className="flex items-center gap-2 cursor-pointer"
+                        onClick={() => {
+                          localStorage.setItem(
+                            "product",
+                            JSON.stringify(product)
+                          );
+                          navigate(
+                            `/product/${product?.objectID}?category=${product?.categoryPageId[0]}&productCard=true`
+                          );
+                        }}
+                      >
+                        <img
+                          src={imageUrlArray(product)[0]}
+                          alt={displayData(product?.name["en-US"])}
+                          className="w-10 h-10 rounded-full"
+                        />
+                        {displayData(product?.name["en-US"])}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
               {/* Render potential questions below each response */}

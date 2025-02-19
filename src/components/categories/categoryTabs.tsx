@@ -15,7 +15,7 @@ const CategoryTabs = ({
   activeTab,
   setActiveTab,
 }: {
-  data: CategoriesResponse;
+  data: CategoriesResponse | undefined;
   activeTab: number;
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
 }) => {

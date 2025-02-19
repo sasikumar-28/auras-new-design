@@ -5,6 +5,9 @@ import NotFound from "@/components/not-found";
 import Home from "@/pages/home";
 import ProductListingPage from "@/pages/productListingPage";
 import ProductDetailsPage from "@/pages/productDetailsPage";
+import CartPage from "@/pages/cartPage";
+import Account from "@/pages/account";
+
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -22,6 +25,14 @@ const routes = createBrowserRouter([
       {
         path: "/product/:id",
         element: <ProductDetailsPage />,
+      },
+      {
+        path: "/cart",
+        element: <CartPage />,
+      },
+      {
+        path: "/account",
+        element: <Account />,
       },
     ],
   },
