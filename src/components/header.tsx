@@ -55,11 +55,11 @@ export default function Header({
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="absolute top-16 left-0 w-4/6 bg-white rounded-xl">
+        <div className="absolute top-16 left-0 w-4/6 bg-white rounded-xl shadow-md">
           {searchResults.map((result, index) => (
             <div key={index} className="p-4 border-b cursor-pointer">
               <div
-                className="flex items-center gap-2"
+                className="flex justify-between items-center"
                 onClick={() => {
                   localStorage.setItem("product", JSON.stringify(result));
                   setSearchQuery("");
@@ -69,14 +69,24 @@ export default function Header({
                   setSearchResults([]);
                 }}
               >
-                <img
-                  src={result.variants[0].images[0]}
-                  alt={result.name["en-US"]}
-                  className="w-10 h-10 rounded-full"
-                />
-                <p className="text-gray-500 hover:underline">
-                  {result.name["en-US"]}
-                </p>
+                <div className="flex items-center gap-2">
+                  <img
+                    src={result.variants[0].images[0]}
+                    alt={result.name["en-US"]}
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <p className="text-gray-500 hover:underline">
+                    {result.name["en-US"]}
+                  </p>
+                </div>
+                <div className="-rotate-45">
+                  <Icon
+                    icon="line-md:arrow-right"
+                    color="gray-500"
+                    width="24"
+                    height="24"
+                  />
+                </div>
               </div>
             </div>
           ))}

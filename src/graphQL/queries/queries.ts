@@ -43,3 +43,21 @@ export const PRODUCTS_BY_CATEGORY = gql`
     }
   }
 `;
+
+export const GET_ALL_CART_ADDRESS = gql`
+  query CartAddress($id: String!) {
+    cart(id: $id) {
+      itemShippingAddresses {
+        id
+        firstName
+        lastName
+        streetName
+        city
+        postalCode
+        state
+        phone
+        email
+      }
+    }
+  }
+`;

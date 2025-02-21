@@ -109,3 +109,20 @@ export interface SearchProduct {
   variants: Variant[];
   objectID: string;
 }
+
+export type UpdatePaymentType = {
+  id: string;
+  version: number;
+  transactionId: string;
+  fields: Field[];
+};
+
+export type Field = {
+  name: string;
+  value: string;
+};
+
+export type Cart = {
+  id: string;
+  typeId: string;
+};
