@@ -35,7 +35,7 @@ const SignUp = () => {
   });
 
   const handleSubmit = (values: typeof initialValues) => {
-    console.log("Form values:", values);
+    delete values?.rememberMe;
     signUp(values).then((res) => console.log(res));
   };
 

@@ -31,12 +31,23 @@ const Login = () => {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log("Form values:", values);
-      signIn(values);
-      dispatch(login("abcdef"));
-      if (redirect) {
-        navigate(redirect);
-      }
+      signIn(values)
+        .then((res) => {
+          console.log(res);
+          if (!res?.failed) {
+            dispatch(login(res));
+            if (redirect) {
+              navigate(redirect);
+            } else {
+              navigate("/");
+            }
+          } else {
+            console.log(res.error.message);
+          }
+        })
+        .catch((err) => {
+          console.log("the error", err);
+        });
     },
   });
 

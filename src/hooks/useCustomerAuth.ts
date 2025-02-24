@@ -16,8 +16,7 @@ export const useCustomerAuth = () => {
       const { data } = await loginCustomer({ variables: { draft } });
       return data?.customerSignIn.customer;
     } catch (error) {
-      console.error("Login error:", error);
-      throw error;
+      return { error, failed: true };
     }
   };
 

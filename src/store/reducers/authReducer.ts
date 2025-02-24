@@ -1,7 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+type User = {
+  email: string;
+  id: string;
+  password: string;
+  __typename: string;
+};
+
 type SessionState = {
-  user: string | null;
+  user: User | null;
   isAuthenticated: boolean;
 };
 
@@ -14,7 +21,7 @@ const sessionSlice = createSlice({
   name: "session",
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<string>) => {
+    login: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
       state.isAuthenticated = true;
     },
