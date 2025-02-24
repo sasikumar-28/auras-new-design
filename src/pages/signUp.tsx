@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
+import { toast } from "sonner";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -36,7 +37,14 @@ const SignUp = () => {
 
   const handleSubmit = (values: typeof initialValues) => {
     delete values?.rememberMe;
-    signUp(values).then((res) => console.log(res));
+    signUp(values).then((res) => {
+      if (!res?.failed) {
+        navigate(`/login?${redirect ? redirect : ""}`);
+        toast.success("Sign up successful");
+      } else {
+        toast.error(res.error.message);
+      }
+    });
   };
 
   return (

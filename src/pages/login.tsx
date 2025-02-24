@@ -34,9 +34,9 @@ const Login = () => {
     onSubmit: (values) => {
       signIn(values)
         .then((res) => {
-          console.log(res);
           if (!res?.failed) {
             dispatch(login(res));
+            toast.success("Log in successful");
             if (redirect) {
               navigate(redirect);
             } else {
@@ -79,7 +79,7 @@ const Login = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}
-              className="w-full bg-#FFFFFF text-black rounded-[8px] border-[1px] border-[#DEDEDE] shadow-lg h-[56px]"
+              className="w-full bg-#FFFFFF text-black rounded-[8px] border-[1px] border-[#DEDEDE] h-[56px]"
             />
             {formik.touched.email && formik.errors.email && (
               <div className="text-red-500 text-sm">{formik.errors.email}</div>
@@ -95,7 +95,7 @@ const Login = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.password}
-              className="w-full bg-#FFFFFF text-black rounded-[8px] border-[1px] border-[#DEDEDE] shadow-lg h-[56px]"
+              className="w-full bg-#FFFFFF text-black rounded-[8px] border-[1px] border-[#DEDEDE] h-[56px] active:shadow-lg"
             />
             {formik.touched.password && formik.errors.password && (
               <div className="text-red-500 text-sm">
