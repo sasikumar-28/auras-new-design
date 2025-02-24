@@ -13,7 +13,7 @@ const ShowOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const data = await getOrders(auth.user.id);
+        const data = await getOrders(`customerId="${auth.user}"`);
         setOrders(data?.results || []);
       } catch (error) {
         console.error("Failed to fetch orders:", error);

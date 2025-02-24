@@ -42,7 +42,12 @@ export const useOrder = () => {
   };
 
   // Function to refetch orders
-  const getOrders = async (where = "", sort = [], limit = 10, offset = 0) => {
+  const getOrders = async (
+    where = "",
+    sort = ["createdAt desc"],
+    limit = 10,
+    offset = 0
+  ) => {
     try {
       const { data } = await refetch({ where, sort, limit, offset });
       return data?.orders;

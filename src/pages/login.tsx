@@ -7,9 +7,12 @@ import { useNavigate, useSearchParams } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
+import { useDispatch } from "react-redux";
+import { login } from "@/store/reducers/authReducer";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { signIn } = useCustomerAuth();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get("redirect");
@@ -30,6 +33,7 @@ const Login = () => {
     onSubmit: (values) => {
       console.log("Form values:", values);
       signIn(values);
+      dispatch(login("abcdef"));
       if (redirect) {
         navigate(redirect);
       }
