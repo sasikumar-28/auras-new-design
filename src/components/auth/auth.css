@@ -1,0 +1,9 @@
+.baseFont{
+width: 755px;
+height: 150px;
+font: normal normal 900 106px/150px Arial;
+letter-spacing: -8.48px;
+color: #55286417;
+opacity: 1;
+-webkit-text-stroke: 1px #552864; 
+}

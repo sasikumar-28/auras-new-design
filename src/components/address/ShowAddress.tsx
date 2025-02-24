@@ -6,12 +6,30 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { useAddress } from "@/hooks/useAddress";
 
 const ShowAddress = () => {
   const [newAddress, setNewAddress] = useState(false);
+  const [addressList, setAddressList] = useState([]);
+  const {
+    getAddress,
+    //  loading, error
+  } = useAddress();
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const data = await getAddress();
+        setAddressList(data?.getAllCartAddress || []);
+      } catch (err) {
+        console.error("Failed to fetch addresses:", err);
+      }
+    };
+    fetchAddresses();
+  }, [getAddress]);
   return (
     <>
       <div className="flex flex-col gap-4 w-full">
@@ -29,6 +47,11 @@ const ShowAddress = () => {
             />
           </div>
         </div>
+        {addressList.length == 0 && (
+          <div className="w-full mt-6">
+            <div className="w-full h-[1px] bg-gray-200"></div>
+          </div>
+        )}
       </div>
       <Sheet open={newAddress} onOpenChange={setNewAddress}>
         <SheetContent className="bg-white">
