@@ -8,6 +8,7 @@ import chatWithTanyaIcon from "@/assets/sidebar-icons/chat-with-tanya-icon.png";
 import languageIcon from "@/assets/sidebar-icons/language-icon.png";
 import { Checkbox } from "./ui/checkbox";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const filterData = [
   {
     label: "Categories",
@@ -45,6 +46,20 @@ export function Sidebar({
   isRightSidebar?: boolean;
 }) {
   const navigate = useNavigate();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const auth = useSelector((state: any) => state.auth);
+  const handleNavigate = (route: string, isAuthReq?: boolean) => {
+    if (isAuthReq) {
+      if (auth.isAuthenticated) {
+        navigate(route);
+      } else {
+        navigate(`/login?redirect=${route}`);
+      }
+    } else {
+      navigate(route);
+    }
+  };
+
   if (isRightSidebar) {
     return (
       <div className="w-54 bg-[#552864] text-white flex justify-end items-end p-2">
@@ -58,14 +73,14 @@ export function Sidebar({
           {/* Icons Section */}
           <div
             className="space-y-6 text-xs flex flex-col items-center gap-8"
-            onClick={() => navigate("/cart")}
+            onClick={() => handleNavigate("/cart", true)}
           >
             <div className="flex flex-col items-center gap-1">
               <img width={22} src={heartIcon} alt="Home" />
             </div>
 
             <div
-              onClick={() => navigate("/account?tab=orders")}
+              onClick={() => handleNavigate("/account?tab=orders", true)}
               className="flex flex-col items-center gap-1 cursor-pointer"
             >
               <img width={22} src={returnIcon} alt="Return" />
@@ -119,7 +134,7 @@ export function Sidebar({
         </div>
         <div className="space-y-6 text-xs ">
           <div
-            onClick={() => navigate("/cart")}
+            onClick={() => handleNavigate("/cart", true)}
             className="flex flex-col items-center gap-1 cursor-pointer"
           >
             <img width={22} src={heartIcon} alt="Home" />
@@ -127,7 +142,7 @@ export function Sidebar({
           </div>
 
           <div
-            onClick={() => navigate("/account?tab=orders")}
+            onClick={() => handleNavigate("/account?tab=orders", true)}
             className="flex flex-col items-center gap-1 cursor-pointer"
           >
             <img width={22} src={returnIcon} alt="Return" />

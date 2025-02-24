@@ -10,7 +10,7 @@ import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { signIn, loginLoading } = useCustomerAuth();
+  const { signIn } = useCustomerAuth();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get("redirect");
 
@@ -30,6 +30,9 @@ const Login = () => {
     onSubmit: (values) => {
       console.log("Form values:", values);
       signIn(values);
+      if (redirect) {
+        navigate(redirect);
+      }
     },
   });
 

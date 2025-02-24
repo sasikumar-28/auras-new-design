@@ -11,7 +11,7 @@ import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { signUp, signUpLoading } = useCustomerAuth();
+  const { signUp } = useCustomerAuth();
   const redirect = searchParams.get("redirect");
 
   const initialValues = {

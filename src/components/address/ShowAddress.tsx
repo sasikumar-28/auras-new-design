@@ -10,10 +10,11 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useAddress } from "@/hooks/useAddress";
+import AddressCard from "./AddressCard";
 
 const ShowAddress = () => {
   const [newAddress, setNewAddress] = useState(false);
-  const [addressList, setAddressList] = useState([]);
+  const [addressList, setAddressList] = useState([...Array(2)]);
   const {
     getAddress,
     //  loading, error
@@ -47,9 +48,14 @@ const ShowAddress = () => {
             />
           </div>
         </div>
-        {addressList.length == 0 && (
+        {addressList.length > 0 && (
           <div className="w-full mt-6">
             <div className="w-full h-[1px] bg-gray-200"></div>
+            <div className="flex gap-6 mt-4">
+              {addressList.map((address, i) => (
+                <AddressCard address={address} key={i} />
+              ))}
+            </div>
           </div>
         )}
       </div>
