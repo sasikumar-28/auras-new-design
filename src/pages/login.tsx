@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 import { login } from "@/store/reducers/authReducer";
 
 const Login = () => {
@@ -42,7 +43,7 @@ const Login = () => {
               navigate("/");
             }
           } else {
-            console.log(res.error.message);
+            toast.error(res.error.message);
           }
         })
         .catch((err) => {
@@ -115,7 +116,7 @@ const Login = () => {
           <div>
             <Button
               type="submit"
-              className="w-full font-bold hover:bg-gray-50 bg-[#B93284] rounded-[8px] shadow-md text-white h-[56px]"
+              className="w-full font-bold bg-[#B93284] rounded-[8px] shadow-md text-white h-[56px] hover:bg-[#a02971]"
             >
               LOGIN
               <Icon icon="mdi:arrow-right" width="24" height="24" />
