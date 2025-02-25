@@ -9,6 +9,7 @@ import CartPage from "@/pages/cartPage";
 import Account from "@/pages/account";
 import Login from "@/pages/login";
 import SignUp from "@/pages/signUp";
+import Checkout from "@/pages/checkout";
 
 const routes = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const routes = createBrowserRouter([
       {
         path: "/account",
         element: <Account />,
+      },
+      {
+        path: "/checkout",
+        element: <Checkout />,
       },
     ],
   },

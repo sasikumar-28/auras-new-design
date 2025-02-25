@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 import "./auth.css";
+
 const carouselData = [
   {
     image: "/images/iphone16.png",
     className: "w-[442px] h-[442px]",
+    bg: "/images/simple-product-backdrop-with-shadow@2x.png",
     text: "ELECTRONICS",
   },
   {
     image: "/images/bags.png",
     className: "w-[442px] h-[442px]",
+    bg: "/images/simple-product-backdrop-with-shadow@2x.png",
     text: "B A G S",
   },
   {
     image: "/images/headphones.png",
     className: "w-[442px] h-[442px]",
+    bg: "/images/simple-product-backdrop-with-shadow@2x.png",
     text: "ELECTRONICS",
   },
 ];
+
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
@@ -30,8 +35,13 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <div className="flex w-[100vw] h-[100vh] bg-red-300">
-      <div className="w-4/6 bg-blue-200 relative">
+    <div className="flex w-[100vw] h-[100vh]">
+      <div
+        className={`w-4/6 bg-cover bg-center relative`}
+        style={{
+          backgroundImage: `url(${carouselData[currentIndex].bg})`,
+        }}
+      >
         <div className="flex justify-between items-center w-full absolute top-7 p-4">
           <img
             src="/images/auras_logo_white_large.png"
@@ -55,7 +65,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
           />
         </div>
         <div className="absolute flex bottom-3 gap-2 justify-center w-full">
-          {[...Array(3)].map((_, i) => (
+          {[...Array(carouselData.length)].map((_, i) => (
             <div
               key={i}
               className={`rounded-full h-3 w-3 transition-all ${
