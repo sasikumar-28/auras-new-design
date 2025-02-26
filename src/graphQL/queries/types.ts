@@ -126,3 +126,31 @@ export type Cart = {
   id: string;
   typeId: string;
 };
+
+export type Address = {
+  key: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  streetName: string;
+  postalCode: string;
+  city: string;
+  state: string;
+  country: string;
+  phone: string;
+  email: string;
+};
+
+export type AddItemShippingAddressAction = {
+  addItemShippingAddress: {
+    address: Address;
+  };
+};
+
+export type Action = AddItemShippingAddressAction;
+
+export type AddressInputData = {
+  version: number;
+  id: string;
+  actions: Action[];
+};

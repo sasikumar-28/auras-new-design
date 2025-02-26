@@ -2,13 +2,14 @@ import { CREATE_ORDER } from "@/graphQL/mutations/mutations";
 import { GET_ALL_ORDERS } from "@/graphQL/queries/queries";
 import { Cart } from "@/graphQL/queries/types";
 import { useMutation, useQuery } from "@apollo/client";
+import { useSelector } from "react-redux";
 
 type DraftType = {
   cart: Cart;
 };
 
 export const useOrder = () => {
-  // Mutation to create an order
+  const auth = useSelector((state: any) => state.auth);
   const [
     createOrder,
     { data: orderData, loading: orderLoading, error: orderError },
@@ -22,7 +23,7 @@ export const useOrder = () => {
     refetch,
   } = useQuery(GET_ALL_ORDERS, {
     variables: {
-      where: "",
+      where: `customerId="${auth.user.id}"`,
       sort: [],
       limit: 10,
       offset: 0,

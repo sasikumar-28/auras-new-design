@@ -8,10 +8,12 @@ import { GET_CATEGORIES } from "@/graphQL/queries/queries";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ProductCard from "@/components/cart/productCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import DataNotFound from "@/components/dataNotAvailable/dataNotFound";
 
 const CartPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
   const { data } = useQuery<CategoriesResponse>(GET_CATEGORIES);
@@ -22,6 +24,10 @@ const CartPage = () => {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
 
   useEffect(() => {}, [selectedProduct]);
+
+  function removeAllSelectedProduct(): any {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div className="mt-20 w-full">
@@ -36,7 +42,19 @@ const CartPage = () => {
           <div>
             <div>
               <div className="text-2xl font-bold">Shopping Cart</div>
-              <div className="text-sm text-[#B93284]">Deselect all items</div>
+              {selectedProduct.length ? (
+                <div
+                  className="text-sm text-[#B93284] cursor-pointer"
+                  onClick={() => {
+                    setSelectedProduct([]);
+                    dispatch(removeAllSelectedProduct());
+                  }}
+                >
+                  Deselect all items
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2 h-full">
@@ -64,6 +82,7 @@ const CartPage = () => {
             </div>
             <div>
               <Button
+                disabled={!selectedProduct.length}
                 className="bg-[#B93284] h-[50px] hover:bg-[#a02973] text-white rounded-xl text-2xl px-6 py-3 flex items-center gap-2"
                 onClick={() => navigate("/checkout")}
               >
@@ -75,14 +94,18 @@ const CartPage = () => {
         </div>
         {/* Cart Items */}
         <div className="flex flex-col gap-4 mt-6">
-          {cartItems.map((item: Product, index: number) => (
-            <ProductCard
-              key={index}
-              product={item}
-              selectedProduct={selectedProduct}
-              setSelectedProduct={setSelectedProduct}
-            />
-          ))}
+          {cartItems.length > 0 ? (
+            cartItems.map((item: Product, index: number) => (
+              <ProductCard
+                key={index}
+                product={item}
+                selectedProduct={selectedProduct}
+                setSelectedProduct={setSelectedProduct}
+              />
+            ))
+          ) : (
+            <DataNotFound />
+          )}
         </div>
       </div>
     </div>

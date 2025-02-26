@@ -142,3 +142,26 @@ export const SHIPPING_ADDRESS = gql`
     }
   }
 `;
+export const ADD_ADDRESS = gql`
+  mutation AddAddress(
+    $version: Long!
+    $actions: [CartUpdateAction!]!
+    $id: String!
+  ) {
+    updateCart(version: $version, actions: $actions, id: $id) {
+      itemShippingAddresses {
+        key
+        id
+        firstName
+        lastName
+        streetName
+        city
+        postalCode
+        state
+        phone
+        email
+      }
+      version
+    }
+  }
+`;

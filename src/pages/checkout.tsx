@@ -1,5 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const creditCards = [
   { bank: "Visa", ending: "5079", holder: "Prasath Siva" },
@@ -8,8 +10,24 @@ const creditCards = [
 ];
 
 const paymentMethods = [
-  { method: "Credit card", action: null },
-  { method: "Net banking", action: <Button>Choose an option</Button> },
+  {
+    method: "Credit card",
+    action: (
+      <div className="flex gap-2">
+        <Icon icon="logos:visa" width="35" height="35" />
+        <Icon icon="logos:mastercard" width="35" height="35" />
+        <Icon icon="logos:cirrus" width="35" height="35" />
+      </div>
+    ),
+  },
+  {
+    method: "Net banking",
+    action: (
+      <Button className="bg-[#F3F3F3] border border-[#B5B5B5] hover:bg-gray-200 rounded text-black">
+        Choose an option
+      </Button>
+    ),
+  },
 ];
 
 const Checkout = () => {
@@ -91,14 +109,17 @@ const Checkout = () => {
 
               {/* Credit Card Details */}
               <div className="space-y-2">
-                {creditCards.map((card, index) => (
-                  <div key={index} className="flex justify-between">
-                    <div onClick={() => setSelectedOption(1)}>
-                      {card.bank} card ending {card.ending}
+                <RadioGroup defaultValue={"0"}>
+                  {creditCards.map((card, index) => (
+                    <div key={index} className="flex justify-between">
+                      <div onClick={() => setSelectedOption(1)}>
+                        <RadioGroupItem value={String(index)} id="r1" />{" "}
+                        {card.bank} card ending {card.ending}
+                      </div>
+                      <div>{card.holder}</div>
                     </div>
-                    <div>{card.holder}</div>
-                  </div>
-                ))}
+                  ))}
+                </RadioGroup>
                 <div>Add another payment</div>
               </div>
 

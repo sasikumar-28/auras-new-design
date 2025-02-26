@@ -6,6 +6,13 @@ import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchProduct } from "@/graphQL/queries/types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
 export default function Header({
   isSortFilter,
   isProductCard,
@@ -109,7 +116,63 @@ export default function Header({
           <p className="text-white text-sm">$2309</p>
         </div>
         <div className="">
-          <img src={profileImage} alt="profile" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <img
+                className="cursor-pointer"
+                src={profileImage}
+                alt="profile"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-44 bg-white shadow-xl p-2 rounded">
+              <DropdownMenuGroup className="flex flex-col gap-y-2">
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon icon="prime:user" width="24" height="24" />
+                  </div>
+                  <div>My Account</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon icon="ph:chat-light" width="24" height="24" />
+                  </div>
+                  <div>Recommendations</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon icon="bxs:hot" width="24" height="24" />
+                  </div>
+                  <div>Trending</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon
+                      icon="icon-park-outline:return"
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                  <div> Return & Refund</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon icon="proicons:cart" width="24" height="24" />
+                  </div>
+                  <div>Buy it Again</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon
+                      icon="qlementine-icons:log-out-16"
+                      width="24"
+                      height="24"
+                    />{" "}
+                  </div>
+                  <div>Logout</div>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

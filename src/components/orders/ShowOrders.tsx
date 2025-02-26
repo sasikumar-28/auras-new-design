@@ -3,9 +3,10 @@ import OrderCards from "./OrderCards";
 import { Product } from "@/graphQL/queries/types";
 import { useOrder } from "@/hooks/useOrder";
 import { useSelector } from "react-redux";
+import DataNotFound from "../dataNotAvailable/dataNotFound";
 
 const ShowOrders = () => {
-  const { getOrders } = useOrder();
+  const { getOrders, ordersLoading } = useOrder();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const auth = useSelector((state: any) => state.auth);
   const [orders, setOrders] = useState<Product[]>([]);
@@ -26,9 +27,13 @@ const ShowOrders = () => {
     <div>
       <div className="text-2xl font-bold">Your Orders</div>
       <div className="mt-8">
-        {orders.map((order, i) => (
-          <OrderCards key={i} order={order} />
-        ))}
+        {ordersLoading ? (
+          <div>Loading</div>
+        ) : orders.length > 0 ? (
+          orders.map((order, i) => <OrderCards key={i} order={order} />)
+        ) : (
+          <DataNotFound text="No Orders Placed" />
+        )}
       </div>
     </div>
   );
