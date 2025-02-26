@@ -10,6 +10,7 @@ import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { login } from "@/store/reducers/authReducer";
+import { useState } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const Login = () => {
   const { signIn } = useCustomerAuth();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get("redirect");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -35,6 +37,9 @@ const Login = () => {
       signIn(values)
         .then((res) => {
           if (!res?.failed) {
+            // if(rememberMe){
+
+            // }
             dispatch(login(res));
             toast.success("Log in successful");
             if (redirect) {
@@ -108,6 +113,8 @@ const Login = () => {
             <Checkbox
               id="rememberMe"
               name="rememberMe"
+              checked={rememberMe}
+              onCheckedChange={() => setRememberMe(!rememberMe)}
               className="bg-white rounded-[2px] border-[1px]"
             />{" "}
             Remember me

@@ -23,11 +23,12 @@ export const useOrder = () => {
     refetch,
   } = useQuery(GET_ALL_ORDERS, {
     variables: {
-      where: `customerId="${auth.user.id}"`,
+      where: `customerId="${auth?.user?.id}"`,
       sort: [],
       limit: 10,
       offset: 0,
     },
+    skip: !auth?.user?.id,
   });
 
   // Function to place a new order

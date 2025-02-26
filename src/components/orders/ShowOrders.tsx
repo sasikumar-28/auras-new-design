@@ -15,6 +15,7 @@ const ShowOrders = () => {
     const fetchOrders = async () => {
       try {
         const data = await getOrders(`customerId="${auth.user.id}"`);
+        console.log(data, "the data");
         setOrders(data?.results || []);
       } catch (error) {
         console.error("Failed to fetch orders:", error);

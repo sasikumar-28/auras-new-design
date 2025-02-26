@@ -11,6 +11,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useAddress } from "@/hooks/useAddress";
 import AddressCard from "./AddressCard";
+import { Address } from "@/graphQL/queries/types";
 
 const ShowAddress = () => {
   const [newAddress, setNewAddress] = useState(false);
@@ -26,10 +27,10 @@ const ShowAddress = () => {
     phone: "",
     email: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<any>({});
 
   const validateForm = () => {
-    let newErrors = {};
+    let newErrors: any = {};
     Object.entries(formData).forEach(([key, value]) => {
       if (!value && key !== "email")
         newErrors[key] = `${key.replace(/([A-Z])/g, " $1").trim()} is required`;
@@ -64,7 +65,7 @@ const ShowAddress = () => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
@@ -93,7 +94,7 @@ const ShowAddress = () => {
           <div className="w-full mt-6">
             <div className="w-full h-[1px] bg-gray-200"></div>
             <div className="flex gap-6 mt-4">
-              {addressList.map((address, i) => (
+              {addressList.map((address: Address, i: number) => (
                 <AddressCard address={address} key={i} />
               ))}
             </div>

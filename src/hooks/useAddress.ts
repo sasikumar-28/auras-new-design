@@ -1,6 +1,6 @@
 import { ADD_ADDRESS } from "@/graphQL/mutations/mutations";
 import { GET_ALL_CART_ADDRESS } from "@/graphQL/queries/queries";
-import { Address, AddressInput } from "@/graphQL/queries/types";
+import { Address } from "@/graphQL/queries/types";
 import { useMutation, useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
 
