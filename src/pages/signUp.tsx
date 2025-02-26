@@ -35,9 +35,12 @@ const SignUp = () => {
     rememberMe: Yup.boolean(),
   });
 
-  const handleSubmit = (values: typeof initialValues) => {
-    delete values?.rememberMe;
-    signUp(values).then((res) => {
+  const handleSubmit = (
+    values: typeof initialValues & { rememberMe?: boolean }
+  ) => {
+    const { rememberMe, ...rest } = values; // Create a new object without rememberMe
+    console.log(rememberMe);
+    signUp(rest).then((res) => {
       if (!res?.failed) {
         navigate(`/login?${redirect ? redirect : ""}`);
         toast.success("Sign up successful");

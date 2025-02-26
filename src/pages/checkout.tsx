@@ -15,6 +15,7 @@ const paymentMethods = [
 const Checkout = () => {
   const [selectedOption, setSelectedOption] = useState(1);
   const [enablePay, setEnablePay] = useState<boolean>(false);
+
   return (
     <div className="mt-20 w-full">
       <div className="font-bold text-[24px]">Secure Checkout</div>
@@ -92,7 +93,7 @@ const Checkout = () => {
               <div className="space-y-2">
                 {creditCards.map((card, index) => (
                   <div key={index} className="flex justify-between">
-                    <div>
+                    <div onClick={() => setSelectedOption(1)}>
                       {card.bank} card ending {card.ending}
                     </div>
                     <div>{card.holder}</div>

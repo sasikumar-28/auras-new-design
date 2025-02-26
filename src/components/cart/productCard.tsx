@@ -36,7 +36,9 @@ const ProductCard = ({
       const productExists = prevSelected.some((p) => p.id === product.id);
       if (productExists) {
         return prevSelected.map((p) =>
-          p.id === product.id ? { ...p, quantity: p.quantity + value } : p
+          p.id === product.id
+            ? { ...p, quantity: (p.quantity || 1) + value }
+            : p
         );
       } else {
         return prevSelected;

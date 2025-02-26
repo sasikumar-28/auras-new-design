@@ -44,7 +44,7 @@ export const cartSlice = createSlice({
     setSelectedProduct: (state, action: PayloadAction<Product[]>) => {
       state.selectedProduct = action.payload;
     },
-    removeAllSelectedProduct: (state, action: PayloadAction<Product[]>) => {
+    removeAllSelectedProduct: (state) => {
       state.selectedProduct = [];
     },
   },

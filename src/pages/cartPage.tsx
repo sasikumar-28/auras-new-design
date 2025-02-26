@@ -51,8 +51,8 @@ const CartPage = () => {
                 .reduce(
                   (acc: number, item: Product) =>
                     acc +
-                    ((item?.masterVariant?.prices[0].value.centAmount || 0) *
-                      item.quantity || 1),
+                    (item?.masterVariant?.prices[0].value.centAmount || 0) *
+                      (item.quantity || 1),
                   0
                 )
                 .toLocaleString("en-US", {
