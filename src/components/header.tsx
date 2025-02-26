@@ -6,6 +6,13 @@ import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchProduct } from "@/graphQL/queries/types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
 export default function Header({
   isSortFilter,
   isProductCard,
@@ -55,11 +62,11 @@ export default function Header({
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="absolute top-16 left-0 w-4/6 bg-white rounded-xl">
+        <div className="absolute top-16 left-0 w-4/6 bg-white rounded-xl shadow-md">
           {searchResults.map((result, index) => (
             <div key={index} className="p-4 border-b cursor-pointer">
               <div
-                className="flex items-center gap-2"
+                className="flex justify-between items-center"
                 onClick={() => {
                   localStorage.setItem("product", JSON.stringify(result));
                   setSearchQuery("");
@@ -69,14 +76,24 @@ export default function Header({
                   setSearchResults([]);
                 }}
               >
-                <img
-                  src={result.variants[0].images[0]}
-                  alt={result.name["en-US"]}
-                  className="w-10 h-10 rounded-full"
-                />
-                <p className="text-gray-500 hover:underline">
-                  {result.name["en-US"]}
-                </p>
+                <div className="flex items-center gap-2">
+                  <img
+                    src={result.variants[0].images[0]}
+                    alt={result.name["en-US"]}
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <p className="text-gray-500 hover:underline">
+                    {result.name["en-US"]}
+                  </p>
+                </div>
+                <div className="-rotate-45">
+                  <Icon
+                    icon="line-md:arrow-right"
+                    color="gray-500"
+                    width="24"
+                    height="24"
+                  />
+                </div>
               </div>
             </div>
           ))}
@@ -99,7 +116,63 @@ export default function Header({
           <p className="text-white text-sm">$2309</p>
         </div>
         <div className="">
-          <img src={profileImage} alt="profile" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <img
+                className="cursor-pointer"
+                src={profileImage}
+                alt="profile"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-44 bg-white shadow-xl p-2 rounded">
+              <DropdownMenuGroup className="flex flex-col gap-y-2">
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon icon="prime:user" width="24" height="24" />
+                  </div>
+                  <div>My Account</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon icon="ph:chat-light" width="24" height="24" />
+                  </div>
+                  <div>Recommendations</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon icon="bxs:hot" width="24" height="24" />
+                  </div>
+                  <div>Trending</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon
+                      icon="icon-park-outline:return"
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                  <div> Return & Refund</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon icon="proicons:cart" width="24" height="24" />
+                  </div>
+                  <div>Buy it Again</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                  <div>
+                    <Icon
+                      icon="qlementine-icons:log-out-16"
+                      width="24"
+                      height="24"
+                    />{" "}
+                  </div>
+                  <div>Logout</div>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

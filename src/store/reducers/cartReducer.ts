@@ -3,10 +3,12 @@ import { Product } from "@/graphQL/queries/types";
 
 interface CartState {
   cart: Product[];
+  selectedProduct: Product[];
 }
 
 const initialState: CartState = {
   cart: [],
+  selectedProduct: [],
 };
 
 export const cartSlice = createSlice({
@@ -39,10 +41,15 @@ export const cartSlice = createSlice({
         }
       }
     },
+    setSelectedProduct: (state, action: PayloadAction<Product[]>) => {
+      state.selectedProduct = action.payload;
+    },
+    removeAllSelectedProduct: (state) => {
+      state.selectedProduct = [];
+    },
   },
 });
 
-// Action creators are generated for each case reducer function
 export const { setCart, addToCart, removeFromCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

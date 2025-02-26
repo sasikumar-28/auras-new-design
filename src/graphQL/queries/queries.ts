@@ -43,3 +43,68 @@ export const PRODUCTS_BY_CATEGORY = gql`
     }
   }
 `;
+
+export const GET_ALL_CART_ADDRESS = gql`
+  query CartAddress($id: String!) {
+    cart(id: $id) {
+      itemShippingAddresses {
+        id
+        firstName
+        lastName
+        streetName
+        city
+        postalCode
+        state
+        phone
+        email
+      }
+    }
+  }
+`;
+
+export const GET_ALL_ORDERS = gql`
+  query GetOrders($where: String, $sort: [String!], $limit: Int, $offset: Int) {
+    orders(where: $where, sort: $sort, limit: $limit, offset: $offset) {
+      offset
+      count
+      total
+      exists
+      results {
+        id
+        customerId
+        customer {
+          id
+          email
+        }
+        lineItems {
+          id
+          productId
+          nameAllLocales {
+            locale
+            value
+          }
+          variant {
+            images {
+              url
+            }
+          }
+          quantity
+          price {
+            value {
+              centAmount
+              currencyCode
+            }
+          }
+        }
+        shippingAddress {
+          firstName
+          lastName
+          streetName
+          postalCode
+          city
+          country
+        }
+      }
+    }
+  }
+`;

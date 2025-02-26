@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Checkbox } from "../ui/checkbox";
 import { useDispatch } from "react-redux";
-import { removeFromCart } from "@/store/reducers/cartReducer";
+import { addToCart, removeFromCart } from "@/store/reducers/cartReducer";
 import { Product } from "@/graphQL/queries/types";
 import {
   imageUrlArray,
@@ -9,16 +9,56 @@ import {
   priceFormatter,
   currencyFormatter,
 } from "@/utils/helper";
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({
+  product,
+  selectedProduct,
+  setSelectedProduct,
+}: {
+  product: Product;
+  selectedProduct: Product[];
+  setSelectedProduct: React.Dispatch<React.SetStateAction<Product[]>>;
+}) => {
   const dispatch = useDispatch();
+  const handleSelect = (checked: boolean) => {
+    setSelectedProduct((prevSelected) => {
+      if (checked) {
+        return prevSelected.some((p) => p.id === product.id)
+          ? prevSelected
+          : [...prevSelected, product];
+      } else {
+        return prevSelected.filter((p) => p.id !== product.id);
+      }
+    });
+  };
+
+  const updateQuantity = (value = 1) => {
+    setSelectedProduct((prevSelected) => {
+      const productExists = prevSelected.some((p) => p.id === product.id);
+      if (productExists) {
+        return prevSelected.map((p) =>
+          p.id === product.id
+            ? { ...p, quantity: (p.quantity || 1) + value }
+            : p
+        );
+      } else {
+        return prevSelected;
+      }
+    });
+  };
+
   return (
     <div
-      className="w-full shadow-md border-2 p-2 flex h-[150px]"
-      style={{ borderRadius: "5px" }}
+      className="w-full shadow-md border border-[#D8D8D8] p-2 flex h-[150px]"
+      style={{ borderRadius: "4px" }}
     >
       <div className="flex items-center gap-2 p-2">
         <div>
-          <Checkbox className="rounded-lg" style={{ borderRadius: "2px" }} />
+          <Checkbox
+            className="rounded-lg"
+            style={{ borderRadius: "2px" }}
+            checked={selectedProduct.some((p) => p.id === product.id)}
+            onCheckedChange={(checked) => handleSelect(Boolean(checked))}
+          />
         </div>
         <div className="w-[150px]">
           <img
@@ -45,9 +85,30 @@ const ProductCard = ({ product }: { product: Product }) => {
                 className=" text-black rounded-md px-2 flex items-center gap-2"
                 style={{ borderRadius: "2px", border: "1px solid #B93284" }}
               >
-                <span className="cursor-pointer">-</span>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => {
+                    dispatch(removeFromCart({ id: product.id }));
+                    updateQuantity(-1);
+                  }}
+                >
+                  -
+                </span>
                 {product.quantity}
-                <span className="cursor-pointer">+</span>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => {
+                    dispatch(
+                      addToCart({
+                        ...product,
+                        quantity: (product.quantity ?? 0) + 1,
+                      })
+                    );
+                    updateQuantity(1);
+                  }}
+                >
+                  +
+                </span>
               </div>
             </div>
             <div className="border-l-2 border-gray-300 h-full"></div>
@@ -55,6 +116,7 @@ const ProductCard = ({ product }: { product: Product }) => {
               className="cursor-pointer"
               onClick={() => {
                 dispatch(removeFromCart(product as Product & void));
+                handleSelect(false);
               }}
             >
               Delete
