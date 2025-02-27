@@ -284,25 +284,24 @@ const TanyaShoppingAssistant = () => {
               )}
 
               {/* Render potential questions below each response */}
-              <div className="mt-2 px-4 text-sm text-gray-700 ">
-                {chat.potentialQuestions.length > 0 && (
-                  <>
-                    <p className="font-semibold">
-                      Why not explore these inqueries...
-                    </p>
 
-                    {chat.potentialQuestions.map((question, idx) => (
-                      <button
-                        key={idx}
-                        className="cursor-pointer text-emerald-700 bg-sky-200 m-1 rounded-xl px-2 py-1"
-                        onClick={() => handleSendMessage(question)}
-                      >
-                        {question}
-                      </button>
-                    ))}
-                  </>
-                )}
-              </div>
+              {chat.potentialQuestions.length > 0 && (
+                <div className="my-2 mb-8 px-4 text-sm text-gray-700 ">
+                  <p className="font-semibold">
+                    Why not explore these inqueries...
+                  </p>
+
+                  {chat.potentialQuestions.map((question, idx) => (
+                    <button
+                      key={idx}
+                      className="cursor-pointer text-emerald-700 bg-sky-200 m-1 rounded-xl px-2 py-1"
+                      onClick={() => handleSendMessage(question)}
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
 
