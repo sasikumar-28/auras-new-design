@@ -26,7 +26,7 @@ export const priceFormatter = (data: Product | SearchProduct) => {
   if ("variants" in data) {
     return {
       centAmount: data.variants[0]?.prices.EUR.max,
-      currencyCode: "EUR",
+      currencyCode: "DOL",
     };
   }
   return {
@@ -46,4 +46,15 @@ export const decryptData = (cipherText: string) => {
 
 export const initialCapital = (text: string) => {
   return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+export const laterDate = (day: number) => {
+  const fiveDaysLater = new Date();
+  fiveDaysLater.setDate(fiveDaysLater.getDate() + day);
+
+  const formattedDate = fiveDaysLater.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+  });
+  return formattedDate;
 };

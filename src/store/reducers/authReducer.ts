@@ -29,6 +29,8 @@ const sessionSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      localStorage.removeItem("cart");
+      localStorage.removeItem("selectedProduct");
       localStorage.removeItem("user");
     },
   },

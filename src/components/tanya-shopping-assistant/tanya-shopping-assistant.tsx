@@ -28,7 +28,7 @@ const TanyaShoppingAssistant = () => {
       response: string;
       potentialQuestions: string[];
       products: SearchProduct[];
-      keywords: string[];
+      keywords: string;
     }[]
   >([]);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -70,7 +70,13 @@ const TanyaShoppingAssistant = () => {
     setInputText("");
     setChatHistory((prev) => [
       ...prev,
-      { query: newQuery, response: "", potentialQuestions: [], products: [] },
+      {
+        query: newQuery,
+        response: "",
+        potentialQuestions: [],
+        products: [],
+        keywords: "",
+      },
     ]);
 
     try {
@@ -101,6 +107,7 @@ const TanyaShoppingAssistant = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          timeout: 20000,
         }
       );
       const { response, potentialQuestions, keywords } = res.data;

@@ -1,5 +1,4 @@
 import { Address } from "@/graphQL/queries/types";
-import { Button } from "../ui/button";
 import { initialCapital } from "@/utils/helper";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,7 +10,7 @@ const AddressCard = ({ address }: { address: Address }) => {
     >
       <div>
         <div className="font-bold">
-          {initialCapital(address?.firstName)}{" "}
+          {initialCapital(address?.firstName || "")}{" "}
           {initialCapital(address?.lastName).charAt(0)}
         </div>
         <div>

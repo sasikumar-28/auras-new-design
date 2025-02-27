@@ -16,6 +16,7 @@ import {
 import { decryptData } from "@/utils/helper";
 import { login, logout } from "@/store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { setCart, setSelectedProduct } from "@/store/reducers/cartReducer";
 export default function Header({
   isSortFilter,
   isProductCard,
@@ -46,9 +47,19 @@ export default function Header({
 
   useEffect(() => {
     const userDetails = localStorage.getItem("user");
+    const cartDetails = localStorage.getItem("cart");
+    const selectedDetails = localStorage.getItem("selectedProduct");
     if (userDetails) {
       const decrypted = JSON.parse(decryptData(userDetails));
       dispatch(login(decrypted));
+    }
+    if (cartDetails) {
+      const decrypted = JSON.parse(cartDetails);
+      dispatch(setCart(decrypted));
+    }
+    if (selectedDetails) {
+      const decrypted = JSON.parse(selectedDetails);
+      dispatch(setSelectedProduct(decrypted));
     }
   }, []);
 
@@ -146,7 +157,9 @@ export default function Header({
               )
               .toLocaleString("en-US", {
                 style: "currency",
-                currency: "USD",
+                currency:
+                  selectedProduct[0]?.masterVariant?.prices[0]?.value
+                    ?.currencyCode || "USD",
                 minimumFractionDigits: 0, // Ensure no decimal points
                 maximumFractionDigits: 0, // Limit to whole numbers only
               })}

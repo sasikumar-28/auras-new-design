@@ -46,7 +46,6 @@ const ShowAddress = () => {
   const handleAddNewAddress = async () => {
     if (!validateForm()) return;
     try {
-      console.log("hello");
       await addNewAddress(
         {
           ...formData,
