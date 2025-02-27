@@ -1,5 +1,4 @@
 "use client";
-import cartIcon from "@/assets/header-icons/cart-icon.png";
 import profileImage from "@/assets/header-icons/profile-image.png";
 import { getSearchResults } from "@/utils";
 import { Icon } from "@iconify/react";
@@ -70,10 +69,10 @@ export default function Header({
   return (
     <div
       className={`p-4 flex justify-between items-center gap-4
-         ${isSortFilter ? "w-[78vw]" : isProductCard ? "w-[78vw]" : "w-[88vw]"}
+         ${isSortFilter ? "w-[78vw]" : isProductCard ? "w-[78vw]" : "w-[99vw]"}
          `}
     >
-      <div className=" w-full">
+      <div className=" w-4/6">
         <div className="relative">
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
             <Icon
@@ -128,15 +127,14 @@ export default function Header({
         </div>
       </div>
 
-      <div className="flex gap-6">
-        <div className="flex items-center gap-2 bg-[#2C2C2C] rounded-full px-2 ">
+      <div className="flex w-2/6 items-center gap-6">
+        <div className="flex items-center gap-2 bg-[#2C2C2C] h-[53px] min-w-[172px] rounded-full px-2 ">
           <div className="p-2  bg-[#B93284] rounded-full ">
-            <img
-              onClick={() => navigate("/cart")}
-              width={45}
-              src={cartIcon}
-              alt="cart"
-              className="cursor-pointer"
+            <Icon
+              icon="mdi:cart-outline"
+              width="20"
+              height="20"
+              color="white"
             />
           </div>
           <p className="text-white text-sm">
@@ -165,7 +163,7 @@ export default function Header({
               })}
           </p>
         </div>
-        <div className="">
+        <div className="w-full">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <img

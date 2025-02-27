@@ -8,7 +8,9 @@ import chatWithTanyaIcon from "@/assets/sidebar-icons/chat-with-tanya-icon.png";
 import languageIcon from "@/assets/sidebar-icons/language-icon.png";
 import { Checkbox } from "./ui/checkbox";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Rating from "./rating";
+import { updateFilter } from "@/store/reducers/productReducer";
 const filterData = [
   {
     label: "Categories",
@@ -17,25 +19,31 @@ const filterData = [
       { name: "Mobile Photos", selected: false },
       { name: "Cameras", selected: false },
       { name: "Kitchen & Appliances", selected: false },
-      { name: "Home Entertainment System", selected: false },
+      { name: "Home Entertainment", selected: false },
       { name: "Television", selected: false },
       { name: "others", selected: false },
     ],
   },
-  {
-    label: "Delivery Day",
-    options: [
-      { name: "Get it Today", selected: false },
-      { name: "Get it by Tomorrow", selected: false },
-    ],
-  },
-  {
-    label: "Delivery Day",
-    options: [
-      { name: "Get it Today", selected: false },
-      { name: "Get it by Tomorrow", selected: false },
-    ],
-  },
+  // {
+  //   label: "Delivery Day",
+  //   options: [
+  //     { name: "Get it Today", selected: false },
+  //     { name: "Get it by Tomorrow", selected: false },
+  //   ],
+  // },
+  // {
+  //   label: "Delivery Day",
+  //   options: [
+  //     { name: "Get it Today", selected: false },
+  //     { name: "Get it by Tomorrow", selected: false },
+  //   ],
+  // },
+];
+
+const priceListFilter = [
+  { label: "Under 1000", value: 1000 },
+  { label: "Under 5000", value: 5000 },
+  { label: "Under 10000", value: 10000 },
 ];
 
 export function Sidebar({
@@ -46,6 +54,9 @@ export function Sidebar({
   isRightSidebar?: boolean;
 }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const store = useSelector((state: any) => state.product.filter);
+  console.log(store);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const auth = useSelector((state: any) => state.auth);
   const handleNavigate = (route: string, isAuthReq?: boolean) => {
@@ -121,6 +132,38 @@ export function Sidebar({
                 ))}
               </div>
             ))}
+            <div>
+              <div className="font-bold">Customer Rating</div>
+              <div>
+                <Rating
+                  totalStars={5}
+                  onRate={(rating: number) =>
+                    dispatch(updateFilter({ key: "rating", value: rating }))
+                  }
+                />
+              </div>
+            </div>
+            <div>
+              <div className="font-bold">Price</div>
+              <div>
+                {priceListFilter.slice(0, 6).map((option, i) => (
+                  <div className="ml-2 mb-2" key={i}>
+                    <div className="flex items-center gap-2 pl-3 text-wrap">
+                      <Checkbox
+                        checked={option.value == store?.price}
+                        onClick={() => {
+                          dispatch(
+                            updateFilter({ key: "price", value: option.value })
+                          );
+                        }}
+                        className="data-[state=checked]:bg-white border-white data-[state=checked]:text-[#552864] rounded-[4px]"
+                      />
+                      <p className="text-[13px]">{option.label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
