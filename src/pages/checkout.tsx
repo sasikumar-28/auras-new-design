@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useAddress } from "@/hooks/useAddress";
+import { Address } from "@/graphQL/queries/types";
+import { initialCapital } from "@/utils/helper";
 
 const creditCards = [
   { bank: "Visa", ending: "5079", holder: "Prasath Siva" },
@@ -33,9 +36,14 @@ const paymentMethods = [
 const Checkout = () => {
   const [selectedOption, setSelectedOption] = useState(1);
   const [enablePay, setEnablePay] = useState<boolean>(false);
+  const { itemShippingAddresses: addressList } = useAddress();
+  const [selectedAddress, setSelectedAddress] = useState<Address>(
+    addressList[0]
+  );
+  console.log(selectedAddress, "selected");
 
   return (
-    <div className="mt-20 w-full">
+    <div className="w-full">
       <div className="font-bold text-[24px]">Secure Checkout</div>
       <div className="text-[#B93284]">
         We secure your payment and personal information <br /> when you share or
@@ -49,10 +57,12 @@ const Checkout = () => {
           <div className="flex justify-between p-4 shadow-lg shadow-[#00000029] rounded-[13px] h-[143px] mt-6 items-center">
             {/* left div */}
             <div className="flex flex-col justify-around h-full">
-              <div className="font-bold text-[18px]">Delivering to Prasath</div>
+              <div className="font-bold text-[18px]">
+                Delivering to {initialCapital(selectedAddress.firstName)}
+              </div>
               <div className="text[16px]">
-                No 13, Vinayagar Nagar, 8th Street, Near Godson School Perambur,
-                Chennai 99
+                {selectedAddress.streetName}, {selectedAddress.city},{" "}
+                {selectedAddress.state}
               </div>
               <div className="text[16px]">Add delivery instructions</div>
             </div>

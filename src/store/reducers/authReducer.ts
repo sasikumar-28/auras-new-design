@@ -4,6 +4,7 @@ type User = {
   email: string;
   id: string;
   password: string;
+  cartId?: string;
   __typename: string;
 };
 
@@ -28,6 +29,7 @@ const sessionSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      localStorage.removeItem("user");
     },
   },
 });

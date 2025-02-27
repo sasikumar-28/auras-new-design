@@ -5,7 +5,7 @@ import { getSearchResults } from "@/utils";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SearchProduct } from "@/graphQL/queries/types";
+import { Product, SearchProduct } from "@/graphQL/queries/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +13,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { decryptData } from "@/utils/helper";
+import { login, logout } from "@/store/reducers/authReducer";
+import { useDispatch, useSelector } from "react-redux";
 export default function Header({
   isSortFilter,
   isProductCard,
@@ -20,7 +23,9 @@ export default function Header({
   isSortFilter: boolean;
   isProductCard: boolean;
 }) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const selectedProduct = useSelector((state: any) => state.cart.cart);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
 
@@ -38,6 +43,18 @@ export default function Header({
       setSearchResults([]);
     }
   }, [searchQuery]);
+
+  useEffect(() => {
+    const userDetails = localStorage.getItem("user");
+    if (userDetails) {
+      const decrypted = JSON.parse(decryptData(userDetails));
+      dispatch(login(decrypted));
+    }
+  }, []);
+
+  if (window.location.pathname.includes("checkout")) {
+    return <></>;
+  }
 
   return (
     <div
@@ -111,9 +128,29 @@ export default function Header({
               className="cursor-pointer"
             />
           </div>
-          <p className="text-white text-sm">4</p>
+          <p className="text-white text-sm">
+            {selectedProduct.reduce(
+              (acc: number, item: Product) => acc + (item.quantity || 0),
+              0
+            )}
+          </p>
           <p className="text-gray-500 text-sm">|</p>
-          <p className="text-white text-sm">$2309</p>
+          <p className="text-white text-sm">
+            {selectedProduct
+              .reduce(
+                (acc: number, item: Product) =>
+                  acc +
+                  (item?.masterVariant?.prices[0].value.centAmount || 0) *
+                    (item.quantity || 1),
+                0
+              )
+              .toLocaleString("en-US", {
+                style: "currency",
+                currency:
+                  // cartItems[0]?.masterVariant?.prices[0].value.currencyCode ??
+                  "USD",
+              })}
+          </p>
         </div>
         <div className="">
           <DropdownMenu>
@@ -160,7 +197,13 @@ export default function Header({
                   </div>
                   <div>Buy it Again</div>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                <DropdownMenuItem
+                  className="text-[13px] cursor-pointer flex gap-4 items-center"
+                  onClick={() => {
+                    dispatch(logout());
+                    navigate("/login");
+                  }}
+                >
                   <div>
                     <Icon
                       icon="qlementine-icons:log-out-16"

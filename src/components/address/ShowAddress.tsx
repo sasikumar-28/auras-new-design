@@ -15,7 +15,11 @@ import { Address } from "@/graphQL/queries/types";
 
 const ShowAddress = () => {
   const [newAddress, setNewAddress] = useState(false);
-  const { data: addressList, loading, addNewAddress } = useAddress();
+  const {
+    itemShippingAddresses: addressList,
+    loading,
+    addNewAddress,
+  } = useAddress();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -43,11 +47,14 @@ const ShowAddress = () => {
     if (!validateForm()) return;
     try {
       console.log("hello");
-      await addNewAddress({
-        ...formData,
-        key: "key1",
-        id: "443",
-      });
+      await addNewAddress(
+        {
+          ...formData,
+          key: String(new Date().getTime()),
+          id: String(new Date().getTime()),
+        },
+        addressList.length * 2 + 1
+      );
       setNewAddress(false);
       setFormData({
         firstName: "",
@@ -94,9 +101,11 @@ const ShowAddress = () => {
           <div className="w-full mt-6">
             <div className="w-full h-[1px] bg-gray-200"></div>
             <div className="flex gap-6 mt-4">
-              {addressList.map((address: Address, i: number) => (
-                <AddressCard address={address} key={i} />
-              ))}
+              {addressList
+                .map((address: Address, i: number) => (
+                  <AddressCard address={address} key={i} />
+                ))
+                .reverse()}
             </div>
           </div>
         ) : null}

@@ -28,6 +28,7 @@ const TanyaShoppingAssistant = () => {
       response: string;
       potentialQuestions: string[];
       products: SearchProduct[];
+      keywords: string[];
     }[]
   >([]);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -102,7 +103,7 @@ const TanyaShoppingAssistant = () => {
           },
         }
       );
-      const { response, potentialQuestions } = res.data;
+      const { response, potentialQuestions, keywords } = res.data;
       if (res.data.keywords) {
         getKeywords(res.data.keywords);
         // getKeywords("sofa");
@@ -110,7 +111,12 @@ const TanyaShoppingAssistant = () => {
       setChatHistory((prev) =>
         prev.map((msg, idx) =>
           idx === prev.length - 1
-            ? { ...msg, response: cleanResponse(response), potentialQuestions }
+            ? {
+                ...msg,
+                response: cleanResponse(response),
+                potentialQuestions,
+                keywords,
+              }
             : msg
         )
       );
@@ -233,6 +239,7 @@ const TanyaShoppingAssistant = () => {
                   />
                 </div>
               )}
+
               {chat.products?.length > 0 && (
                 <div className="flex justify-end">
                   <div className="text-sm my-2 text-[#232323] bg-[#FFFFFF] drop-shadow-md px-7 py-4 rounded-r-xl rounded-bl-2xl w-5/6">
@@ -262,6 +269,20 @@ const TanyaShoppingAssistant = () => {
                   </div>
                 </div>
               )}
+              {chat.keywords && (
+                <div className="flex flex-wrap gap-2 p-2 my-4">
+                  Keywords :
+                  {chat.keywords.split(",").map((key: string, i: number) => (
+                    <div
+                      key={i}
+                      className="px-3 py-1 bg-[#B93284] text-white rounded-[3px] text-sm shadow-md"
+                    >
+                      {key.trim()}
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {/* Render potential questions below each response */}
               <div className="mt-2 px-4 text-sm text-gray-700 ">
                 {chat.potentialQuestions.length > 0 && (
