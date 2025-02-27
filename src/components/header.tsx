@@ -140,15 +140,15 @@ export default function Header({
               .reduce(
                 (acc: number, item: Product) =>
                   acc +
-                  (item?.masterVariant?.prices[0].value.centAmount || 0) *
+                  (item?.masterVariant?.prices[0]?.value?.centAmount || 0) *
                     (item.quantity || 1),
                 0
               )
               .toLocaleString("en-US", {
                 style: "currency",
-                currency:
-                  // cartItems[0]?.masterVariant?.prices[0].value.currencyCode ??
-                  "USD",
+                currency: "USD",
+                minimumFractionDigits: 0, // Ensure no decimal points
+                maximumFractionDigits: 0, // Limit to whole numbers only
               })}
           </p>
         </div>

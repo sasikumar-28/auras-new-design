@@ -14,18 +14,11 @@ export const useAddress = () => {
       error: addAddressError,
     },
   ] = useMutation(ADD_ADDRESS);
-  const {
-    data: {
-      cart: { itemShippingAddresses },
-    },
-    loading,
-    error,
-    refetch,
-  } = useQuery(GET_ALL_CART_ADDRESS, {
+  const { data, loading, error, refetch } = useQuery(GET_ALL_CART_ADDRESS, {
     variables: {
-      id: auth?.user?.cartId || "", // Safely access user ID
+      id: auth?.user?.cartId || "",
     },
-    skip: !auth?.user?.cartId, // Skip query if user ID is missing
+    skip: !auth?.user?.cartId,
   });
 
   const getAddress = async (newVariables = {}) => {
@@ -34,7 +27,7 @@ export const useAddress = () => {
         id: auth?.user?.cartId, // Ensure user ID is included when refetching
         ...newVariables, // Allow additional variables for dynamic fetching
       });
-      return data.cart.itemShippingAddresses;
+      return data?.cart?.itemShippingAddresses || [];
     } catch (error) {
       console.error("Error fetching addresses:", error);
       throw error;
@@ -46,7 +39,7 @@ export const useAddress = () => {
       const { data } = await addAddress({
         variables: {
           version: version,
-          id: auth.user.cartId,
+          id: auth?.user?.cartId,
           actions: [{ addItemShippingAddress: { address: variables } }],
         },
       });
@@ -64,7 +57,7 @@ export const useAddress = () => {
     addAddressError,
     getAddress,
     addNewAddress,
-    itemShippingAddresses,
+    itemShippingAddresses: data?.cart?.itemShippingAddresses || [],
     loading,
     error,
   };
