@@ -4,7 +4,7 @@ function useShareState() {
   const [selectedKeyword, setSelectedKeyword] = useState("");
 
   return {
-    selectedKeyword, // Expose keyword state
+    selectedKeyword,
     setSelectedKeyword, // Expose method to update keyword state
   };
 }

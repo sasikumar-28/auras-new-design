@@ -215,7 +215,6 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
               >
                 <ChevronRight size={24} />
               </button>
-
               <div style={styles.dotContainer}>
                 {responses.map((_, index) => (
                   <button

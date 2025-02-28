@@ -233,3 +233,4 @@ export const WelcomeMessage = styled(StaticMessage)`
   font-size: .875rem;
   border-radius: 2px 12px 20px
 `;
+
