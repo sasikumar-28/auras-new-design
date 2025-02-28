@@ -114,7 +114,10 @@ export function Sidebar({
     return (
       <div className="w-45 bg-[#552864] text-white flex ">
         <div className="flex flex-col items-center h-screen">
-          <div className="pt-7 flex flex-col items-center gap-2 h-[100px]">
+          <div
+            className="pt-7 flex flex-col items-center gap-2 h-[100px] cursor-pointer"
+            onClick={() => navigate("/")}
+          >
             <img width={80} src={commerceCatalystLogo} alt="auras-logo" />
           </div>
           <div className="mt-4 flex flex-col gap-2 items-center w-5/6 text-left">
