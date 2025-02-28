@@ -56,7 +56,6 @@ export function Sidebar({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const store = useSelector((state: any) => state.product.filter);
-  console.log(store);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const auth = useSelector((state: any) => state.auth);
   const handleNavigate = (route: string, isAuthReq?: boolean) => {

@@ -165,7 +165,6 @@ const TanyaShoppingAssistant = () => {
     } else {
       for (const keyword of keywords) {
         const results = await getSearchResults(keyword);
-        console.log(results, "result one");
         if (results.length > 0) {
           setChatHistory((prev) =>
             prev.map((msg, idx) =>
@@ -184,7 +183,6 @@ const TanyaShoppingAssistant = () => {
       }
     }
   };
-  console.log(chatHistory, "chat history");
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>

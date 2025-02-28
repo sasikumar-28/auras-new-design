@@ -32,7 +32,6 @@ const Login = () => {
     const savedCredentials = localStorage.getItem("user_keys");
     if (savedCredentials) {
       const decrypted = JSON.parse(decryptData(savedCredentials));
-      console.log(decrypted.email);
       formik.setValues({
         email: decrypted.email,
         password: decrypted.password,
@@ -64,7 +63,6 @@ const Login = () => {
             localStorage.removeItem("user_keys");
           }
           const res = await createCart();
-          console.log(res, "the response from the ");
           dispatch(login({ ...res, cartId: res.id }));
           localStorage.setItem(
             "user",

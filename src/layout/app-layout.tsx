@@ -7,7 +7,6 @@ const AppLayout = () => {
   const [searchParams] = useSearchParams();
   const sortFilter = searchParams.get("sortFilter");
   const productCard = searchParams.get("productCard");
-  console.log(sortFilter);
   return (
     <>
       <div className="flex justify-between h-[100vh] overflow-hidden">

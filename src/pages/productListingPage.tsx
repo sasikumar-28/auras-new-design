@@ -48,13 +48,13 @@ const ProductListingPage = () => {
     }
   }, [store?.price, defaultProducts]);
 
-  if (loading) return <div className="p-4">Loading categories...</div>;
+  if (loading) return <div className="p-4 mt-20">Loading categories...</div>;
   if (error)
     return <div className="p-4 mt-20 text-red-500">Error: {error.message}</div>;
   if (!data) return <div className="p-4 mt-20 text-red-500">No data</div>;
 
   return (
-    <div className="mt-20 w-full">
+    <div className="mt-20 w-full h-full">
       <CategoryTabs
         data={data}
         activeTab={activeTab}

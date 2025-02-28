@@ -2,11 +2,15 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useSelector, useDispatch } from "react-redux";
 import { setProducts as setProductsAction } from "@/store/reducers/productReducer";
-import { addToCart } from "@/store/reducers/cartReducer";
+import {
+  addToCart,
+  updateCartProductQuantity,
+} from "@/store/reducers/cartReducer";
 import { currencyFormatter, priceFormatter } from "@/utils/helper";
 
 const ProductDetailSidebar = () => {
   const product = useSelector((state: any) => state.product.product);
+  const cart = useSelector((state: any) => state.cart.cart);
   const dispatch = useDispatch();
   return (
     <div className="bg-[#F2DCF9] flex flex-col justify-around gap-4 h-[100vh] w-[17vw] p-4">
@@ -28,29 +32,35 @@ const ProductDetailSidebar = () => {
           <span className=""> Quantity: </span>
           <div className="bg-gray-600 rounded-xl px-2 flex items-center gap-2">
             <div
-              onClick={() =>
+              onClick={() => {
                 dispatch(
                   setProductsAction({
                     ...product,
                     quantity: product?.quantity + 1,
                   })
-                )
-              }
+                );
+                dispatch(
+                  updateCartProductQuantity({ id: product.id, value: 1 })
+                );
+              }}
               className="cursor-pointer"
             >
               +
             </div>
             <div>{product?.quantity || 1}</div>
             <div
-              onClick={() =>
+              onClick={() => {
                 dispatch(
                   setProductsAction({
                     ...product,
                     quantity:
                       product?.quantity - 1 <= 0 ? 0 : product?.quantity - 1,
                   })
-                )
-              }
+                );
+                dispatch(
+                  updateCartProductQuantity({ id: product.id, value: -1 })
+                );
+              }}
               className="cursor-pointer"
             >
               -
@@ -63,7 +73,9 @@ const ProductDetailSidebar = () => {
             className="bg-[#B93284] text-xs text-white rounded-t-xl h-14 flex items-center justify-center gap-2 cursor-pointer"
           >
             <Icon icon="solar:cart-plus-broken" width="24" height="24" />
-            Add to Cart
+            {cart.some((p) => p.id == product.id)
+              ? "Added to Cart"
+              : "Add to Cart"}
           </div>
           <div className="bg-[#D24C9E] text-xs text-white rounded-b-xl h-14 flex items-center justify-center gap-2 cursor-pointer">
             <Icon icon="tdesign:gesture-click" width="24" height="24" />
