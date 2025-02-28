@@ -4,7 +4,7 @@ import { GET_CATEGORIES } from "@/graphQL/queries/queries";
 import { CategoriesResponse, Product } from "@/graphQL/queries/types";
 import { useQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { setProducts as setProductsAction } from "@/store/reducers/productReducer";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -20,6 +20,7 @@ const ProductDetailsPage = () => {
   const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
   const [searchParams] = useSearchParams();
+  const cart = useSelector((state: any) => state.cart.cart);
   const [product, setProduct] = useState<Product | null>(null);
   const categoryFromUrl = searchParams.get("category");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -35,8 +36,13 @@ const ProductDetailsPage = () => {
     if (product) {
       const parsedProduct = JSON.parse(product);
       setProduct(parsedProduct);
-      dispatch(setProductsAction({ ...parsedProduct, quantity: 1 }));
-      console.log(parsedProduct);
+      const prodDetails = cart.find((p) => p?.id == parsedProduct?.id);
+      dispatch(
+        setProductsAction({
+          ...parsedProduct,
+          quantity: prodDetails ? prodDetails?.quantity : 1,
+        })
+      );
     }
   }, [categoryFromUrl, data]);
 

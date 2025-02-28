@@ -11,8 +11,6 @@ const CategoriesList = () => {
   if (error)
     return <div className="p-4 text-red-500">Error: {error.message}</div>;
 
-  // console.log("Logs the query", GET_CATEGORIES.loc?.source.body); // Logs the query
-
   return (
     <div className="fixed top-[6rem]  bg-white z-40 mr-5">
       <div className="p-4 bg-white grid grid-cols-9 gap-4">

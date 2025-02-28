@@ -39,7 +39,6 @@ const SignUp = () => {
     values: typeof initialValues & { rememberMe?: boolean }
   ) => {
     const { rememberMe, ...rest } = values; // Create a new object without rememberMe
-    console.log(rememberMe);
     signUp(rest).then((res) => {
       if (!res?.failed) {
         navigate(`/login?${redirect ? redirect : ""}`);

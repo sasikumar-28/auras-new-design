@@ -31,7 +31,6 @@ export default function Header({
 
   const handleSearch = async () => {
     const results: SearchProduct[] = await getSearchResults(searchQuery);
-    console.log(results, "results");
     setSearchResults(results);
   };
 
