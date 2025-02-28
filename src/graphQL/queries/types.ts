@@ -14,7 +14,7 @@ export interface CategoriesResponse {
 export interface Product {
   id: string;
   key: string;
-  name: string;
+  title: string;
   description?: string;
   quantity?: number;
   masterVariant: {

@@ -14,13 +14,13 @@ interface Product {
   price: number;
 }
 
-const NewAarrivals: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+const BestSellersInToys: React.FC = () => {
+  const [toysProducts, setToysProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const REQUIRED_CATEGORY_NAME = "WOMEN'S CLOTHING"; // Required category name
+  const REQUIRED_CATEGORY_NAME = "BEAUTY"; // Required category name
 
-  const getAllCategories = async () => {
+  const fetchCategories = async () => {
     try {
       const token = await getAccessToken();
       const categoriesResponse = await axios.get(
@@ -45,7 +45,7 @@ const NewAarrivals: React.FC = () => {
           // Fetch products for the "TOYS" category
           const products = await getProductByCategory(toysCategory.categoryId);
           // Limit to 4 products
-          setProducts(products.slice(0, 4));
+          setToysProducts(products.slice(0, 4));
         } else {
           setError(`Category "${REQUIRED_CATEGORY_NAME}" not found.`);
         }
@@ -83,17 +83,17 @@ const NewAarrivals: React.FC = () => {
   };
 
   useEffect(() => {
-    getAllCategories();
+    fetchCategories();
   }, []);
 
   if (loading) return <div className="p-4">Loading categories...</div>;
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
 
   return (
-    <div className="bg-[#F2F2F2] p-5 rounded-xl mb-32">
-      <h2 className="text-xl font-semibold mb-4">New Arrivals</h2>
+    <div className="bg-[#F2F2F2] p-5 rounded-xl mb-6">
+      <h2 className="text-xl font-semibold mb-4">Best Sellers in Beauty</h2>
       <div className="grid grid-cols-4 gap-4">
-        {products.map((product: any) => (
+        {toysProducts.map((product) => (
           <div
             key={product.id}
             className="flex bg-white p-4 drop-shadow-lg rounded-xl h-28 gap-4 items-center"
@@ -131,4 +131,4 @@ const NewAarrivals: React.FC = () => {
   );
 };
 
-export default NewAarrivals;
+export default BestSellersInToys;

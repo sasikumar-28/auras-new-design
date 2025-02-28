@@ -16,7 +16,7 @@ export const getSearchResults = async (query: string) => {
         },
       }
     );
-    return response.data;
+    return response.data.hits;
   } catch (error) {
     console.error("Error fetching search results:", error);
     throw error;

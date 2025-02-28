@@ -1,12 +1,30 @@
 import Header from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { Outlet } from "react-router";
-import { useSearchParams } from "react-router";
+import { useSearchParams , useNavigate} from "react-router";
 import ProductDetailSidebar from "@/components/products/ProductDetailSidebar";
+import {  useEffect } from "react";
+
 const AppLayout = () => {
   const [searchParams] = useSearchParams();
   const sortFilter = searchParams.get("sortFilter");
   const productCard = searchParams.get("productCard");
+  let storeCode = searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (storeCode) {
+      localStorage.setItem("storeCode", storeCode);
+    } else {
+      // If storeCode is missing, redirect with stored value
+      const storedStoreCode = localStorage.getItem("storeCode");
+      if (storedStoreCode) {
+        navigate(`?storeCode=${storedStoreCode}`, { replace: true });
+      }
+    }
+  }, [storeCode, navigate]);
+
+  console.log(sortFilter);
   return (
     <>
       <div className="flex justify-between h-[100vh] overflow-hidden">
@@ -17,7 +35,7 @@ const AppLayout = () => {
               : "bg-[#552864]"
           }`}
         >
-          <Sidebar sortFilter={sortFilter ? true : false} />
+          <Sidebar sortFilter={sortFilter ? true : false} storeCode={storeCode || ""}/>
           <div className="flex-1 w-full">
             <main
               className={`bg-white px-4 w-full min-h-screen ${
@@ -40,7 +58,7 @@ const AppLayout = () => {
             isProductCard={productCard ? true : false}
           />
         </div>
-        {sortFilter && <Sidebar isRightSidebar={true} />}
+        {sortFilter && <Sidebar isRightSidebar={true}  storeCode={storeCode || ""} />}
         {productCard && <ProductDetailSidebar />}
       </div>
     </>

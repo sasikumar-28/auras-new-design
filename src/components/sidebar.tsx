@@ -1,16 +1,16 @@
 "use client";
 
-import commerceCatalystLogo from "@/assets/sidebar-icons/commerce-catalyst-logo.png";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Checkbox } from "./ui/checkbox";
+import languageIcon from "@/assets/sidebar-icons/language-icon.png";
 import heartIcon from "@/assets/sidebar-icons/heart-icon.png";
 import returnIcon from "@/assets/sidebar-icons/return-icon.png";
 import trendingIcon from "@/assets/sidebar-icons/Icon feather-trending-up.png";
 import chatWithTanyaIcon from "@/assets/sidebar-icons/chat-with-tanya-icon.png";
-import languageIcon from "@/assets/sidebar-icons/language-icon.png";
-import { Checkbox } from "./ui/checkbox";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import Rating from "./rating";
-import { updateFilter } from "@/store/reducers/productReducer";
+import { getAccessToken } from "@/utils/getAccessToken";
+
 const filterData = [
   {
     label: "Categories",
@@ -19,89 +19,81 @@ const filterData = [
       { name: "Mobile Photos", selected: false },
       { name: "Cameras", selected: false },
       { name: "Kitchen & Appliances", selected: false },
-      { name: "Home Entertainment", selected: false },
+      { name: "Home Entertainment System", selected: false },
       { name: "Television", selected: false },
       { name: "others", selected: false },
     ],
   },
-  // {
-  //   label: "Delivery Day",
-  //   options: [
-  //     { name: "Get it Today", selected: false },
-  //     { name: "Get it by Tomorrow", selected: false },
-  //   ],
-  // },
-  // {
-  //   label: "Delivery Day",
-  //   options: [
-  //     { name: "Get it Today", selected: false },
-  //     { name: "Get it by Tomorrow", selected: false },
-  //   ],
-  // },
-];
-
-const priceListFilter = [
-  { label: "Under 1000", value: 1000 },
-  { label: "Under 5000", value: 5000 },
-  { label: "Under 10000", value: 10000 },
+  {
+    label: "Delivery Day",
+    options: [
+      { name: "Get it Today", selected: false },
+      { name: "Get it by Tomorrow", selected: false },
+    ],
+  },
 ];
 
 export function Sidebar({
   sortFilter,
   isRightSidebar,
+  storeCode, // Pass storeCode as a prop
 }: {
   sortFilter?: boolean;
   isRightSidebar?: boolean;
+  storeCode: string;
 }) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const store = useSelector((state: any) => state.product.filter);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const auth = useSelector((state: any) => state.auth);
-  const handleNavigate = (route: string, isAuthReq?: boolean) => {
-    if (isAuthReq) {
-      if (auth.isAuthenticated) {
-        navigate(route);
-      } else {
-        navigate(`/login?redirect=${route}`);
+  const [logo, setLogo] = useState<string>("");
+  const [themeColor, setThemeColor] = useState<string>("#552864"); // Default color
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const token = await getAccessToken();
+        const response = await axios.get(
+          `http://localhost:5000/api/logo?storeCode=${storeCode}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const data = response.data;
+          setLogo(data?.logoDarkBg || data?.logoLightBg);
+          setThemeColor(data?.themeColor || "#552864");
+        } else {
+          throw new Error("Failed to fetch logo details");
+        }
+      } catch (error: any) {
+        console.error("Error fetching logo details:", error);
       }
-    } else {
-      navigate(route);
-    }
-  };
+    };
+
+    fetchLogo();
+  }, [storeCode]);
 
   if (isRightSidebar) {
     return (
-      <div className="w-54 bg-[#552864] text-white flex justify-end items-end p-2">
+      <div className="w-54 text-white flex justify-end items-end p-2" style={{ backgroundColor: themeColor }}>
         <div className="flex w-34 flex-col items-center justify-around gap-2 h-full">
-          {/* Language Selection */}
           <div className="flex flex-col items-center gap-1">
             <img width={22} src={languageIcon} alt="language" />
             <p className="text-xs">English</p>
           </div>
-
-          {/* Icons Section */}
-          <div
-            className="space-y-6 text-xs flex flex-col items-center gap-8"
-            onClick={() => handleNavigate("/cart", true)}
-          >
+          <div className="space-y-6 text-xs flex flex-col items-center gap-8" onClick={() => navigate("/cart")}>
             <div className="flex flex-col items-center gap-1">
               <img width={22} src={heartIcon} alt="Home" />
             </div>
-
-            <div
-              onClick={() => handleNavigate("/account?tab=orders", true)}
-              className="flex flex-col items-center gap-1 cursor-pointer"
-            >
+            <div onClick={() => navigate("/account?tab=orders")} className="flex flex-col items-center gap-1 cursor-pointer">
               <img width={22} src={returnIcon} alt="Return" />
             </div>
-
             <div className="flex flex-col items-center gap-1">
               <img width={22} src={trendingIcon} alt="Trending" />
             </div>
           </div>
-
-          {/* Chat Section */}
           <div className="flex flex-col items-center border-y py-3 gap-1 w-full text-center">
             <img width={22} src={chatWithTanyaIcon} alt="Chat-icon" />
             <p className="text-xs">Chat with Tanya</p>
@@ -110,15 +102,13 @@ export function Sidebar({
       </div>
     );
   }
+
   if (sortFilter) {
     return (
-      <div className="w-45 bg-[#552864] text-white flex ">
+      <div className="w-45 text-white flex" style={{ backgroundColor: themeColor }}>
         <div className="flex flex-col items-center h-screen">
-          <div
-            className="pt-7 flex flex-col items-center gap-2 h-[100px] cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            <img width={80} src={commerceCatalystLogo} alt="auras-logo" />
+          <div className="pt-7 flex flex-col items-center gap-2 h-[100px]">
+            {logo && <img width={80} src={logo} alt="logo" />}
           </div>
           <div className="mt-4 flex flex-col gap-2 items-center w-5/6 text-left">
             {filterData.map((filter, index) => (
@@ -134,68 +124,27 @@ export function Sidebar({
                 ))}
               </div>
             ))}
-            <div>
-              <div className="font-bold">Customer Rating</div>
-              <div>
-                <Rating
-                  totalStars={5}
-                  onRate={(rating: number) =>
-                    dispatch(updateFilter({ key: "rating", value: rating }))
-                  }
-                />
-              </div>
-            </div>
-            <div>
-              <div className="font-bold">Price</div>
-              <div>
-                {priceListFilter.slice(0, 6).map((option, i) => (
-                  <div className="ml-2 mb-2" key={i}>
-                    <div className="flex items-center gap-2 pl-3 text-wrap">
-                      <Checkbox
-                        checked={option.value == store?.price}
-                        onClick={() => {
-                          dispatch(
-                            updateFilter({ key: "price", value: option.value })
-                          );
-                        }}
-                        className="data-[state=checked]:bg-white border-white data-[state=checked]:text-[#552864] rounded-[4px]"
-                      />
-                      <p className="text-[13px]">{option.label}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
     );
   }
+
   return (
-    <div className="w-30 bg-[#552864] text-white flex ">
+    <div className="w-30 text-white flex" style={{ backgroundColor: themeColor }}>
       <div className="flex flex-col justify-between items-center h-screen">
-        <div className="pt-7">
-          <img width={80} src={commerceCatalystLogo} alt="auras-logo" />
-        </div>
+        <div className="pt-7">{logo && <img width={80} src={logo} alt="auras-logo" />}</div>
         <div className="space-y-6 text-xs ">
-          <div
-            onClick={() => handleNavigate("/cart", true)}
-            className="flex flex-col items-center gap-1 cursor-pointer"
-          >
+          <div onClick={() => navigate("/cart")} className="flex flex-col items-center gap-1 cursor-pointer">
             <img width={22} src={heartIcon} alt="Home" />
             <p>My Wishlist</p>
           </div>
-
-          <div
-            onClick={() => handleNavigate("/account?tab=orders", true)}
-            className="flex flex-col items-center gap-1 cursor-pointer"
-          >
+          <div onClick={() => navigate("/account?tab=orders")} className="flex flex-col items-center gap-1 cursor-pointer">
             <img width={22} src={returnIcon} alt="Return" />
             <div className="text-center">
               <p>My Orders</p>
             </div>
           </div>
-
           <div className="flex flex-col items-center gap-1">
             <img width={22} src={trendingIcon} alt="Trending" />
             <p>Top Deals</p>

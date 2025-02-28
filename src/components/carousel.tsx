@@ -7,6 +7,8 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { getContentfulImages } from "@/contentful/getContentfulImages";
+import { getAccessToken } from "@/utils/getAccessToken";
+import axios from "axios";
 
 const CarouselSection = () => {
   const [images, setImages] = useState<string[]>([]);
@@ -24,10 +26,40 @@ const CarouselSection = () => {
   }, [api]);
 
   useEffect(() => {
+    const fetchLogo = async () => {
+      const storeCode = localStorage.getItem("storeCode");
+      try {
+        const token = await getAccessToken();
+        const response = await axios.get(
+          `http://localhost:5000/api/logo?storeCode=${storeCode}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const data = response.data;
+          console.log(data,"datamy");
+          setImages(data.carouselImages.web);
+        } else {
+          throw new Error("Failed to fetch logo details");
+        }
+      } catch (error: any) {
+        console.error("Error fetching logo details:", error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
+
+  useEffect(() => {
     const getCarouselImages = async () => {
       try {
-        const images = await getContentfulImages("commerceCatalystCarousel");
-        setImages(images);
+        const images = await getContentfulImages("bannerImagesSecond");
+        // setImages(images);
       } catch (error) {
         console.error("Error fetching Contentful data:", error);
         return [];
@@ -59,6 +91,7 @@ const CarouselSection = () => {
               <CarouselItem key={index}>
                 <div>
                   <img src={image} alt={"Carousel"} />
+                  {/* {image} */}
                 </div>
               </CarouselItem>
             ))}

@@ -1,92 +1,104 @@
-import { useQuery } from "@apollo/client";
-import { GET_CATEGORIES } from "@/graphQL/queries/queries";
-import { CategoriesResponse, Product } from "@/graphQL/queries/types";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import axios from "axios";
 import CategoryTabs from "@/components/categories/categoryTabs";
 import BreadCrumb from "@/components/breadcrumb/BreadCrumb";
 import useProductsByCategory from "@/hooks/useProductsByCategory";
 import CategoryProductCard from "@/components/products/category-product-card";
-import { useSearchParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { getAccessToken } from "@/utils/getAccessToken";
+
+interface Category {
+  categoryId: string;
+  categoryName: string;
+  
+}
+
+const useCategories = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const token = await getAccessToken();
+        const response = await axios.get("http://localhost:5000/api/mycategories", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setCategories(response.data);
+        } else {
+          throw new Error("Failed to fetch categories");
+        }
+      } catch (error: any) {
+        console.error("Error fetching categories:", error);
+        setError(error.message || "Failed to fetch categories");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  return { categories, loading, error };
+};
 
 const ProductListingPage = () => {
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
-  const store = useSelector((state: any) => state.product.filter);
-  const { products: productsFromApi } = useProductsByCategory({
-    limit: 100,
-    offset: 1,
-    categoryId: categoryFromUrl,
-  });
-  const [products, setProducts] = useState<Product[]>([]);
-  const [defaultProducts, setDefaultProducts] = useState<Product[]>([]);
-  const { loading, error, data } = useQuery<CategoriesResponse>(GET_CATEGORIES);
-  const initialActiveTab =
-    data?.categories.results.findIndex((c) => c.id === categoryFromUrl) ?? 0;
+  const { categories, loading: categoriesLoading, error: categoriesError } = useCategories();
+  const { products, loading: productsLoading, error: productsError } = useProductsByCategory({ categoryId: categoryFromUrl });
 
+  const initialActiveTab = categories.findIndex((c) => c.categoryId === categoryFromUrl) ?? 0;
   const [activeTab, setActiveTab] = useState(initialActiveTab);
+
   useEffect(() => {
     setActiveTab(initialActiveTab);
-  }, [categoryFromUrl, data]);
+  }, [categoryFromUrl, categories]);
 
-  useEffect(() => {
-    if (productsFromApi) {
-      setProducts(productsFromApi);
-      setDefaultProducts(productsFromApi);
-    }
-  }, [productsFromApi]);
-
-  useEffect(() => {
-    if (store?.price) {
-      setProducts(
-        products.filter(
-          (p) => p.masterVariant.prices[0].value.centAmount >= store?.price
-        )
-      );
-    } else {
-      setProducts(defaultProducts);
-    }
-  }, [store?.price, defaultProducts]);
-
-  if (loading) return <div className="p-4 mt-20">Loading categories...</div>;
-  if (error)
-    return <div className="p-4 mt-20 text-red-500">Error: {error.message}</div>;
-  if (!data) return <div className="p-4 mt-20 text-red-500">No data</div>;
+  if (categoriesLoading) return <div className="p-4">Loading categories...</div>;
+  if (categoriesError) return <div className="p-4 mt-20 text-red-500">Error: {categoriesError}</div>;
 
   return (
-    <div className="mt-20 w-full h-full">
-      <CategoryTabs
-        data={data}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+    <div className="mt-20 w-full">
+      <CategoryTabs data={categories} activeTab={activeTab} setActiveTab={setActiveTab} />
       <BreadCrumb
         list={[
           { name: "Home", link: "/" },
           {
-            name: data?.categories.results[activeTab]?.name || "Category",
-            link: `/product-listing?category=${
-              data?.categories.results[activeTab]?.id || ""
-            }&sortFilter=true`,
+            name: categories[activeTab]?.categoryName || "Category",
+            link: `/product-listing?category=${categories[activeTab]?.categoryId || ""}&sortFilter=true`,
           },
         ]}
       />
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 p-6 mt-4 mb-24 h-[65vh] overflow-y-auto">
-        {products.map((product, index) => (
-          <CategoryProductCard
-            key={product.id}
-            product={product}
-            index={index}
-            categoryId={categoryFromUrl || ""}
-            className={`relative rounded-xl transition-all flex flex-col justify-between p-4 
-        ${
-          index % 10 === 0
-            ? "col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-2 row-span-2 h-[50vh] sm:h-[60vh]"
-            : "h-[25vh] sm:h-[30vh]"
-        }
-      `}
-          />
-        ))}
+        {productsLoading ? (
+          <div>Loading products...</div>
+        ) : productsError ? (
+          <div className="p-4 mt-20 text-red-500">Error: {productsError}</div>
+        ) : (
+          products.map((product, index) => (
+            <CategoryProductCard
+              key={product.id}
+              product={product}
+              index={index}
+              categoryId={categoryFromUrl || ""}
+              className={`relative rounded-xl transition-all flex flex-col justify-between p-4 
+                ${
+                  index % 10 === 0
+                    ? "col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-2 row-span-2 h-[50vh] sm:h-[60vh]"
+                    : "h-[25vh] sm:h-[30vh]"
+                }
+              `}
+            />
+          ))
+        )}
       </div>
 
       <div className="mb-10"></div>
