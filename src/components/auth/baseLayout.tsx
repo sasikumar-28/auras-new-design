@@ -12,7 +12,14 @@ const carouselData = [
     image: "/images/bags.png",
     className: "w-[442px] h-[442px]",
     bg: "/images/simple-product-backdrop-with-shadow@2x.png",
-    text: "B A G S",
+    text: (
+      <div className="flex gap-8 justify-around">
+        <span>B</span>
+        <span>A</span>
+        <span>G</span>
+        <span>S</span>
+      </div>
+    ),
   },
   {
     image: "/images/headphones.png",

@@ -18,6 +18,7 @@ import {
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [liked, setLiked] = useState(false);
   const [searchParams] = useSearchParams();
   const [product, setProduct] = useState<Product | null>(null);
   const categoryFromUrl = searchParams.get("category");
@@ -127,8 +128,12 @@ const ProductDetailsPage = () => {
           </div>
           <div className="flex flex-col gap-2 p-3">
             <Icon
-              icon="mdi:heart-outline"
+              height={30}
+              width={30}
+              onClick={() => setLiked(!liked)}
+              icon={liked ? "mdi:heart" : "mdi:heart-outline"}
               className="text-2xl cursor-pointer"
+              color={liked ? "#B93284" : "gray"}
             />
           </div>
         </div>

@@ -1,22 +1,25 @@
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "@/graphQL/queries/queries";
-import { CategoriesResponse } from "@/graphQL/queries/types";
+import { CategoriesResponse, Product } from "@/graphQL/queries/types";
 import CategoryTabs from "@/components/categories/categoryTabs";
 import BreadCrumb from "@/components/breadcrumb/BreadCrumb";
 import useProductsByCategory from "@/hooks/useProductsByCategory";
 import CategoryProductCard from "@/components/products/category-product-card";
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const ProductListingPage = () => {
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
-  const { products } = useProductsByCategory({
+  const store = useSelector((state: any) => state.product.filter);
+  const { products: productsFromApi } = useProductsByCategory({
     limit: 100,
     offset: 1,
     categoryId: categoryFromUrl,
   });
-
+  const [products, setProducts] = useState<Product[]>([]);
+  const [defaultProducts, setDefaultProducts] = useState<Product[]>([]);
   const { loading, error, data } = useQuery<CategoriesResponse>(GET_CATEGORIES);
   const initialActiveTab =
     data?.categories.results.findIndex((c) => c.id === categoryFromUrl) ?? 0;
@@ -25,6 +28,25 @@ const ProductListingPage = () => {
   useEffect(() => {
     setActiveTab(initialActiveTab);
   }, [categoryFromUrl, data]);
+
+  useEffect(() => {
+    if (productsFromApi) {
+      setProducts(productsFromApi);
+      setDefaultProducts(productsFromApi);
+    }
+  }, [productsFromApi]);
+
+  useEffect(() => {
+    if (store?.price) {
+      setProducts(
+        products.filter(
+          (p) => p.masterVariant.prices[0].value.centAmount >= store?.price
+        )
+      );
+    } else {
+      setProducts(defaultProducts);
+    }
+  }, [store?.price, defaultProducts]);
 
   if (loading) return <div className="p-4">Loading categories...</div>;
   if (error)

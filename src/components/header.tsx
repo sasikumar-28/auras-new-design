@@ -1,11 +1,10 @@
 "use client";
-import cartIcon from "@/assets/header-icons/cart-icon.png";
 import profileImage from "@/assets/header-icons/profile-image.png";
 import { getSearchResults } from "@/utils";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SearchProduct } from "@/graphQL/queries/types";
+import { Product, SearchProduct } from "@/graphQL/queries/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { decryptData } from "@/utils/helper";
+import { login, logout } from "@/store/reducers/authReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { setCart, setSelectedProduct } from "@/store/reducers/cartReducer";
 export default function Header({
   isSortFilter,
   isProductCard,
@@ -20,7 +23,9 @@ export default function Header({
   isSortFilter: boolean;
   isProductCard: boolean;
 }) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const selectedProduct = useSelector((state: any) => state.cart.cart);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
 
@@ -39,13 +44,35 @@ export default function Header({
     }
   }, [searchQuery]);
 
+  useEffect(() => {
+    const userDetails = localStorage.getItem("user");
+    const cartDetails = localStorage.getItem("cart");
+    const selectedDetails = localStorage.getItem("selectedProduct");
+    if (userDetails) {
+      const decrypted = JSON.parse(decryptData(userDetails));
+      dispatch(login(decrypted));
+    }
+    if (cartDetails) {
+      const decrypted = JSON.parse(cartDetails);
+      dispatch(setCart(decrypted));
+    }
+    if (selectedDetails) {
+      const decrypted = JSON.parse(selectedDetails);
+      dispatch(setSelectedProduct(decrypted));
+    }
+  }, []);
+
+  if (window.location.pathname.includes("checkout")) {
+    return <></>;
+  }
+
   return (
     <div
       className={`p-4 flex justify-between items-center gap-4
-         ${isSortFilter ? "w-[78vw]" : isProductCard ? "w-[78vw]" : "w-[88vw]"}
+         ${isSortFilter ? "w-[78vw]" : isProductCard ? "w-[78vw]" : "w-[99vw]"}
          `}
     >
-      <div className=" w-full">
+      <div className=" w-4/6">
         <div className="relative">
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
             <Icon
@@ -100,22 +127,43 @@ export default function Header({
         </div>
       </div>
 
-      <div className="flex gap-6">
-        <div className="flex items-center gap-2 bg-[#2C2C2C] rounded-full px-2 ">
+      <div className="flex w-2/6 items-center gap-6">
+        <div className="flex items-center gap-2 bg-[#2C2C2C] h-[53px] min-w-[172px] rounded-full px-2 ">
           <div className="p-2  bg-[#B93284] rounded-full ">
-            <img
-              onClick={() => navigate("/cart")}
-              width={45}
-              src={cartIcon}
-              alt="cart"
-              className="cursor-pointer"
+            <Icon
+              icon="mdi:cart-outline"
+              width="20"
+              height="20"
+              color="white"
             />
           </div>
-          <p className="text-white text-sm">4</p>
+          <p className="text-white text-sm">
+            {selectedProduct.reduce(
+              (acc: number, item: Product) => acc + (item.quantity || 0),
+              0
+            )}
+          </p>
           <p className="text-gray-500 text-sm">|</p>
-          <p className="text-white text-sm">$2309</p>
+          <p className="text-white text-sm">
+            {selectedProduct
+              .reduce(
+                (acc: number, item: Product) =>
+                  acc +
+                  (item?.masterVariant?.prices[0]?.value?.centAmount || 0) *
+                    (item.quantity || 1),
+                0
+              )
+              .toLocaleString("en-US", {
+                style: "currency",
+                currency:
+                  selectedProduct[0]?.masterVariant?.prices[0]?.value
+                    ?.currencyCode || "USD",
+                minimumFractionDigits: 0, // Ensure no decimal points
+                maximumFractionDigits: 0, // Limit to whole numbers only
+              })}
+          </p>
         </div>
-        <div className="">
+        <div className="w-full">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <img
@@ -160,7 +208,13 @@ export default function Header({
                   </div>
                   <div>Buy it Again</div>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                <DropdownMenuItem
+                  className="text-[13px] cursor-pointer flex gap-4 items-center"
+                  onClick={() => {
+                    dispatch(logout());
+                    navigate("/login");
+                  }}
+                >
                   <div>
                     <Icon
                       icon="qlementine-icons:log-out-16"

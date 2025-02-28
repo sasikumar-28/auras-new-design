@@ -165,3 +165,44 @@ export const ADD_ADDRESS = gql`
     }
   }
 `;
+
+export const CREATE_CART = gql`
+  mutation CreateCart($currency: Currency!, $country: Country) {
+    createCart(draft: { currency: $currency, country: $country }) {
+      id
+      version
+      createdAt
+      lastModifiedAt
+      lastModifiedBy {
+        isPlatformClient
+      }
+      createdBy {
+        isPlatformClient
+      }
+      lineItems {
+        id
+      }
+      cartState
+      totalPrice {
+        type
+        currencyCode
+        centAmount
+        fractionDigits
+      }
+      customLineItems {
+        id
+      }
+      inventoryMode
+      taxMode
+      taxRoundingMode
+      taxCalculationMode
+      refusedGifts {
+        id
+      }
+      origin
+      itemShippingAddresses {
+        key
+      }
+    }
+  }
+`;
