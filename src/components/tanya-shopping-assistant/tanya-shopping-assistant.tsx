@@ -13,26 +13,18 @@ import arrowDown from "@/assets/tanya-chatbot/arrow-down.png";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { getSearchResults } from "@/utils";
 import { SearchProduct } from "@/graphQL/queries/types";
-import { displayData, imageUrlArray } from "@/utils/helper";
+import {
+  currencyFormatter,
+  displayData,
+  imageUrlArray,
+  initialCapital,
+  priceFormatter,
+  stringReducer,
+} from "@/utils/helper";
 import { useNavigate } from "react-router-dom";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const TanyaShoppingAssistant = () => {
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [inputText, setInputText] = useState("");
-  const [whom, setWhom] = useState("");
-  const [chatHistory, setChatHistory] = useState<
-    {
-      query: string;
-      response: string;
-      potentialQuestions: string[];
-      products: SearchProduct[];
-      keywords: string;
-    }[]
-  >([]);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
   // Shopping options
   const shoppingOptions = [
     "Myself",
@@ -42,6 +34,21 @@ const TanyaShoppingAssistant = () => {
     "My Friends",
     "Others",
   ];
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [inputText, setInputText] = useState("");
+  const [whom, setWhom] = useState(shoppingOptions[0]);
+  const [chatHistory, setChatHistory] = useState<
+    {
+      query: string;
+      response: string;
+      potentialQuestions: string[];
+      products?: { keyword: string; items: SearchProduct[] }[];
+      keywords: string;
+    }[]
+  >([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Handle selecting "whom" option
   const handleWhomSelection = (selected: string) => {
@@ -113,7 +120,7 @@ const TanyaShoppingAssistant = () => {
       const { response, potentialQuestions, keywords } = res.data;
       if (res.data.keywords) {
         getKeywords(res.data.keywords);
-        // getKeywords("sofa");
+        // getKeywords("sofa,sofa");
       }
       setChatHistory((prev) =>
         prev.map((msg, idx) =>
@@ -143,7 +150,13 @@ const TanyaShoppingAssistant = () => {
           setChatHistory((prev) =>
             prev.map((msg, idx) =>
               idx === prev.length - 1
-                ? { ...msg, products: [...(msg.products || []), ...results] }
+                ? {
+                    ...msg,
+                    products: [
+                      ...(msg.products || []),
+                      { keyword: keyword, items: results },
+                    ],
+                  }
                 : msg
             )
           );
@@ -152,11 +165,18 @@ const TanyaShoppingAssistant = () => {
     } else {
       for (const keyword of keywords) {
         const results = await getSearchResults(keyword);
+        console.log(results, "result one");
         if (results.length > 0) {
           setChatHistory((prev) =>
             prev.map((msg, idx) =>
               idx === prev.length - 1
-                ? { ...msg, products: [...(msg.products || []), ...results] }
+                ? {
+                    ...msg,
+                    products: [
+                      ...(msg.products || []),
+                      { keyword: keyword, items: results },
+                    ],
+                  }
                 : msg
             )
           );
@@ -164,6 +184,7 @@ const TanyaShoppingAssistant = () => {
       }
     }
   };
+  console.log(chatHistory, "chat history");
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -172,7 +193,7 @@ const TanyaShoppingAssistant = () => {
           <img src={tanyaChatBotIcon} alt="Chat with Tanya" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="absolute bottom-6 -right-4 w-96 h-96 bg-white p-0 rounded-xl">
+      <PopoverContent className="absolute bottom-6 -right-4 w-[436px] h-[524px] border-0 bg-white p-0 rounded-xl">
         {/* Header */}
         <div className="flex justify-between bg-[#552864] rounded-xl p-1">
           <div className="flex">
@@ -202,9 +223,9 @@ const TanyaShoppingAssistant = () => {
           ref={scrollRef}
           className="h-5/6 overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar"
         >
-          <p className="text-sm text-[#000000] bg-[#F1DCFF] rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4">
+          <p className="text-sm text-[#000000] text-[16px] bg-[#F1DCFF] rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4">
             Hey there! I'm Tanya, your new AI shopping assistant. Think of me as
-            your super helpful friend who knows all the best stuff at Claire's.
+            yoursuper helpful friend who knows all the best stuff at Claire's.
             Ready to find something amazing?
           </p>
 
@@ -235,58 +256,71 @@ const TanyaShoppingAssistant = () => {
           {/* Display chat history */}
           {chatHistory.map((chat, index) => (
             <div key={index}>
-              <p className="text-sm text-[#000000] bg-[#F1DCFF] rounded-r-xl p-3 m-3 rounded-bl-xl inline-block max-w-[75%]">
-                {chat.query}
-              </p>
+              <div className="flex justify-end">
+                <p className="text-sm text-[white] bg-[#804C9E] rounded-l-xl p-3 m-3 mb-4 rounded-br-xl roud inline-block max-w-[75%]">
+                  {chat.query}
+                </p>
+              </div>
               {chat.response && (
-                <div className="flex justify-end">
+                <div className="mt-4">
                   <div
-                    className="text-sm text-[#232323] bg-[#FFFFFF] drop-shadow-md px-7 py-4 rounded-r-xl rounded-bl-2xl w-5/6"
+                    className="text-sm text-[#232323] bg-[#FFFFFF] px-7 py-4 rounded-r-xl rounded-bl-2xl w-full"
                     dangerouslySetInnerHTML={{ __html: chat.response }}
                   />
                 </div>
               )}
-
-              {chat.products?.length > 0 && (
-                <div className="flex justify-end">
-                  <div className="text-sm my-2 text-[#232323] bg-[#FFFFFF] drop-shadow-md px-7 py-4 rounded-r-xl rounded-bl-2xl w-5/6">
-                    <div className="font-semibold">Here are some options</div>
-                    {chat.products.map((product) => (
-                      <div
-                        key={product.objectID}
-                        className="flex items-center gap-2 cursor-pointer"
-                        onClick={() => {
-                          localStorage.setItem(
-                            "product",
-                            JSON.stringify(product)
-                          );
-                          navigate(
-                            `/product/${product?.objectID}?category=${product?.categoryPageId[0]}&productCard=true`
-                          );
-                        }}
-                      >
-                        <img
-                          src={imageUrlArray(product)[0]}
-                          alt={displayData(product?.name["en-US"])}
-                          className="w-10 h-10 rounded-full"
-                        />
-                        {displayData(product?.name["en-US"])}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {chat.keywords && (
-                <div className="flex flex-wrap gap-2 p-2 my-4">
-                  Keywords :
-                  {chat.keywords.split(",").map((key: string, i: number) => (
-                    <div
-                      key={i}
-                      className="px-3 py-1 bg-[#B93284] text-white rounded-[3px] text-sm shadow-md"
-                    >
-                      {key.trim()}
+              {chat?.products?.length > 0 && (
+                <div className="flex">
+                  <div className="text-sm text-[#232323] bg-[#FFFFFF] px-7 py-4 rounded-r-xl rounded-bl-2xl w-full">
+                    <div className="font-semibold text-[#804C9E]">
+                      Explore these options to enhance your experience
                     </div>
-                  ))}
+                    {chat?.products &&
+                      chat?.products?.map((product) => (
+                        <div>
+                          <div className="border border-[#804C9E] text-[#804C9E] w-fit rounded-[17px] p-2 my-2 bg-[#F1DCFF] font-bold">
+                            {initialCapital(product.keyword)}
+                          </div>
+                          <div className="flex gap-2">
+                            {product.items.slice(0, 5).map((item, e) => (
+                              <div
+                                key={e}
+                                className="flex flex-col w-[100px] h-[80px] items-center gap-2 cursor-pointer relative shadow-lg"
+                                onClick={() => {
+                                  localStorage.setItem(
+                                    "product",
+                                    JSON.stringify(item)
+                                  );
+                                  navigate(
+                                    `/product/${item?.objectID}?category=${item?.categoryPageId[0]}&productCard=true`
+                                  );
+                                }}
+                              >
+                                <img
+                                  src={imageUrlArray(item)[0]}
+                                  alt={displayData(item?.name["en-US"])}
+                                  className="w-10 h-10 rounded-full"
+                                />
+                                <div className="absolute flex flex-col items-center justify-center text-black bg-[#E9D2F9] w-full rounded-[3px] bottom-0 h-[33px] text-[8px] font-bold">
+                                  <div>
+                                    {currencyFormatter(
+                                      priceFormatter(item).centAmount || 0,
+                                      priceFormatter(item).currencyCode || "USD"
+                                    )}
+                                  </div>
+                                  <div>
+                                    {stringReducer(
+                                      displayData(item?.name["en-US"]),
+                                      10
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
                 </div>
               )}
 
@@ -294,14 +328,14 @@ const TanyaShoppingAssistant = () => {
 
               {chat.potentialQuestions.length > 0 && (
                 <div className="my-2 mb-8 px-4 text-sm text-gray-700 ">
-                  <p className="font-semibold">
+                  <p className="font-semibold text-[#804C9E]">
                     Why not explore these inqueries...
                   </p>
 
                   {chat.potentialQuestions.map((question, idx) => (
                     <button
                       key={idx}
-                      className="cursor-pointer text-emerald-700 bg-sky-200 m-1 rounded-xl px-2 py-1"
+                      className="cursor-pointer text-[#232323] border bg-[#804C9E0D] border-[#804C9E] m-1 rounded-xl px-2 py-1"
                       onClick={() => handleSendMessage(question)}
                     >
                       {question}
@@ -311,26 +345,32 @@ const TanyaShoppingAssistant = () => {
               )}
             </div>
           ))}
-
-          {isLoading && (
-            <div className="m-3 animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700" />
-          )}
         </div>
 
         {/* Input Field */}
-        <div className="absolute w-80 bottom-2 left-9 drop-shadow-xl flex rounded">
+        <div className="absolute w-4/5 bottom-2 left-9 drop-shadow-xl flex items-center rounded-full bg-white">
           <input
             placeholder="Ask me anything"
-            className="w-full h-10 rounded-full drop-shadow-xl p-4"
+            className="w-full rounded-full p-4 h-[61px] outline-none border-none focus:ring-0 focus:border-transparent"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
           />
           <button
             type="submit"
-            className="absolute right-6 bottom-3 text-[#552864]"
+            disabled={isLoading}
+            className="mr-6 text-[#552864] font-medium"
             onClick={() => handleSendMessage()}
           >
-            Send
+            {isLoading ? (
+              <div className="m-3 animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700" />
+            ) : (
+              <Icon
+                icon="fluent:send-48-filled"
+                color="purple-700"
+                width="24"
+                height="24"
+              />
+            )}
           </button>
         </div>
       </PopoverContent>
