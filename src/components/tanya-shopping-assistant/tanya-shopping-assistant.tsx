@@ -269,7 +269,7 @@ const TanyaShoppingAssistant = () => {
                   />
                 </div>
               )}
-              {chat?.products?.length > 0 && (
+              {chat?.products && chat?.products?.length > 0 && (
                 <div className="flex">
                   <div className="text-sm text-[#232323] bg-[#FFFFFF] px-7 py-4 rounded-r-xl rounded-bl-2xl w-full">
                     <div className="font-semibold text-[#804C9E]">
