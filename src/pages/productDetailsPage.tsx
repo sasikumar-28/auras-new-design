@@ -36,7 +36,7 @@ const ProductDetailsPage = () => {
     if (product) {
       const parsedProduct = JSON.parse(product);
       setProduct(parsedProduct);
-      const prodDetails = cart.find((p) => p?.id == parsedProduct?.id);
+      const prodDetails = cart.find((p: Product) => p?.id == parsedProduct?.id);
       dispatch(
         setProductsAction({
           ...parsedProduct,

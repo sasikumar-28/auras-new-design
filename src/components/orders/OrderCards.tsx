@@ -1,6 +1,7 @@
 import { Product } from "@/graphQL/queries/types";
 
 const OrderCards = ({ order }: { order: Product }) => {
+  console.log(order);
   return (
     <div
       style={{ border: "1px solid #D8D8D8", borderRadius: "4px" }}

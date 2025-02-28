@@ -7,6 +7,7 @@ import {
   updateCartProductQuantity,
 } from "@/store/reducers/cartReducer";
 import { currencyFormatter, priceFormatter } from "@/utils/helper";
+import { Product } from "@/graphQL/queries/types";
 
 const ProductDetailSidebar = () => {
   const product = useSelector((state: any) => state.product.product);
@@ -73,7 +74,7 @@ const ProductDetailSidebar = () => {
             className="bg-[#B93284] text-xs text-white rounded-t-xl h-14 flex items-center justify-center gap-2 cursor-pointer"
           >
             <Icon icon="solar:cart-plus-broken" width="24" height="24" />
-            {cart.some((p) => p.id == product.id)
+            {cart.some((p: Product) => p.id == product.id)
               ? "Added to Cart"
               : "Add to Cart"}
           </div>
