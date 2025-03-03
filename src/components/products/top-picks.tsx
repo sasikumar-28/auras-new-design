@@ -72,7 +72,7 @@ const TopPicks: React.FC = () => {
     return null;
   };
 
-  const fetchTrendingProducts = async () => {
+  const fetchTopPicksProducts = async () => {
     try {
       setLoading(true);
       const categories = await getAllCategories(); // Get specific categories
@@ -98,7 +98,7 @@ const TopPicks: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchTrendingProducts();
+    fetchTopPicksProducts();
   }, []);
 
   if (loading) return <div>Loading top picks...</div>;

@@ -1,13 +1,64 @@
 import BreadCrumb from "@/components/breadcrumb/BreadCrumb";
 import CategoryTabs from "@/components/categories/categoryTabs";
-import { GET_CATEGORIES } from "@/graphQL/queries/queries";
-import { CategoriesResponse, Product } from "@/graphQL/queries/types";
-import { useQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { setProducts as setProductsAction } from "@/store/reducers/productReducer";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { getAccessToken } from "@/utils/getAccessToken";
+import axios from "axios";
+
+interface Category {
+  categoryId: string;
+  categoryName: string;
+}
+
+interface Product {
+  id: string;
+  title: string;
+  image: string; // Change from array to string
+  price: number; // Change from object to number
+  description: string;
+}
+
+const useCategories = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const token = await getAccessToken();
+        const response = await axios.get(
+          "http://localhost:5000/api/mycategories",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setCategories(response.data);
+        } else {
+          throw new Error("Failed to fetch categories");
+        }
+      } catch (error: any) {
+        console.error("Error fetching categories:", error);
+        setError(error.message || "Failed to fetch categories");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  return { categories, loading, error };
+};
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
@@ -17,29 +68,37 @@ const ProductDetailsPage = () => {
   const categoryFromUrl = searchParams.get("category");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { id } = useParams();
-  const { loading, error, data } = useQuery<CategoriesResponse>(GET_CATEGORIES);
+  const {
+    categories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useCategories();
+
   const initialActiveTab =
-    data?.categories.results.findIndex((c) => c.id === categoryFromUrl) ?? 0;
+    categories.findIndex((c) => c.categoryId === categoryFromUrl) ?? 0;
   const [activeTab, setActiveTab] = useState(initialActiveTab);
 
   useEffect(() => {
     setActiveTab(initialActiveTab);
-    const product = localStorage.getItem("product");
-    if (product) {
-      const parsedProduct = JSON.parse(product);
+    const storedProduct = localStorage.getItem("product");
+    if (storedProduct) {
+      const parsedProduct: Product = JSON.parse(storedProduct);
       setProduct(parsedProduct);
       dispatch(setProductsAction(parsedProduct));
-      console.log(parsedProduct);
     }
-  }, [categoryFromUrl, data]);
+  }, [categoryFromUrl, categories]);
 
-  if (loading) return <div className="p-4">Loading categories...</div>;
-  if (error) return <div className="p-4">Error loading categories...</div>;
-  if (!data) return <div className="p-4">No data found</div>;
+  if (categoriesLoading)
+    return <div className="p-4">Loading categories...</div>;
+  if (categoriesError)
+    return <div className="p-4">Error loading categories...</div>;
+
+  const currentCategory = categories[activeTab]?.categoryName || "Category";
+
   return (
     <div className="mt-20 w-full">
       <CategoryTabs
-        data={data}
+        data={categories}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
@@ -47,15 +106,15 @@ const ProductDetailsPage = () => {
         list={[
           { name: "Home", link: "/" },
           {
-            name: data?.categories.results[activeTab]?.name || "Category",
+            name: currentCategory,
             link: `/product-listing?category=${
-              data?.categories.results[activeTab]?.id || ""
+              categories[activeTab]?.categoryId || ""
             }&sortFilter=true`,
           },
           {
-            name: product?.name || "Product",
+            name: product?.title || "Product",
             link: `/product/${id}?category=${
-              data?.categories.results[activeTab]?.id || ""
+              categories[activeTab]?.categoryId || ""
             }&productCard=true`,
           },
         ]}
@@ -64,19 +123,27 @@ const ProductDetailsPage = () => {
         <div className="flex gap-4 w-full">
           <div className="max-w-[560px]">
             <img
-              src={product?.masterVariant.images[selectedImageIndex].url}
-              alt=""
+              src={product?.image || "/placeholder.jpg"} // Ensure it's a string
+              alt={product?.title || "Product image"}
               className="w-full h-[400px] object-cover rounded-xl"
             />
             <div className="flex gap-2 justify-center mt-2">
-              {product?.masterVariant.images.map((image, index) => (
+              {/* Since product.image is a string, we wrap it in an array */}
+              {[product?.image].map((image, index) => (
                 <div
-                  className={`w-1/6 border-2 border-[#B93284] rounded-xl p-2`}
+                  // key={index}
+                  className={`w-1/6 border-2 border-[#B93284] rounded-xl p-2`
+                    // selectedImageIndex === index
+                    //   ? "border-4 border-[#B93284]"
+                    //   : ""
+                  }
                   onClick={() => setSelectedImageIndex(index)}
+                
+                  // onClick={() => setSelectedImageIndex(index)}
                 >
                   <img
-                    src={image.url}
-                    alt=""
+                    src={image || "/placeholder.jpg"}
+                    alt="Thumbnail"
                     className="rounded-xl object-cover w-full"
                   />
                 </div>
@@ -96,22 +163,25 @@ const ProductDetailsPage = () => {
             >
               Visit Store
             </div>
-            <h1 className="text-2xl font-bold">{product?.name}</h1>
+            <h1 className="text-2xl font-bold">{product?.title}</h1>
             <div className="flex gap-2 font-sm mt-4 mb-4">
-              <div>Price</div>
+              <div>Price:</div>
               <div>
-                {product?.masterVariant.prices[0].value.centAmount.toLocaleString(
-                  "en-US",
-                  {
-                    style: "currency",
-                    currency:
-                      product?.masterVariant.prices[0].value.currencyCode,
-                  }
-                )}
+                {product?.price !== undefined
+                  ? product.price.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD", // Default to USD
+                    })
+                  : "N/A"}
               </div>
             </div>
             <div className="text-md font-bold">About this item:</div>
-            <p>{product?.description}</p>
+            {/* Use dangerouslySetInnerHTML to properly render the description */}
+            <p
+              dangerouslySetInnerHTML={{
+                __html: product?.description || "No description available.",
+              }}
+            ></p>
           </div>
           <div className="flex flex-col gap-2 p-3">
             <Icon
@@ -121,7 +191,6 @@ const ProductDetailsPage = () => {
           </div>
         </div>
       </div>
-      <div></div>
     </div>
   );
 };

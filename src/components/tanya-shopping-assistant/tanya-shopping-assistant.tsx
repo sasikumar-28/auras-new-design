@@ -1,27 +1,76 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import DOMPurify from "dompurify"; // Import DOMPurify
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { decode } from "html-entities";
-import tanyaChatBotIcon from "@/assets/tanya-chatbot/chat-with-tanya.png";
-import dotsHorizontal from "@/assets/tanya-chatbot/dots-horizontal.png";
-import arrowDown from "@/assets/tanya-chatbot/arrow-down.png";
+  WidgetContainer,
+  ChatBody,
+  ChatFooter,
+  WelcomeMessage,
+  Spinner,
+  KeywordLink,
+  SubmitButton,
+  QuestionLink,
+  QuestionItem,
+  KeywordItem,
+  QuestionList,
+  KeywordList,
+  PotentialQuestions,
+  SearchKeywords,
+  GeneralResponse,
+  UserQuery,
+  SectionTitle,
+  ShoppingAssistantButton,
+  ResponseContainer,
+  InputField,
+  ClearHistoryButton,
+  Header,
+  CloseButton,
+} from "./style";
+import useShareState from "./use-share-state";
+import { useBetween } from "use-between";
+import ProductCarousel from "./product-carousel";
 import { getAccessToken } from "@/utils/getAccessToken";
 
 
-const TanyaShoppingAssistant = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [inputText, setInputText] = useState("");
+// Define types for our response data
+interface ResponseData {
+  response: string;
+  userQuery: string;
+  keywords?: string;
+  potentialQuestions?: string[];
+}
+
+// Define type for keyword results
+interface KeywordResultsType {
+  [key: string]: boolean | null;
+}
+
+const TanyaShoppingAssistant: React.FC = () => {
+  const { setSelectedKeyword } = useBetween(useShareState);
+  const [query, setQuery] = useState<string>("");
+  const [responses, setResponses] = useState<ResponseData[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isChatbotVisible, setChatbotVisible] = useState<boolean>(false);
+  const [keywordResults, setKeywordResults] = useState<KeywordResultsType>({});
+  const chatBodyRef = useRef<HTMLDivElement | null>(null);
   const [whom, setWhom] = useState("");
-  const [chatHistory, setChatHistory] = useState<
-    { query: string; response: string; potentialQuestions: string[] }[]
-  >([]);
-  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const savedResponses = localStorage.getItem("chatHistory");
+    const savedVisibility = localStorage.getItem("chatbotVisible");
+
+    if (savedResponses) {
+      try {
+        setResponses(JSON.parse(savedResponses));
+      } catch (error) {
+        console.error("Error parsing chat history:", error);
+        setResponses([]);
+      }
+    }
+
+    if (savedVisibility) {
+      setChatbotVisible(savedVisibility === "true");
+    }
+  }, []);
 
   // Shopping options
   const shoppingOptions = [
@@ -38,204 +87,355 @@ const TanyaShoppingAssistant = () => {
     setWhom(selected);
   };
 
-  // Sanitize response before rendering
-  const cleanResponse = (html: string) => {
-    const decodedHtml = decode(html);
-    return DOMPurify.sanitize(decodedHtml, {
-      ALLOWED_TAGS: ["b", "i", "a", "p"],
-    });
+  // Save responses to localStorage whenever they change
+  useEffect(() => {
+    if (responses.length > 0) {
+      localStorage.setItem("chatHistory", JSON.stringify(responses));
+    }
+  }, [responses]);
+
+  // Save chatbot visibility state
+  useEffect(() => {
+    localStorage.setItem("chatbotVisible", isChatbotVisible.toString());
+  }, [isChatbotVisible]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
   };
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop += 150; // Scrolls down by 50px
-    }
-  }, [chatHistory]);
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) return;
 
-  const handleSendMessage = async (question?: string) => {
-    const newQuery = question || inputText.trim();
-    if (!newQuery) return;
-
-    setIsLoading(true);
-    setInputText("");
-    setChatHistory((prev) => [
-      ...prev,
-      { query: newQuery, response: "", potentialQuestions: [] },
+    const result = await fetchBackendResponse(query);
+    setResponses((prevResponses) => [
+      ...prevResponses,
+      { ...result, userQuery: query },
     ]);
+    setQuery("");
+  };
 
+  const fetchBackendResponse = async (input: string): Promise<ResponseData> => {
+    setLoading(true);
     try {
-      const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
-      if (!SERVER_BASE_URL) {
-        console.error("Missing server base URL");
-        throw new Error("Missing server base URL");
-      }
-
-      // converted whom opton to lowercase and remove spaces
-      const sanatizedWhom = whom.replace(/\s/g, "").toLowerCase();
-
       const token = await getAccessToken();
-      if (!token) throw new Error("Failed to fetch token");
+      console.log("getAccessTokenChatBot", token);
 
-      const URL = `${SERVER_BASE_URL}/api/web-bff/assistant`;
-      const res = await axios.post(
+      if (!token) throw new Error("Failed to fetch token");
+      const URL = `http://localhost:5000/api/web-bff/assistant?pdp=false&whom=grandchild&userId=123456`;
+      const response = await axios.post(
         URL,
-        { prompt: newQuery, storeCode: "commerce-catalyst" },
+        { prompt: input },
         {
-          params: {
-            userId: "1234544",
-            pdp: "false",
-            whom: sanatizedWhom,
-            registered: "false",
-          },
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      const { response, potentialQuestions } = res.data;
 
-      setChatHistory((prev) =>
-        prev.map((msg, idx) =>
-          idx === prev.length - 1
-            ? { ...msg, response: cleanResponse(response), potentialQuestions }
-            : msg
-        )
-      );
+      console.log("chatbot res", response);
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error("Failed to fetch backend response");
+      }
     } catch (error) {
       console.error("Error sending message to Tanya:", error);
+      // Return empty response object in case of error
+      return {
+        response: "Sorry, I couldn't process your request.",
+        userQuery: input,
+      };
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
+  const handleKeywordClick = (keyword: string) => {
+    setSelectedKeyword(keyword);
+    console.log("Selected keyword:", keyword); // Debug log
+  };
+
+  const handlePotentialQuestionClick = async (question: string) => {
+    setQuery(question);
+    const result = await fetchBackendResponse(question);
+    // Append new response to the end of the responses array
+    setResponses((prevResponses) => [
+      ...prevResponses,
+      { ...result, userQuery: question },
+    ]);
+    setQuery("");
+  };
+
+  const toggleChatbot = () => {
+    setChatbotVisible(!isChatbotVisible);
+  };
+
+  const handleCarouselResultsUpdate = (
+    keyword: string,
+    hasResults: boolean
+  ) => {
+    console.log(`Keyword ${keyword} has results: ${hasResults}`); // Debug log
+    setKeywordResults((prev) => ({
+      ...prev,
+      [keyword]: hasResults,
+    }));
+  };
+
+  // Clear chat history
+  const clearChatHistory = () => {
+    setResponses([]);
+    localStorage.removeItem("chatHistory");
+  };
+
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      const responseContainers = chatBodyRef.current.querySelectorAll(
+        "div[data-response-index]"
+      );
+      const lastResponseContainer =
+        responseContainers[responseContainers.length - 1];
+
+      if (lastResponseContainer) {
+        lastResponseContainer.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "start",
+        });
+      }
+    }
+  }, [responses]);
+
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <button className="rounded" onClick={() => setIsOpen(true)}>
-          <img src={tanyaChatBotIcon} alt="Chat with Tanya" />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="absolute bottom-6 -right-4 w-96 h-96 bg-white p-0 rounded-xl">
-        {/* Header */}
-        <div className="flex justify-between bg-[#552864] rounded-xl p-1">
-          <div className="flex">
-            <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} />
-            <div>
-              <p className="text-xs font-light text-white mt-1">Chat with</p>
-              <p className="font-bold text-white">
-                TANYA{" "}
-                <span className="text-xs font-light">(Shopping Assistant)</span>
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-5 m-3">
-            <img src={dotsHorizontal} alt="Options" width={15} />
-            <img
-              src={arrowDown}
-              alt="Close Chat"
-              width={15}
-              className="cursor-pointer"
-              onClick={() => setIsOpen(false)}
-            />
-          </div>
-        </div>
+    <>
+      <ShoppingAssistantButton onClick={toggleChatbot}>
+        <img
+          src="/images/chat-with-tanya.png"
+          alt="Chat with Tanya"
+          style={{
+            width: "160px",
+            height: "90px",
+            marginRight: "-100px",
+            borderRadius: "50%",
+            marginBottom: "-40px",
+          }}
+          onClick={toggleChatbot}
+        />
+      </ShoppingAssistantButton>
 
-        {/* Chat Body */}
-        <div
-          ref={scrollRef}
-          className="h-[calc(100vh-310px)] overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar"
-        >
-          <p className="text-sm text-[#000000] bg-[#F1DCFF] rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4">
-            Hey there! I'm Tanya, your new AI shopping assistant. Think of me as
-            your super helpful friend who knows all the best stuff at Claire's.
-            Ready to find something amazing?
-          </p>
-
-          <div className="mx-3 bg-blue-800 p-3 rounded-2xl">
-            <p className="font-semibold text-white">
-              Who are you shopping for?
-            </p>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {shoppingOptions.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => handleWhomSelection(option)}
-                  className={`px-4 py-2 text-sm border-2 rounded-xl ${
-                    whom === option
-                      ? "bg-pink-300 text-white"
-                      : "bg-transparent text-white"
-                  }`}
+      {isChatbotVisible && (
+        <WidgetContainer>
+          <Header
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "10px",
+              backgroundColor: "rgb(85 40 100 / var(--tw-bg-opacity, 1))", // Adjust background color if needed
+            }}
+          >
+            {/* Left Section - Profile Image & Name */}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src="/images/chat-with-tanya.png"
+                alt="Chat with Tanya"
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  marginRight: "10px",
+                  borderRadius: "50%",
+                }}
+              />
+              <div>
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: ".75rem",
+                    color: "white",
+                    marginRight: "120px",
+                    lineHeight: "1rem",
+                  }}
                 >
-                  {option}
-                </button>
-              ))}
-            </div>
-            {whom && (
-              <p className="mt-2 text-sm text-white">Selected: {whom}</p>
-            )}
-          </div>
-
-          {/* Display chat history */}
-          {chatHistory.map((chat, index) => (
-            <div key={index}>
-              <p className="text-sm text-[#000000] bg-[#F1DCFF] rounded-r-xl p-3 m-3 rounded-bl-xl inline-block max-w-[75%]">
-                {chat.query}
-              </p>
-              {chat.response && (
-                <div className="flex justify-end">
-                  <div
-                    className="text-sm text-[#232323] bg-[#FFFFFF] drop-shadow-md px-7 py-4 rounded-r-xl rounded-bl-2xl w-5/6"
-                    dangerouslySetInnerHTML={{ __html: chat.response }}
-                  />
-                </div>
-              )}
-              {/* Render potential questions below each response */}
-              <div className="mt-2 px-4 text-sm text-gray-700 ">
-                {chat.potentialQuestions.length > 0 && (
-                  <>
-                    <p className="font-semibold">
-                      Why not explore these inqueries...
-                    </p>
-
-                    {chat.potentialQuestions.map((question, idx) => (
-                      <button
-                        key={idx}
-                        className="cursor-pointer text-emerald-700 bg-sky-200 m-1 rounded-xl px-2 py-1"
-                        onClick={() => handleSendMessage(question)}
-                      >
-                        {question}
-                      </button>
-                    ))}
-                  </>
-                )}
+                  Chat with
+                </p>
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    color: "white",
+                    margin: 0,
+                    lineHeight: "1.2rem",
+                  }}
+                >
+                  TANYA
+                  <span style={{ fontSize: ".75rem", marginLeft: "5px" }}>
+                    (Shopping Assistant)
+                  </span>
+                </p>
               </div>
             </div>
-          ))}
 
-          {isLoading && (
-            <div className="m-3 animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700" />
-          )}
-        </div>
+            {/* Right Section - Icons */}
+            <div
+              className="flex items-center gap-5"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <img src="/images/dots-horizontal.png" alt="Options" width={15} />
+              <img
+                src="/images/arrow-down.png"
+                alt="Close Chat"
+                width={15}
+                className="cursor-pointer"
+                onClick={toggleChatbot}
+              />
+            </div>
+          </Header>
 
-        {/* Input Field */}
-        <div className="absolute w-80 bottom-2 left-9 drop-shadow-xl flex rounded">
-          <input
-            placeholder="Ask me anything"
-            className="w-full h-10 rounded-full drop-shadow-xl p-4"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="absolute right-6 bottom-3 text-[#552864]"
-            onClick={() => handleSendMessage()}
-          >
-            Send
-          </button>
-        </div>
-      </PopoverContent>
-    </Popover>
+          <ChatBody ref={chatBodyRef}>
+            <ClearHistoryButton onClick={clearChatHistory}>
+              CLEAR HISTORY
+            </ClearHistoryButton>
+            <WelcomeMessage>
+              Hey there! I'm Tanya, your new AI shopping assistant. Think of me
+              as your super helpful friend who knows all the best stuff at
+              Claire's. Ready to find something amazing?
+            </WelcomeMessage>
+            <div className="mx-3 bg-blue-800 p-3 rounded-2xl">
+              <p className="font-semibold text-white">
+                Who are you shopping for?
+              </p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {shoppingOptions.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => handleWhomSelection(option)}
+                    className={`px-4 py-2 text-sm border-2 rounded-xl ${
+                      whom === option
+                        ? "bg-pink-300 text-white"
+                        : "bg-transparent text-white"
+                    }`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+              {whom && (
+                <p className="mt-2 text-sm text-white">Selected: {whom}</p>
+              )}
+            </div>
+            {loading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
+                <Spinner />
+              </div>
+            ) : (
+              responses.map((response, index) => (
+                <ResponseContainer key={index} data-response-index={index}>
+                  <UserQuery>{response.userQuery}</UserQuery>
+                  <GeneralResponse
+                    dangerouslySetInnerHTML={{
+                      __html: response.response
+                        ? response.response.replace("<pre>", "<div>")
+                        : "",
+                    }}
+                  ></GeneralResponse>
+                  {response.keywords && (
+                    <SearchKeywords>
+                      <SectionTitle style={{ marginTop: "20px" }}>
+                        Explore these options to enhance your experience.
+                      </SectionTitle>
+                      <KeywordList>
+                        {(typeof response.keywords === "string"
+                          ? response.keywords.split(",")
+                          : response.keywords
+                        )?.map((keyword, index) => (
+                          <KeywordItem key={index}>
+                            <KeywordLink
+                              onClick={() => handleKeywordClick(keyword.trim())}
+                            >
+                              {keyword.trim()}
+                            </KeywordLink>
+                            <ProductCarousel
+                              keywords={keyword.trim()}
+                              onResultsUpdate={(hasResults) =>
+                                handleCarouselResultsUpdate(
+                                  keyword.trim(),
+                                  hasResults
+                                )
+                              }
+                            />
+                          </KeywordItem>
+                        ))}
+                      </KeywordList>
+                    </SearchKeywords>
+                  )}
+
+                  {response.potentialQuestions && (
+                    <PotentialQuestions>
+                      <SectionTitle style={{ marginTop: "20px" }}>
+                        Why not explore these inquiries...
+                      </SectionTitle>
+                      <QuestionList>
+                        {response.potentialQuestions.map((question, index) => (
+                          <QuestionItem
+                            style={{
+                              color: "black",
+                              padding: "10px 0",
+                              display: "flex",
+                              flexWrap: "wrap",
+                            }}
+                            key={index}
+                          >
+                            <QuestionLink
+                              style={{
+                                backgroundColor:
+                                  "rgb(186 230 253 / var(--tw-bg-opacity, 1))",
+                                borderRadius: "20px",
+                                color:
+                                  "rgb(4 120 87 / var(--tw-text-opacity, 1))",
+                              }}
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handlePotentialQuestionClick(question);
+                              }}
+                            >
+                              {question}
+                            </QuestionLink>
+                          </QuestionItem>
+                        ))}
+                      </QuestionList>
+                    </PotentialQuestions>
+                  )}
+                </ResponseContainer>
+              ))
+            )}
+          </ChatBody>
+          <ChatFooter>
+            <form
+              style={{ display: "flex", alignItems: "center" }}
+              onSubmit={handleFormSubmit}
+            >
+              <InputField
+                type="text"
+                value={query}
+                onChange={handleInputChange}
+                placeholder="Ask me anything"
+                style={{ color: "black" }}
+              />
+              <SubmitButton type="submit">Submit</SubmitButton>
+            </form>
+          </ChatFooter>
+        </WidgetContainer>
+      )}
+    </>
   );
 };
 

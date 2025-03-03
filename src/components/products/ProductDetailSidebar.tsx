@@ -1,8 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setProducts as setProductsAction } from "@/store/reducers/productReducer";
+import {
+  addToCart,
+  updateCartProductQuantity,
+} from "@/store/reducers/cartReducer";
+import { currencyFormatter, priceFormatter } from "@/utils/helper";
+import { Product } from "@/graphQL/queries/types";
+
 const ProductDetailSidebar = () => {
   const product = useSelector((state: any) => state.product.product);
-  console.log(product, "the product");
+  const cart = useSelector((state: any) => state.cart.cart);
+  const dispatch = useDispatch();
   return (
     <div className="bg-[#F2DCF9] flex flex-col justify-around gap-4 h-[100vh] w-[17vw] p-4">
       <div className="flex flex-col gap-2 p-2">
@@ -12,29 +22,61 @@ const ProductDetailSidebar = () => {
       <div className="bg-gradient-to-b from-[#2C2C2C] to-[#444444] rounded-xl p-4 gap-y-4 text-3xl flex flex-col">
         <div className="text-white">
           <span className="font-bold">
-            {product?.masterVariant?.prices[0].value.centAmount.toLocaleString(
-              "en-US",
-              {
-                style: "currency",
-                currency: product?.masterVariant?.prices[0].value.currencyCode,
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              }
-            )}
+            {product &&
+              currencyFormatter(
+                priceFormatter(product)?.centAmount || 0,
+                priceFormatter(product)?.currencyCode || "USD"
+              )}
           </span>
         </div>
         <div className="text-white flex items-center gap-2 text-xs">
           <span className=""> Quantity: </span>
           <div className="bg-gray-600 rounded-xl px-2 flex items-center gap-2">
-            <div>+</div>
-            <div>1</div>
-            <div>-</div>
+            <div
+              onClick={() => {
+                dispatch(
+                  setProductsAction({
+                    ...product,
+                    quantity: product?.quantity + 1,
+                  })
+                );
+                dispatch(
+                  updateCartProductQuantity({ id: product.id, value: 1 })
+                );
+              }}
+              className="cursor-pointer"
+            >
+              +
+            </div>
+            <div>{product?.quantity || 1}</div>
+            <div
+              onClick={() => {
+                dispatch(
+                  setProductsAction({
+                    ...product,
+                    quantity:
+                      product?.quantity - 1 <= 0 ? 0 : product?.quantity - 1,
+                  })
+                );
+                dispatch(
+                  updateCartProductQuantity({ id: product.id, value: -1 })
+                );
+              }}
+              className="cursor-pointer"
+            >
+              -
+            </div>
           </div>
         </div>
         <div className="flex flex-col">
-          <div className="bg-[#B93284] text-xs text-white rounded-t-xl h-14 flex items-center justify-center gap-2 cursor-pointer">
+          <div
+            onClick={() => dispatch(addToCart(product))}
+            className="bg-[#B93284] text-xs text-white rounded-t-xl h-14 flex items-center justify-center gap-2 cursor-pointer"
+          >
             <Icon icon="solar:cart-plus-broken" width="24" height="24" />
-            Add to Cart
+            {cart.some((p: Product) => p.id == product.id)
+              ? "Added to Cart"
+              : "Add to Cart"}
           </div>
           <div className="bg-[#D24C9E] text-xs text-white rounded-b-xl h-14 flex items-center justify-center gap-2 cursor-pointer">
             <Icon icon="tdesign:gesture-click" width="24" height="24" />

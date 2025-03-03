@@ -7,6 +7,9 @@ import ProductListingPage from "@/pages/productListingPage";
 import ProductDetailsPage from "@/pages/productDetailsPage";
 import CartPage from "@/pages/cartPage";
 import Account from "@/pages/account";
+import Login from "@/pages/login";
+import SignUp from "@/pages/signUp";
+import Checkout from "@/pages/checkout";
 
 const routes = createBrowserRouter([
   {
@@ -34,7 +37,19 @@ const routes = createBrowserRouter([
         path: "/account",
         element: <Account />,
       },
+      {
+        path: "/checkout",
+        element: <Checkout />,
+      },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/SignUp",
+    element: <SignUp />,
   },
   {
     path: "*",

@@ -6,7 +6,9 @@ export const getSearchResults = async (query: string) => {
   if (!token) throw new Error("Failed to fetch token");
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_SERVER_BASE_URL}/api/search?query=${query}`,
+      `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }/api/search-api/search?query=${query}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -14,7 +16,7 @@ export const getSearchResults = async (query: string) => {
         },
       }
     );
-    return response.data;
+    return response.data.hits;
   } catch (error) {
     console.error("Error fetching search results:", error);
     throw error;

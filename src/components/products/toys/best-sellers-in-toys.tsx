@@ -14,7 +14,7 @@ interface Product {
   price: number;
 }
 
-const BestSellarsInKitchen: React.FC = () => {
+const BestSellersInToys: React.FC = () => {
   const [toysProducts, setToysProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -131,4 +131,4 @@ const BestSellarsInKitchen: React.FC = () => {
   );
 };
 
-export default BestSellarsInKitchen;
+export default BestSellersInToys;

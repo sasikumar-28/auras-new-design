@@ -1,13 +1,16 @@
 "use client";
 
-import commerceCatalystLogo from "@/assets/sidebar-icons/commerce-catalyst-logo.png";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Checkbox } from "./ui/checkbox";
+import languageIcon from "@/assets/sidebar-icons/language-icon.png";
 import heartIcon from "@/assets/sidebar-icons/heart-icon.png";
 import returnIcon from "@/assets/sidebar-icons/return-icon.png";
 import trendingIcon from "@/assets/sidebar-icons/Icon feather-trending-up.png";
 import chatWithTanyaIcon from "@/assets/sidebar-icons/chat-with-tanya-icon.png";
-import languageIcon from "@/assets/sidebar-icons/language-icon.png";
-import { Checkbox } from "./ui/checkbox";
-import { useNavigate } from "react-router-dom";
+import { getAccessToken } from "@/utils/getAccessToken";
+
 const filterData = [
   {
     label: "Categories",
@@ -28,55 +31,69 @@ const filterData = [
       { name: "Get it by Tomorrow", selected: false },
     ],
   },
-  {
-    label: "Delivery Day",
-    options: [
-      { name: "Get it Today", selected: false },
-      { name: "Get it by Tomorrow", selected: false },
-    ],
-  },
 ];
 
 export function Sidebar({
   sortFilter,
   isRightSidebar,
+  storeCode, // Pass storeCode as a prop
 }: {
   sortFilter?: boolean;
   isRightSidebar?: boolean;
+  storeCode: string;
 }) {
   const navigate = useNavigate();
+  const [logo, setLogo] = useState<string>("");
+  const [themeColor, setThemeColor] = useState<string>("#552864"); // Default color
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const token = await getAccessToken();
+        const response = await axios.get(
+          `http://localhost:5000/api/logo?storeCode=${storeCode}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const data = response.data;
+          setLogo(data?.logoDarkBg || data?.logoLightBg);
+          setThemeColor(data?.themeColor || "#552864");
+        } else {
+          throw new Error("Failed to fetch logo details");
+        }
+      } catch (error: any) {
+        console.error("Error fetching logo details:", error);
+      }
+    };
+
+    fetchLogo();
+  }, [storeCode]);
+
   if (isRightSidebar) {
     return (
-      <div className="w-54 bg-[#552864] text-white flex justify-end items-end p-2">
+      <div className="w-54 text-white flex justify-end items-end p-2" style={{ backgroundColor: themeColor }}>
         <div className="flex w-34 flex-col items-center justify-around gap-2 h-full">
-          {/* Language Selection */}
           <div className="flex flex-col items-center gap-1">
             <img width={22} src={languageIcon} alt="language" />
             <p className="text-xs">English</p>
           </div>
-
-          {/* Icons Section */}
-          <div
-            className="space-y-6 text-xs flex flex-col items-center gap-8"
-            onClick={() => navigate("/cart")}
-          >
+          <div className="space-y-6 text-xs flex flex-col items-center gap-8" onClick={() => navigate("/cart")}>
             <div className="flex flex-col items-center gap-1">
               <img width={22} src={heartIcon} alt="Home" />
             </div>
-
-            <div
-              onClick={() => navigate("/account?tab=orders")}
-              className="flex flex-col items-center gap-1 cursor-pointer"
-            >
+            <div onClick={() => navigate("/account?tab=orders")} className="flex flex-col items-center gap-1 cursor-pointer">
               <img width={22} src={returnIcon} alt="Return" />
             </div>
-
             <div className="flex flex-col items-center gap-1">
               <img width={22} src={trendingIcon} alt="Trending" />
             </div>
           </div>
-
-          {/* Chat Section */}
           <div className="flex flex-col items-center border-y py-3 gap-1 w-full text-center">
             <img width={22} src={chatWithTanyaIcon} alt="Chat-icon" />
             <p className="text-xs">Chat with Tanya</p>
@@ -85,12 +102,13 @@ export function Sidebar({
       </div>
     );
   }
+
   if (sortFilter) {
     return (
-      <div className="w-45 bg-[#552864] text-white flex ">
+      <div className="w-45 text-white flex" style={{ backgroundColor: themeColor }}>
         <div className="flex flex-col items-center h-screen">
           <div className="pt-7 flex flex-col items-center gap-2 h-[100px]">
-            <img width={80} src={commerceCatalystLogo} alt="auras-logo" />
+            {logo && <img width={80} src={logo} alt="logo" />}
           </div>
           <div className="mt-4 flex flex-col gap-2 items-center w-5/6 text-left">
             {filterData.map((filter, index) => (
@@ -111,31 +129,22 @@ export function Sidebar({
       </div>
     );
   }
+
   return (
-    <div className="w-30 bg-[#552864] text-white flex ">
+    <div className="w-30 text-white flex" style={{ backgroundColor: themeColor }}>
       <div className="flex flex-col justify-between items-center h-screen">
-        <div className="pt-7">
-          <img width={80} src={commerceCatalystLogo} alt="auras-logo" />
-        </div>
+        <div className="pt-7">{logo && <img width={80} src={logo} alt="auras-logo" />}</div>
         <div className="space-y-6 text-xs ">
-          <div
-            onClick={() => navigate("/cart")}
-            className="flex flex-col items-center gap-1 cursor-pointer"
-          >
+          <div onClick={() => navigate("/cart")} className="flex flex-col items-center gap-1 cursor-pointer">
             <img width={22} src={heartIcon} alt="Home" />
             <p>My Wishlist</p>
           </div>
-
-          <div
-            onClick={() => navigate("/account?tab=orders")}
-            className="flex flex-col items-center gap-1 cursor-pointer"
-          >
+          <div onClick={() => navigate("/account?tab=orders")} className="flex flex-col items-center gap-1 cursor-pointer">
             <img width={22} src={returnIcon} alt="Return" />
             <div className="text-center">
               <p>My Orders</p>
             </div>
           </div>
-
           <div className="flex flex-col items-center gap-1">
             <img width={22} src={trendingIcon} alt="Trending" />
             <p>Top Deals</p>
