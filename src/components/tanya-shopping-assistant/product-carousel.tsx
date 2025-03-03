@@ -25,10 +25,15 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   const [searchParams] = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [imageKey, setImageKey] = useState<number>(0); // Add a key to force image refresh
+  const [imageKey, setImageKey] = useState<number>(0);
 
   // Get search term from either route params or passed keywords prop
   const search = searchParams.get("query") || keywords || "";
+  
+  // Number of items to display at once
+  const itemsPerPage = 3;
+  // Calculate max index (for last page)
+  const maxStartIndex = Math.max(0, responses.length - itemsPerPage);
   
   useEffect(() => {
     if (search) {
@@ -124,14 +129,14 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   };
 
   const goToNext = (): void => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === responses.length - 1 ? 0 : prevIndex + 1
+    setCurrentIndex((prevIndex) => 
+      Math.min(prevIndex + itemsPerPage, maxStartIndex)
     );
   };
 
   const goToPrevious = (): void => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? responses.length - 1 : prevIndex - 1
+      Math.max(0, prevIndex - itemsPerPage)
     );
   };
 
@@ -143,6 +148,9 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       </div>
     );
   }
+
+  // Get the visible items based on the current index
+  const visibleProducts = responses.slice(currentIndex, currentIndex + itemsPerPage);
 
   return (
     <div style={styles.carouselContainer}>
@@ -158,76 +166,79 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
                 onClick={goToPrevious}
                 style={{...styles.navigationButton, left: "2px"}}
                 aria-label="Previous product"
-                disabled={responses.length <= 1}
+                disabled={currentIndex <= 0}
               >
                 <ChevronLeft size={24} />
               </button>
 
               <div style={styles.carouselTrack}>
-                {responses.map((product, index) => (
-                  <div
-                    key={`${product.id || index}-${imageKey}`}
-                    style={{
-                      ...styles.carouselItem,
-                      display: currentIndex === index ? "block" : "none"
-                    }}
-                  >
-                    <Link
-                      to={`/product/${product.id}`}
-                      style={styles.link}
+                <div style={styles.carouselItemsContainer}>
+                  {visibleProducts.map((product, index) => (
+                    <div
+                      key={`${product.id || index}-${imageKey}`}
+                      style={styles.carouselItem}
                     >
-                      <div style={styles.productCard}>
-                        <div style={styles.imageContainer}>
-                          {product.image ? (
-                            <img
-                              key={`img-${imageKey}-${index}`}
-                              src={`${product.image}?v=${imageKey}`}
-                              alt={product.title}
-                              style={styles.productImage}
-                              onError={(e) => {
-                                // Fallback to placeholder on error
-                                e.currentTarget.src = `https://via.placeholder.com/200x150?text=No+Image&v=${imageKey}`;
-                              }}
-                            />
-                          ) : (
-                            <div style={styles.placeholderImage}>
-                              No Image Available
-                            </div>
-                          )}
+                      <Link
+                        to={`/product/${product.id}`}
+                        style={styles.link}
+                      >
+                        <div style={styles.productCard}>
+                          <div style={styles.imageContainer}>
+                            {product.image ? (
+                              <img
+                                key={`img-${imageKey}-${index}`}
+                                src={`${product.image}?v=${imageKey}`}
+                                alt={product.title}
+                                style={styles.productImage}
+                                onError={(e) => {
+                                  // Fallback to placeholder on error
+                                  e.currentTarget.src = `https://via.placeholder.com/200x150?text=No+Image&v=${imageKey}`;
+                                }}
+                              />
+                            ) : (
+                              <div style={styles.placeholderImage}>
+                                No Image Available
+                              </div>
+                            )}
+                          </div>
+                          <h2 style={styles.productTitle}>
+                            {product.title || "Untitled Product"}
+                          </h2>
+                          <p style={styles.productPrice}>
+                            Price: ${typeof product.price === 'number' ? product.price.toFixed(2) : product.price || "N/A"}
+                          </p>
                         </div>
-                        <h2 style={styles.productTitle}>
-                          {product.title || "Untitled Product"}
-                        </h2>
-                        <p style={styles.productPrice}>
-                          Price: ${typeof product.price === 'number' ? product.price.toFixed(2) : product.price || "N/A"}
-                        </p>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <button
                 onClick={goToNext}
                 style={{ ...styles.navigationButton, right: "2px" }}
                 aria-label="Next product"
-                disabled={responses.length <= 1}
+                disabled={currentIndex >= maxStartIndex}
               >
                 <ChevronRight size={24} />
               </button>
+
               <div style={styles.dotContainer}>
-                {responses.map((_, index) => (
-                  <button
-                    key={`dot-${index}-${imageKey}`}
-                    onClick={() => setCurrentIndex(index)}
-                    style={{
-                      ...styles.dot,
-                      backgroundColor:
-                        currentIndex === index ? "#007bff" : "#ddd",
-                    }}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
+                {Array.from({ length: Math.ceil(responses.length / itemsPerPage) }).map((_, i) => {
+                  const pageIndex = i * itemsPerPage;
+                  return (
+                    <button
+                      key={`dot-${i}-${imageKey}`}
+                      onClick={() => setCurrentIndex(pageIndex)}
+                      style={{
+                        ...styles.dot,
+                        backgroundColor:
+                          currentIndex === pageIndex ? "#007bff" : "#ddd",
+                      }}
+                      aria-label={`Go to page ${i + 1}`}
+                    />
+                  );
+                })}
               </div>
             </>
           ) : (
@@ -248,7 +259,7 @@ const styles: StylesType = {
   carouselContainer: {
     position: "relative",
     width: "100%",
-    maxWidth: "300px",
+    maxWidth: "900px", // Wider to accommodate 3 items
     margin: "10px auto",
     padding: "20px",
     boxSizing: "border-box",
@@ -286,6 +297,14 @@ const styles: StylesType = {
     height: "100%",
     overflow: "hidden",
   },
+  carouselItemsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: "10px",
+    width: "100%",
+  },
   navigationButton: {
     position: "absolute",
     top: "50%",
@@ -304,7 +323,8 @@ const styles: StylesType = {
     transition: "background-color 0.3s ease",
   },
   carouselItem: {
-    width: "100%",
+    flex: "1",
+    minWidth: "0",
     transition: "all 0.3s ease-in-out",
   },
   productCard: {
@@ -315,16 +335,13 @@ const styles: StylesType = {
     textAlign: "center",
     cursor: "pointer",
     width: "100%",
-    maxWidth: "250px",
-    margin: "0 auto",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     transition: "transform 0.2s ease-in-out",
-    
   },
   imageContainer: {
-    width: "200px",
+    width: "100%",
     height: "150px",
     display: "flex",
     justifyContent: "center",

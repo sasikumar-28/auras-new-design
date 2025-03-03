@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const WidgetContainer = styled.div`
-  width: 30%;
-  height: 400px;
+  width: 35%;
+  height: 490px;
   border: 1px solid #ddd;
   border-radius: 10px;
   display: flex;
@@ -12,7 +12,7 @@ export const WidgetContainer = styled.div`
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   position: fixed;
-  top: 90px; /* Adjusted to avoid overlapping */
+  top: 80px; /* Adjusted to avoid overlapping */
   right: 40px; /* Slightly away from the edge for better spacing */
   z-index: 3500; /* Increased to stay on top of other elements */
 `;
@@ -33,7 +33,7 @@ export const ClearHistoryButton = styled.button`
   color: white;
   cursor: pointer;
   font-size: 12px;
-  margin-left: 210px;
+  margin-left: 280px;
   padding: 5px 10px;
 
   &:hover {
@@ -118,13 +118,14 @@ export const SectionTitle = styled.h3`
 `;
 
 export const UserQuery = styled.div`
-  padding: 10px;
+  padding: 15px;
   border-radius: 2px 12px 10px;
   margin-bottom: 10px;
   color:black;
   font-size: .875rem;
   background-color: rgb(241 220 255 / var(--tw-bg-opacity, 1));
-  width: 200px
+  width: 200px;
+  margin-top: 30px;
 `;
 
 export const GeneralResponse = styled.div`
@@ -233,4 +234,3 @@ export const WelcomeMessage = styled(StaticMessage)`
   font-size: .875rem;
   border-radius: 2px 12px 20px
 `;
-

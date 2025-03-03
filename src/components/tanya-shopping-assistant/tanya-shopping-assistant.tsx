@@ -52,7 +52,6 @@ const TanyaShoppingAssistant: React.FC = () => {
   const [keywordResults, setKeywordResults] = useState<KeywordResultsType>({});
   const chatBodyRef = useRef<HTMLDivElement | null>(null);
   const [whom, setWhom] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const savedResponses = localStorage.getItem("chatHistory");
@@ -287,7 +286,7 @@ const TanyaShoppingAssistant: React.FC = () => {
                 alt="Close Chat"
                 width={15}
                 className="cursor-pointer"
-                onClick={() => setIsOpen(false)}
+                onClick={toggleChatbot}
               />
             </div>
           </Header>
@@ -296,7 +295,6 @@ const TanyaShoppingAssistant: React.FC = () => {
             <ClearHistoryButton onClick={clearChatHistory}>
               CLEAR HISTORY
             </ClearHistoryButton>
-            {/* <CloseButton onClick={closeChatbot}>×</CloseButton> */}
             <WelcomeMessage>
               Hey there! I'm Tanya, your new AI shopping assistant. Think of me
               as your super helpful friend who knows all the best stuff at
