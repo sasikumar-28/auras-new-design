@@ -30,6 +30,7 @@ import { useBetween } from "use-between";
 import ProductCarousel from "./product-carousel";
 import { getAccessToken } from "@/utils/getAccessToken";
 
+
 // Define types for our response data
 interface ResponseData {
   response: string;

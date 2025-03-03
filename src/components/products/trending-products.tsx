@@ -1,9 +1,101 @@
-import useProductsByCategory from "@/hooks/useProductsByCategory";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { getAccessToken } from "@/utils/getAccessToken";
 
-const TrendingProducts = () => {
-  const { products, loading, error } = useProductsByCategory({
-    limit: 1, // Number of products per category
-  });
+interface Product {
+  id: string;
+  title: string;
+  image: string; // Updated to match API response
+  price: number; // Updated to match API response
+}
+
+interface Category {
+  categoryId: string;
+  categoryName: string;
+}
+
+const TrendingProducts: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const getAllCategories = async () => {
+    try {
+      const token = await getAccessToken();
+      const URL = `http://localhost:5000/api/mycategories?limit=4`;
+  
+      const response = await axios.get(URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (response.status === 200) {
+        return response.data.slice(0, 4); // Ensure only 4 categories are returned
+      } else {
+        throw new Error("Failed to fetch categories");
+      }
+    } catch (error: any) {
+      console.error("Error fetching categories:", error);
+      setError(error.message || "Failed to fetch categories");
+      return [];
+    }
+  };
+  
+
+  const getProductByCategory = async (categoryId: string) => {
+    try {
+      const token = await getAccessToken();
+      const URL = `http://localhost:5000/api/mycategories/${categoryId}?limit=1`;
+
+      const response = await axios.get(URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200 && response.data.length > 0) {
+        return response.data[0]; // Return the first product
+      }
+    } catch (error) {
+      console.error(
+        `Error fetching product for category ${categoryId}:`,
+        error
+      );
+    }
+    return null;
+  };
+
+  const fetchTrendingProducts = async () => {
+    try {
+      setLoading(true);
+      const categories = await getAllCategories(); // Get categories
+
+      const productsPromises = categories.map((category: Category) =>
+        getProductByCategory(category.categoryId)
+      );
+
+      const productsResults = await Promise.all(productsPromises);
+
+      // Filter out null responses (if a category has no products)
+      const filteredProducts = productsResults.filter(
+        (product) => product !== null
+      ) as Product[];
+
+      setProducts(filteredProducts);
+    } catch (error: any) {
+      console.error("Error fetching trending products:", error);
+      setError(error.message || "Failed to fetch trending products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTrendingProducts();
+  }, []);
 
   if (loading) return <div>Loading trending products...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -15,19 +107,28 @@ const TrendingProducts = () => {
       </h2>
       <div className="grid grid-cols-4 gap-4">
         {products.map((product) => (
-          <div className="">
-            <div className="flex bg-white p-4 drop-shadow-lg rounded-xl h-24 gap-9 flex-col sm:flex-row">
+          <div
+            key={product.id}
+            className="flex bg-white p-4 drop-shadow-lg rounded-xl h-24 gap-9"
+          >
+            {product.image ? (
               <img
-                src={product.masterVariant.images[0].url}
-                alt="Product 1"
+                src={product.image}
+                alt={product.title || "Product Image"}
                 className="w-22 h-full object-cover rounded-md mb-2"
               />
-              <div className="text-sm">
-                <p>{product.name}</p>
-                <p className="font-bold">
-                  ${product.masterVariant.prices[0].value.centAmount / 100}
-                </p>
+            ) : (
+              <div className="w-22 h-full bg-gray-200 rounded-md mb-2 flex items-center justify-center">
+                <span className="text-xs text-gray-500">No Image</span>
               </div>
+            )}
+            <div className="text-sm">
+              <p>{product.title || "No Title"}</p>
+              <p className="font-bold">
+                {product.price !== undefined
+                  ? `$${product.price.toFixed(2)}`
+                  : "Price Unavailable"}
+              </p>
             </div>
           </div>
         ))}
