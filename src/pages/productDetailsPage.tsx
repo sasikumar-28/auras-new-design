@@ -67,6 +67,7 @@ const ProductDetailsPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const categoryFromUrl = searchParams.get("category");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  console.log(selectedImageIndex);
   const { id } = useParams();
   const {
     categories,

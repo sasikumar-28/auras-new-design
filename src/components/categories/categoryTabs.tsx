@@ -25,6 +25,7 @@ interface CategoryTabsProps {
 const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
+  console.log(categories);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 

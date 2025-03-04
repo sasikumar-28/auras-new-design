@@ -22,8 +22,7 @@ import {
   ResponseContainer,
   InputField,
   ClearHistoryButton,
-  Header,
-  CloseButton,
+  Header
 } from "./style";
 import useShareState from "./use-share-state";
 import { useBetween } from "use-between";
@@ -51,6 +50,7 @@ const TanyaShoppingAssistant: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isChatbotVisible, setChatbotVisible] = useState<boolean>(false);
   const [keywordResults, setKeywordResults] = useState<KeywordResultsType>({});
+  console.log(keywordResults);
   const chatBodyRef = useRef<HTMLDivElement | null>(null);
   const [whom, setWhom] = useState("");
 
