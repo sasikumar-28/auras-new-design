@@ -28,7 +28,7 @@ const useProductsByCategory = ({ categoryId }: { categoryId: string | null }) =>
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:5000/api/productByCategoryId/${categoryId}`, {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_BASE_URL}api/productByCategoryId/${categoryId}`, {
           params: { limit: 100, offset: 1 },
           headers: { "Content-Type": "application/json" },
         });

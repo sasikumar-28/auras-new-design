@@ -38,7 +38,7 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
         throw new Error("Failed to fetch token");
       }
 
-      const URL = `http://localhost:5000/api/mycategories`;
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories`;
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",

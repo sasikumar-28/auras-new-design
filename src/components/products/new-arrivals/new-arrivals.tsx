@@ -24,7 +24,7 @@ const NewAarrivals: React.FC = () => {
     try {
       const token = await getAccessToken();
       const categoriesResponse = await axios.get(
-        "http://localhost:5000/api/mycategories", // Endpoint to fetch categories
+        `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories`, // Endpoint to fetch categories
         {
           headers: {
             "Content-Type": "application/json",
@@ -61,7 +61,7 @@ const NewAarrivals: React.FC = () => {
   const getProductByCategory = async (categoryId: string) => {
     try {
       const token = await getAccessToken();
-      const URL = `http://localhost:5000/api/mycategories/${categoryId}`;
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/productByCategoryId/${categoryId}`;
 
       const response = await axios.get(URL, {
         headers: {
@@ -70,8 +70,8 @@ const NewAarrivals: React.FC = () => {
         },
       });
 
-      if (response.status === 200 && response.data.length > 0) {
-        return response.data; // Return all products
+      if (response.status === 200 && response.data.hits.length > 0) {
+        return response.data.hits; // Return all products
       }
     } catch (error) {
       console.error(

@@ -122,7 +122,7 @@ const TanyaShoppingAssistant: React.FC = () => {
       console.log("getAccessTokenChatBot", token);
 
       if (!token) throw new Error("Failed to fetch token");
-      const URL = `http://localhost:5000/api/web-bff/assistant?pdp=false&whom=grandchild&userId=123456`;
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/web-bff/assistant?pdp=false&whom=grandchild&userId=123456`;
       const response = await axios.post(
         URL,
         { prompt: input },

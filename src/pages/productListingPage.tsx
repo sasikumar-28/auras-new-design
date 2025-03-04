@@ -23,7 +23,7 @@ const useCategories = () => {
       try {
         setLoading(true);
         const token = await getAccessToken();
-        const response = await axios.get("http://localhost:5000/api/mycategories", {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
