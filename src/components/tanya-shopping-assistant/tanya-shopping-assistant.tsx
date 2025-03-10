@@ -18,18 +18,15 @@ import {
   GeneralResponse,
   UserQuery,
   SectionTitle,
-  ShoppingAssistantButton,
   ResponseContainer,
   InputField,
   ClearHistoryButton,
   Header,
-  CloseButton,
 } from "./style";
 import useShareState from "./use-share-state";
 import { useBetween } from "use-between";
 import ProductCarousel from "./product-carousel";
 import { getAccessToken } from "@/utils/getAccessToken";
-
 
 // Define types for our response data
 interface ResponseData {
@@ -51,6 +48,7 @@ const TanyaShoppingAssistant: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isChatbotVisible, setChatbotVisible] = useState<boolean>(false);
   const [keywordResults, setKeywordResults] = useState<KeywordResultsType>({});
+  console.log(keywordResults);
   const chatBodyRef = useRef<HTMLDivElement | null>(null);
   const [whom, setWhom] = useState("");
 
@@ -122,7 +120,9 @@ const TanyaShoppingAssistant: React.FC = () => {
       console.log("getAccessTokenChatBot", token);
 
       if (!token) throw new Error("Failed to fetch token");
-      const URL = `http://localhost:5000/api/web-bff/assistant?pdp=false&whom=grandchild&userId=123456`;
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/web-bff/assistant?pdp=false&whom=grandchild&userId=123456`;
       const response = await axios.post(
         URL,
         { prompt: input },
@@ -209,21 +209,9 @@ const TanyaShoppingAssistant: React.FC = () => {
 
   return (
     <>
-      <ShoppingAssistantButton onClick={toggleChatbot}>
-        <img
-          src="/images/chat-with-tanya.png"
-          alt="Chat with Tanya"
-          style={{
-            width: "160px",
-            height: "90px",
-            marginRight: "-100px",
-            borderRadius: "50%",
-            marginBottom: "-40px",
-          }}
-          onClick={toggleChatbot}
-        />
-      </ShoppingAssistantButton>
-
+      <button className="rounded" onClick={toggleChatbot}>
+        <img src="/images/chat-with-tanya.png" alt="Chat with Tanya" />
+      </button>
       {isChatbotVisible && (
         <WidgetContainer>
           <Header

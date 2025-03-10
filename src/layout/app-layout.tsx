@@ -1,22 +1,24 @@
 import Header from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { Outlet } from "react-router";
-import { useSearchParams , useNavigate} from "react-router";
+import { useSearchParams, useNavigate } from "react-router";
 import ProductDetailSidebar from "@/components/products/ProductDetailSidebar";
-import {  useEffect } from "react";
+import { useEffect } from "react";
+import { getShoppingAssistantForStore } from "@/utils/store-helper";
 
 const AppLayout = () => {
   const [searchParams] = useSearchParams();
   const sortFilter = searchParams.get("sortFilter");
   const productCard = searchParams.get("productCard");
-  let storeCode = searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  let storeCode =
+    searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  const storeDetails = getShoppingAssistantForStore(storeCode || "");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (storeCode) {
       localStorage.setItem("storeCode", storeCode);
     } else {
-      // If storeCode is missing, redirect with stored value
       const storedStoreCode = localStorage.getItem("storeCode");
       if (storedStoreCode) {
         navigate(`?storeCode=${storedStoreCode}`, { replace: true });
@@ -24,7 +26,9 @@ const AppLayout = () => {
     }
   }, [storeCode, navigate]);
 
-  console.log(sortFilter);
+  // 🎨 Select Theme Color Based on storeCode
+  const themeColor = storeDetails.background;
+
   return (
     <>
       <div className="flex justify-between h-[100vh] overflow-hidden">
@@ -35,8 +39,9 @@ const AppLayout = () => {
               : "bg-[#552864]"
           }`}
         >
-          <Sidebar sortFilter={sortFilter ? true : false} storeCode={storeCode || ""}/>
-          <div className="flex-1 w-full">
+          <Sidebar sortFilter={!!sortFilter} storeCode={storeCode || ""} />
+          {/* Apply Dynamic Theme Here */}
+          <div className={`flex-1 w-full ${themeColor}`}>
             <main
               className={`bg-white px-4 w-full min-h-screen ${
                 sortFilter || productCard
@@ -48,17 +53,22 @@ const AppLayout = () => {
             </main>
           </div>
         </div>
+
+        {/* Header Section */}
         <div
-          className={`fixed z-50  ${
+          className={`fixed z-50 ${
             sortFilter ? "ml-56" : productCard ? "ml-28" : "ml-36"
           }`}
         >
-          <Header
-            isSortFilter={sortFilter ? true : false}
-            isProductCard={productCard ? true : false}
-          />
+          <Header isSortFilter={!!sortFilter} isProductCard={!!productCard} />
         </div>
-        {sortFilter && <Sidebar isRightSidebar={true}  storeCode={storeCode || ""} />}
+
+        {/* Right Sidebar */}
+        {sortFilter && (
+          <Sidebar isRightSidebar={true} storeCode={storeCode || ""} />
+        )}
+
+        {/* Product Detail Sidebar */}
         {productCard && <ProductDetailSidebar />}
       </div>
     </>

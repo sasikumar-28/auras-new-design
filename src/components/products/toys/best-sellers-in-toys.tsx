@@ -18,13 +18,17 @@ const BestSellersInToys: React.FC = () => {
   const [toysProducts, setToysProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const REQUIRED_CATEGORY_NAME = "BEAUTY"; // Required category name
+  const REQUIRED_CATEGORY_NAME = "TOYS"; // Required category name
 
   const fetchCategories = async () => {
     try {
       const token = await getAccessToken();
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+      if (!storeCode) {
+        throw new Error("Store code is missing");
+      }
       const categoriesResponse = await axios.get(
-        "http://localhost:5000/api/mycategories", // Endpoint to fetch categories
+        `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`, // Endpoint to fetch categories
         {
           headers: {
             "Content-Type": "application/json",
@@ -61,7 +65,7 @@ const BestSellersInToys: React.FC = () => {
   const getProductByCategory = async (categoryId: string) => {
     try {
       const token = await getAccessToken();
-      const URL = `http://localhost:5000/api/mycategories/${categoryId}`;
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/productByCategoryId/${categoryId}`;
 
       const response = await axios.get(URL, {
         headers: {
@@ -70,8 +74,8 @@ const BestSellersInToys: React.FC = () => {
         },
       });
 
-      if (response.status === 200 && response.data.length > 0) {
-        return response.data; // Return all products
+      if (response.status === 200 && response.data.hits.length > 0) {
+        return response.data.hits; // Return all products
       }
     } catch (error) {
       console.error(
@@ -91,7 +95,7 @@ const BestSellersInToys: React.FC = () => {
 
   return (
     <div className="bg-[#F2F2F2] p-5 rounded-xl mb-6">
-      <h2 className="text-xl font-semibold mb-4">Best Sellers in Beauty</h2>
+      <h2 className="text-xl font-semibold mb-4">Best Sellers in Toys</h2>
       <div className="grid grid-cols-4 gap-4">
         {toysProducts.map((product) => (
           <div

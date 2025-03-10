@@ -3,13 +3,27 @@ import CategoryTabs from "@/components/categories/categoryTabs";
 import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { CategoriesResponse, Product } from "@/graphQL/queries/types";
+import {  Product } from "@/graphQL/queries/types";
 import { GET_CATEGORIES } from "@/graphQL/queries/queries";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ProductCard from "@/components/cart/productCard";
 import { useDispatch, useSelector } from "react-redux";
 import DataNotFound from "@/components/dataNotAvailable/dataNotFound";
+import axios from "axios";
+import { getAccessToken } from "@/utils/getAccessToken";
+
+interface Category {
+  categoryId: string;
+  categoryName: string;
+}
+
+interface CategoriesResponse {
+  categories: {
+    total: number;
+    results: Category[];
+  };
+}
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -20,19 +34,66 @@ const CartPage = () => {
   const cartItems = useSelector((state: any) => state.cart.cart);
   const [selectedProduct, setSelectedProduct] = useState<Product[]>([]);
   const initialActiveTab =
-    data?.categories.results.findIndex((c) => c.id === categoryFromUrl) ?? 0;
+    data?.categories.results.findIndex((c) => c.categoryId === categoryFromUrl) ?? 0;
   const [activeTab, setActiveTab] = useState(initialActiveTab);
-
+const [categories, setCategories] = useState<CategoriesResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {}, [selectedProduct]);
 
   function removeAllSelectedProduct(): any {
     throw new Error("Function not implemented.");
   }
 
+  const getCategories = async () => {
+    try {
+      setLoading(true);
+      const token = await getAccessToken();
+      if (!token) {
+        throw new Error("Failed to fetch token");
+      }
+
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+      if (!storeCode) {
+        throw new Error("Store code is missing");
+      }
+      
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
+      const response = await axios.get<CategoriesResponse>(URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setCategories(response.data);
+      } else {
+        throw new Error("Failed to fetch backend response");
+      }
+    } catch (error: any) {
+      console.error("Error fetching categories:", error);
+      setError(error.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  if (loading) {
+    return <div className="p-4">Loading data...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-red-500">Error: {error}</div>;
+  }
   return (
     <div className="mt-20 w-full">
       <CategoryTabs
-        data={data}
+        data={categories?.categories.results || []}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />

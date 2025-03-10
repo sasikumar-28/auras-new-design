@@ -51,7 +51,7 @@ export function Sidebar({
       try {
         const token = await getAccessToken();
         const response = await axios.get(
-          `http://localhost:5000/api/logo?storeCode=${storeCode}`,
+          `${import.meta.env.VITE_SERVER_BASE_URL}api/logo?storeCode=${storeCode}`,
           {
             headers: {
               "Content-Type": "application/json",

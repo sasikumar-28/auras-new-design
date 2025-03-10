@@ -25,12 +25,12 @@ const CheckoutProductCard = ({ product }: { product: Product }) => {
         <div>
           <img
             src={imageUrlArray(product)[0]}
-            alt={displayData(product?.name)}
+            alt={displayData(product?.title)}
             className="h-32 w-32 rounded-[5px] "
           />
         </div>
         <div className="ml-4">
-          <div className="font-bold">{displayData(product?.name)}</div>
+          <div className="font-bold">{displayData(product?.title)}</div>
           <div className="text-[#B93284]">Limited Time Deal</div>
           <div className="text-3xl my-3">
             {currencyFormatter(

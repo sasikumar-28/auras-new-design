@@ -12,28 +12,36 @@ const CategoriesList: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [storeCode, setStoreCode] = useState<string>("");
   const navigate = useNavigate();
 
   const getCategories = async () => {
     try {
       setLoading(true);
       const token = await getAccessToken();
-      console.log(token,"accessTokenweb")
+      console.log(token, "accessTokenweb");
 
       if (!token) {
         throw new Error("Failed to fetch token");
       }
 
-      const URL = `http://localhost:5000/api/mycategories`;
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore";
+      if (!storeCode) {
+        throw new Error("Store code is missing");
+      }
+      setStoreCode(storeCode);
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/mycategories?storeCode=${storeCode}`;
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.status === 200) {
-        setCategories(response.data); // Assuming the API returns an array of categories
+        setCategories(response.data);
       } else {
         throw new Error("Failed to fetch backend response");
       }
@@ -57,6 +65,7 @@ const CategoriesList: React.FC = () => {
     return <div className="p-4 text-red-500">Error: {error}</div>;
   }
 
+  console.log(storeCode == "applebees", "the store code");
 
   return (
     <div className="fixed top-[6rem] bg-white z-40 mr-5">
@@ -68,13 +77,17 @@ const CategoriesList: React.FC = () => {
             onClick={() =>
               navigate(
                 `/product-listing?category=${category.categoryId}&sortFilter=true`
-              )  
+              )
             }
-           >
+          >
             <img
-              src={`/images/categories-images/${category.categoryName}.svg`}
+              src={`/images/categories-images/${category.categoryName}.png`}
               alt={`${category.categoryName} category`}
               className="w-22 h-full object-cover mb-2"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = `/images/categories-images/${category.categoryName}.svg`;
+              }}
             />
             <p className="text-xs">{category.categoryName}</p>
           </div>
@@ -83,6 +96,5 @@ const CategoriesList: React.FC = () => {
     </div>
   );
 };
-
 
 export default CategoriesList;

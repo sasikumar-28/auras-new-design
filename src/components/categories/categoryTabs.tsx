@@ -25,6 +25,7 @@ interface CategoryTabsProps {
 const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
+  console.log(categories);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +39,11 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
         throw new Error("Failed to fetch token");
       }
 
-      const URL = `http://localhost:5000/api/mycategories`;
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+      if (!storeCode) {
+        throw new Error("Store code is missing");
+      }
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",

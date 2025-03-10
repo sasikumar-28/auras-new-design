@@ -63,7 +63,7 @@ const ProductCard = ({
         <div className="w-[150px]">
           <img
             src={imageUrlArray(product)[0]}
-            alt={displayData(product?.name)}
+            alt={displayData(product?.title)}
             className="h-[100px] w-[100px] rounded-xl ml-4"
           />
         </div>
@@ -71,7 +71,7 @@ const ProductCard = ({
       <div className="flex justify-between gap-2 w-full p-2">
         <div className="flex flex-col gap-2">
           <div>
-            {displayData(product?.name)}{" "}
+            {displayData(product?.title)}{" "}
             <span className="text-xs text-[#B93284]">In stock</span>
           </div>
           <div className="text-xs text-gray-400">in Fashion Best Seller</div>

@@ -22,7 +22,11 @@ const TrendingProducts: React.FC = () => {
   const getAllCategories = async () => {
     try {
       const token = await getAccessToken();
-      const URL = `http://localhost:5000/api/mycategories?limit=4`;
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+      if (!storeCode) {
+        throw new Error("Store code is missing");
+      }
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
   
       const response = await axios.get(URL, {
         headers: {
@@ -47,7 +51,7 @@ const TrendingProducts: React.FC = () => {
   const getProductByCategory = async (categoryId: string) => {
     try {
       const token = await getAccessToken();
-      const URL = `http://localhost:5000/api/mycategories/${categoryId}?limit=1`;
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/productByCategoryId/${categoryId}?limit=1`;
 
       const response = await axios.get(URL, {
         headers: {
@@ -56,8 +60,8 @@ const TrendingProducts: React.FC = () => {
         },
       });
 
-      if (response.status === 200 && response.data.length > 0) {
-        return response.data[0]; // Return the first product
+      if (response.status === 200 && response.data.hits.length > 0) {
+        return response.data.hits[0]; // Return the first product
       }
     } catch (error) {
       console.error(
@@ -123,7 +127,7 @@ const TrendingProducts: React.FC = () => {
               </div>
             )}
             <div className="text-sm">
-              <p>{product.title || "No Title"}</p>
+              <p  className="line-clamp-2">{product.title || "No Title"}</p>
               <p className="font-bold">
                 {product.price !== undefined
                   ? `$${product.price.toFixed(2)}`

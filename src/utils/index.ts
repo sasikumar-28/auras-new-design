@@ -8,7 +8,7 @@ export const getSearchResults = async (query: string) => {
     const response = await axios.get(
       `${
         import.meta.env.VITE_SERVER_BASE_URL
-      }/api/search-api/search?query=${query}`,
+      }api/search?query=${query}`,
       {
         headers: {
           "Content-Type": "application/json",

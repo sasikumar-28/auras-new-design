@@ -68,7 +68,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       let response;
       try {
         // Method 1: Using search in URL params
-        response = await fetch(`http://localhost:5000/api/search-product?search=${encodeURIComponent(search)}`, {
+        response = await fetch(`${import.meta.env.VITE_SERVER_BASE_URL}api/search-product?search=${encodeURIComponent(search)}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       } catch (err) {
         console.log("Method 1 failed, trying method 2");
         // Method 2: Using search in headers
-        response = await fetch(`http://localhost:5000/api/search-product`, {
+        response = await fetch(`${import.meta.env.VITE_SERVER_BASE_URL}api/search-product`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
