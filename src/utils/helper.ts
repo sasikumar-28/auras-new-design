@@ -62,3 +62,16 @@ export const laterDate = (day: number) => {
 export const stringReducer = (text: string, length: number) => {
   return text.length < length ? text : text.slice(0, length) + "...";
 };
+
+export const formatStringToHtml = (str: string) => {
+  return str
+    .split("\\n")
+    .map((line, index) => {
+      const numberedPoint = line.match(/^(\d+)\.\s(.+)/);
+      if (numberedPoint) {
+        return `<p key=${index} class="mb-2"><strong>${numberedPoint[1]}.</strong> ${numberedPoint[2]}</p>`;
+      }
+      return line.trim() ? `<p key=${index} class="mb-2">${line}</p>` : "<br/>";
+    })
+    .join("");
+};

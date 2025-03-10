@@ -13,12 +13,13 @@ import { SearchProduct } from "@/graphQL/queries/types";
 import {
   currencyFormatter,
   displayData,
+  formatStringToHtml,
   imageUrlArray,
   initialCapital,
   priceFormatter,
   stringReducer,
 } from "@/utils/helper";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
@@ -27,6 +28,7 @@ import { getShoppingAssistantForStore } from "@/utils/store-helper";
 const TanyaShoppingAssistantStream = () => {
   // Shopping options
   const shoppingOptions = [
+    "himself",
     "Myself",
     "My Child",
     "My Grandchild",
@@ -35,6 +37,7 @@ const TanyaShoppingAssistantStream = () => {
     "Others",
   ];
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [inputText, setInputText] = useState("");
@@ -49,10 +52,9 @@ const TanyaShoppingAssistantStream = () => {
     }[]
   >([]);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const storeDetails = getShoppingAssistantForStore(
-    localStorage.getItem("storeCode") || ""
-  );
-  console.log(storeDetails, "the details");
+  const storeCode =
+    searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  const storeDetails = getShoppingAssistantForStore(storeCode || "");
 
   // Handle selecting "whom" option
   const handleWhomSelection = (selected: string) => {
@@ -254,30 +256,31 @@ const TanyaShoppingAssistantStream = () => {
             your super helpful friend who knows all the best stuff at{" "}
             {storeDetails.name}'s. Ready to find something amazing?
           </p>
-
-          <div className="mx-3 bg-blue-800 p-3 rounded-2xl">
-            <p className="font-semibold text-white">
-              Who are you shopping for?
-            </p>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {shoppingOptions.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => handleWhomSelection(option)}
-                  className={`px-4 py-2 text-sm border-2 rounded-xl ${
-                    whom === option
-                      ? "bg-pink-300 text-white"
-                      : "bg-transparent text-white"
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
+          {storeCode != "applebees" && (
+            <div className="mx-3 bg-blue-800 p-3 rounded-2xl">
+              <p className="font-semibold text-white">
+                Who are you shopping for?
+              </p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {shoppingOptions.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => handleWhomSelection(option)}
+                    className={`px-4 py-2 text-sm border-2 rounded-xl ${
+                      whom === option
+                        ? "bg-pink-300 text-white"
+                        : "bg-transparent text-white"
+                    }`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+              {whom && (
+                <p className="mt-2 text-sm text-white">Selected: {whom}</p>
+              )}
             </div>
-            {whom && (
-              <p className="mt-2 text-sm text-white">Selected: {whom}</p>
-            )}
-          </div>
+          )}
 
           {/* Display chat history */}
           {chatHistory.map((chat, index) => (
@@ -291,7 +294,9 @@ const TanyaShoppingAssistantStream = () => {
                 <div className="mt-4">
                   <div
                     className="text-sm text-[#232323] bg-[#FFFFFF] px-7 py-4 rounded-r-xl rounded-bl-2xl w-full"
-                    dangerouslySetInnerHTML={{ __html: chat.response }}
+                    dangerouslySetInnerHTML={{
+                      __html: formatStringToHtml(chat.response),
+                    }}
                   />
                 </div>
               )}
