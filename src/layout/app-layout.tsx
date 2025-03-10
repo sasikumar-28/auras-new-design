@@ -4,11 +4,13 @@ import { Outlet } from "react-router";
 import { useSearchParams, useNavigate } from "react-router";
 import ProductDetailSidebar from "@/components/products/ProductDetailSidebar";
 import { useEffect } from "react";
+import { getShoppingAssistantForStore } from "@/utils/store-helper";
 
 // 🎨 Theme Mapping Based on storeCode
 const storeThemes: Record<string, string> = {
   claires: "bg-[#553D94]", // Example theme color for Store A
   auras: "bg-[#A21CAF]", // Example theme color for Store B
+  applebees: "bg-[#AB192D]",
   default: "bg-[#f8f9fa]", // Default theme color if no storeCode
 };
 
@@ -16,7 +18,9 @@ const AppLayout = () => {
   const [searchParams] = useSearchParams();
   const sortFilter = searchParams.get("sortFilter");
   const productCard = searchParams.get("productCard");
-  let storeCode = searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  let storeCode =
+    searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  const storeDetails = getShoppingAssistantForStore(storeCode || "");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +35,7 @@ const AppLayout = () => {
   }, [storeCode, navigate]);
 
   // 🎨 Select Theme Color Based on storeCode
-  const themeColor = storeThemes[storeCode || "default"] || storeThemes.default;
+  const themeColor = storeDetails.background;
 
   return (
     <>
@@ -59,12 +63,18 @@ const AppLayout = () => {
         </div>
 
         {/* Header Section */}
-        <div className={`fixed z-50 ${sortFilter ? "ml-56" : productCard ? "ml-28" : "ml-36"}`}>
+        <div
+          className={`fixed z-50 ${
+            sortFilter ? "ml-56" : productCard ? "ml-28" : "ml-36"
+          }`}
+        >
           <Header isSortFilter={!!sortFilter} isProductCard={!!productCard} />
         </div>
 
         {/* Right Sidebar */}
-        {sortFilter && <Sidebar isRightSidebar={true} storeCode={storeCode || ""} />}
+        {sortFilter && (
+          <Sidebar isRightSidebar={true} storeCode={storeCode || ""} />
+        )}
 
         {/* Product Detail Sidebar */}
         {productCard && <ProductDetailSidebar />}

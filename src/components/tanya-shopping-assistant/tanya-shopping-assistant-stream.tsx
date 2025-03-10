@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
+import { getShoppingAssistantForStore } from "@/utils/store-helper";
 
 const TanyaShoppingAssistantStream = () => {
   // Shopping options
@@ -48,6 +49,10 @@ const TanyaShoppingAssistantStream = () => {
     }[]
   >([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const storeDetails = getShoppingAssistantForStore(
+    localStorage.getItem("storeCode") || ""
+  );
+  console.log(storeDetails, "the details");
 
   // Handle selecting "whom" option
   const handleWhomSelection = (selected: string) => {
@@ -78,35 +83,29 @@ const TanyaShoppingAssistantStream = () => {
     ]);
 
     try {
-      
       const sanatizedWhom = whom.replace(/\s/g, "").toLowerCase();
       const token = await getAccessToken();
       if (!token) throw new Error("Failed to fetch token");
 
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/web-bff/assistantStream`;
-      const response = await fetch(
-        `${URL}`,
-        {
-          signal: AbortSignal.timeout(30000),
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/web-bff/assistantStream`;
+      const response = await fetch(`${URL}`, {
+        signal: AbortSignal.timeout(30000),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          flowId: storeDetails.tanyaAssistant.flowId,
+          flowAliasId: storeDetails.tanyaAssistant.aliasId,
+          input: {
+            userPrompt: newQuery,
+            whom: sanatizedWhom,
           },
-          body: JSON.stringify({
-            // prompt: newQuery,
-            // whom:sanatizedWhom,
-            
-              flowId: "GM3RO4MJ3H",
-              flowAliasId: "5OXE5BUELO",
-              input: {
-                "userPrompt":newQuery,
-                "whom":sanatizedWhom
-              }
-            
-          })
-        }
-      );
+        }),
+      });
 
       if (!response.body) throw new Error("Readable stream not supported");
 
@@ -138,8 +137,7 @@ const TanyaShoppingAssistantStream = () => {
                           ? "response"
                           : parsedData.index == 1
                           ? "keywords"
-                          : "potentialQuestions" 
-                        ]: parsedData.data,
+                          : "potentialQuestions"]: parsedData.data,
                       }
                     : msg
                 )
@@ -151,7 +149,7 @@ const TanyaShoppingAssistantStream = () => {
         }
       }
       getKeywords(sanitizeKeywords(keywords));
-        // getKeywords("sofa,sofa");
+      // getKeywords("sofa,sofa");
     } catch (error) {
       console.error("Error sending message to Tanya:", error);
     } finally {
@@ -253,8 +251,8 @@ const TanyaShoppingAssistantStream = () => {
         >
           <p className="text-sm text-[#000000] text-[16px] bg-[#F1DCFF] rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4">
             Hey there! I'm Tanya, your new AI shopping assistant. Think of me as
-            your super helpful friend who knows all the best stuff at Claire's.
-            Ready to find something amazing?
+            your super helpful friend who knows all the best stuff at{" "}
+            {storeDetails.name}'s. Ready to find something amazing?
           </p>
 
           <div className="mx-3 bg-blue-800 p-3 rounded-2xl">
