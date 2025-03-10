@@ -18,7 +18,6 @@ import {
   GeneralResponse,
   UserQuery,
   SectionTitle,
-  ShoppingAssistantButton,
   ResponseContainer,
   InputField,
   ClearHistoryButton,
