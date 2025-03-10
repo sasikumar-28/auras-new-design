@@ -26,11 +26,12 @@ const Home = () => {
         {/* Scrollable Section */}
         <div className="mt-[8rem] overflow-y-auto scrollbar-none p-4">
           <CarouselSection />
-          <TrendingProducts />
-          {storeCode == "applebees" && <AppleBeesItemDisplay />}
-          <SalesBanner />
-          {storeCode != "applebees" && (
+          {storeCode == "applebees" ? (
+            <AppleBeesItemDisplay />
+          ) : (
             <>
+              <TrendingProducts />
+              <SalesBanner />
               <BestSellersInToys />
               <NewAarrivals />
             </>

@@ -19,10 +19,10 @@ export const imageUrlArray = (data: Product | SearchProduct | any) => {
   return data.masterVariant.images.map((image: any) => image.url);
 };
 
-export const currencyFormatter = (data: number, currencyCode: string) => {
+export const currencyFormatter = (data: number, currencyCode?: string) => {
   return data.toLocaleString("en-US", {
     style: "currency",
-    currency: currencyCode,
+    currency: currencyCode || "USD",
   });
 };
 

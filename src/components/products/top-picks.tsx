@@ -3,7 +3,7 @@ import axios from "axios";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { useSearchParams } from "react-router-dom";
 
-interface Product {
+export interface Product {
   id: string;
   title: string;
   image: string; // Updated to match API response
@@ -97,7 +97,7 @@ const TopPicks: React.FC = () => {
         // Handle nested categories for applebees
         const nestedPromises = categories.flatMap((category: Category) =>
           category.children
-            .slice(0, 2)
+            .slice(0, 3)
             .map((subCategory: Category) =>
               getProductByCategory(subCategory.categoryId)
             )
@@ -134,7 +134,11 @@ const TopPicks: React.FC = () => {
 
   return (
     <div className="bg-[#F2F2F2] p-5 rounded-xl">
-      <h2 className="text-xl font-semibold mb-4">Top Picks for You</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        {storeCode == "applebees"
+          ? "Indulge, Refresh, Repeat!"
+          : "Top Picks for You"}{" "}
+      </h2>
       <div className="grid grid-cols-4 gap-4">
         {products.slice(0, 18).map((product) => {
           console.log(product, "the product");

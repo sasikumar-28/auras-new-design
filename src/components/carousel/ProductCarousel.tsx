@@ -1,8 +1,8 @@
 import { SearchProduct } from "@/graphQL/queries/types";
 import {
   stringReducer,
-  // priceFormatter,
-  // currencyFormatter,
+  priceFormatter,
+  currencyFormatter,
   displayData,
   imageUrlArray,
 } from "@/utils/helper";
@@ -15,82 +15,86 @@ const ProductCarousel = ({ product }: { product: SearchProduct[] }) => {
   const [searchParams] = useSearchParams();
   const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
-  const [currentProductIndex, setCurrentProductIndex] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
+  const productsPerPage = 3;
 
-  const nextProduct = () => {
-    setCurrentProductIndex((prevIndex) => (prevIndex + 1) % product.length);
-  };
-
-  const prevProduct = () => {
-    setCurrentProductIndex(
-      (prevIndex) => (prevIndex - 1 + product.length) % product.length
+  const nextProducts = () => {
+    setStartIndex((prevIndex) =>
+      prevIndex + productsPerPage >= product.length
+        ? 0
+        : prevIndex + productsPerPage
     );
   };
+
+  const prevProducts = () => {
+    setStartIndex((prevIndex) =>
+      prevIndex - productsPerPage < 0
+        ? product.length - (product.length % productsPerPage || productsPerPage)
+        : prevIndex - productsPerPage
+    );
+  };
+
   return (
     <div className="mb-4">
-      <div className="flex justify-between mt-4 items-center">
-        {product?.length > 1 ? (
+      <div className="flex justify-between items-center mt-4">
+        {product?.length > productsPerPage && (
           <button
-            onClick={prevProduct}
+            onClick={prevProducts}
             className="bg-[#804C9E] text-white p-2 rounded flex items-center h-fit"
           >
             <Icon icon="mdi:chevron-left" width="18" />
           </button>
-        ) : (
-          <div />
         )}
 
-        <div
-          key={product[currentProductIndex].objectID}
-          className="flex flex-col w-[200px] h-[160px] items-center justify-between cursor-pointer shadow-lg"
-          onClick={() => {
-            localStorage.setItem(
-              "product",
-              JSON.stringify(product[currentProductIndex])
-            );
-            navigate(
-              `/product/${product[currentProductIndex].objectID}?category=${product[currentProductIndex].categoryPageId[0]}&productCard=true`
-            );
-          }}
-        >
-          {/* Product Image */}
-          <img
-            src={imageUrlArray(product[currentProductIndex])[0]}
-            alt={
-              storeCode == "applebees"
-                ? product[currentProductIndex]?.title
-                : displayData(product[currentProductIndex]?.name["en-US"])
-            }
-            className="w-20 h-20 rounded-[3px] scale-125 transition-transform duration-300 hover:scale-150"
-          />
-
-          {/* Product Price & Name */}
-          <div className="text-black bg-[#E9D2F9] w-full rounded-[3px] p-1 text-[12px] font-bold text-center">
-            {/* <div>
-              {currencyFormatter(
-                priceFormatter(product[currentProductIndex]).centAmount || 0,
-                priceFormatter(product[currentProductIndex]).currencyCode
-              )}
-            </div> */}
-            <div>
-              {storeCode == "applebees"
-                ? product[currentProductIndex]?.title
-                : stringReducer(
-                    displayData(product[currentProductIndex]?.name["en-US"]),
-                    30
-                  )}
-            </div>
-          </div>
+        <div className="flex gap-4 justify-start w-full">
+          {product
+            .slice(startIndex, startIndex + productsPerPage)
+            .map((prod) => (
+              <div
+                key={prod.objectID}
+                className="flex flex-col w-[150px] h-[160px] items-center justify-between cursor-pointer shadow-lg"
+                onClick={() => {
+                  localStorage.setItem("product", JSON.stringify(prod));
+                  navigate(
+                    `/product/${prod.objectID}?category=${prod.categoryPageId[0]}&productCard=true`
+                  );
+                }}
+              >
+                <img
+                  src={imageUrlArray(prod)[0]}
+                  alt={
+                    storeCode == "applebees"
+                      ? prod?.title
+                      : displayData(prod?.name["en-US"])
+                  }
+                  className="w-16 h-16 rounded-[3px] scale-125 transition-transform duration-300 hover:scale-150 object-cover"
+                />
+                <div className="text-black bg-[#E9D2F9] w-full rounded-[3px] p-1 text-[12px] font-bold text-center">
+                  <div>
+                    {currencyFormatter(
+                      storeCode == "applebees"
+                        ? Number(prod?.price)
+                        : priceFormatter(prod).centAmount || 0,
+                      priceFormatter(prod)?.currencyCode
+                    )}
+                  </div>
+                  <div>
+                    {storeCode == "applebees"
+                      ? prod?.title
+                      : stringReducer(displayData(prod?.name["en-US"]), 30)}
+                  </div>
+                </div>
+              </div>
+            ))}
         </div>
-        {product?.length > 1 ? (
+
+        {product?.length > productsPerPage && (
           <button
-            onClick={nextProduct}
+            onClick={nextProducts}
             className="bg-[#804C9E] text-white p-2 rounded flex items-center h-fit"
           >
             <Icon icon="mdi:chevron-right" width="18" />
           </button>
-        ) : (
-          <div />
         )}
       </div>
     </div>

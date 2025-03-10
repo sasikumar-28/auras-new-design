@@ -125,7 +125,9 @@ const TrendingProducts: React.FC = () => {
   return (
     <div className="bg-[#F2F2F2] p-5 rounded-xl mb-6">
       <h2 className="text-xl font-semibold mb-4">
-        Trending products you may like
+        {localStorage.getItem("storeCode") == "applebees"
+          ? "Taste Happiness in Every Bite & Sip!"
+          : "Trending products you may like"}
       </h2>
       <div className="grid grid-cols-4 gap-4">
         {products.map((product) => (
