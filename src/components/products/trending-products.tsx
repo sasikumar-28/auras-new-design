@@ -26,15 +26,17 @@ const TrendingProducts: React.FC = () => {
       if (!storeCode) {
         throw new Error("Store code is missing");
       }
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
-  
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/mycategories?storeCode=${storeCode}`;
+
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (response.status === 200) {
         return response.data.slice(0, 4); // Ensure only 4 categories are returned
       } else {
@@ -46,12 +48,13 @@ const TrendingProducts: React.FC = () => {
       return [];
     }
   };
-  
 
   const getProductByCategory = async (categoryId: string) => {
     try {
       const token = await getAccessToken();
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/productByCategoryId/${categoryId}?limit=1`;
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/productByCategoryId/${categoryId}?limit=1`;
 
       const response = await axios.get(URL, {
         headers: {
@@ -78,7 +81,7 @@ const TrendingProducts: React.FC = () => {
       const categories = await getAllCategories(); // Get categories
 
       const productsPromises = categories.map((category: Category) =>
-        getProductByCategory(category.categoryId)
+        getProductByCategory(category.children[0].categoryId)
       );
 
       const productsResults = await Promise.all(productsPromises);
@@ -127,7 +130,7 @@ const TrendingProducts: React.FC = () => {
               </div>
             )}
             <div className="text-sm">
-              <p  className="line-clamp-2">{product.title || "No Title"}</p>
+              <p className="line-clamp-2">{product.title || "No Title"}</p>
               <p className="font-bold">
                 {product.price !== undefined
                   ? `$${product.price.toFixed(2)}`
