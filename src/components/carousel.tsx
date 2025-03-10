@@ -31,7 +31,9 @@ const CarouselSection = () => {
       try {
         const token = await getAccessToken();
         const response = await axios.get(
-          `${import.meta.env.VITE_SERVER_BASE_URL}api/logo?storeCode=${storeCode}`,
+          `${
+            import.meta.env.VITE_SERVER_BASE_URL
+          }api/logo?storeCode=${storeCode}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -42,7 +44,7 @@ const CarouselSection = () => {
 
         if (response.status === 200) {
           const data = response.data;
-          console.log(data,"datamy");
+          console.log(data, "datamy");
           setImages(data.carouselImages.web);
         } else {
           throw new Error("Failed to fetch logo details");
@@ -57,9 +59,12 @@ const CarouselSection = () => {
 
   useEffect(() => {
     const getCarouselImages = async () => {
+      const storeCode = localStorage.getItem("storeCode");
       try {
-        const images = await getContentfulImages("bannerImagesSecond");
-        console.log(images);
+        const images = await getContentfulImages(
+          storeCode == "applebees" ? storeCode : "bannerImagesSecond"
+        );
+        console.log(images, "the images");
         // setImages(images);
       } catch (error) {
         console.error("Error fetching Contentful data:", error);

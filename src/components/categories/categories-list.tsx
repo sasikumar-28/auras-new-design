@@ -12,6 +12,7 @@ const CategoriesList: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [storeCode, setStoreCode] = useState<string>("");
   const navigate = useNavigate();
 
   const getCategories = async () => {
@@ -28,8 +29,10 @@ const CategoriesList: React.FC = () => {
       if (!storeCode) {
         throw new Error("Store code is missing");
       }
-
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
+      setStoreCode(storeCode);
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/mycategories?storeCode=${storeCode}`;
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",
@@ -61,6 +64,8 @@ const CategoriesList: React.FC = () => {
   if (error) {
     return <div className="p-4 text-red-500">Error: {error}</div>;
   }
+
+  console.log(storeCode == "applebees", "the store code");
 
   return (
     <div className="fixed top-[6rem] bg-white z-40 mr-5">

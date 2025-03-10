@@ -1,5 +1,4 @@
 "use client";
-import profileImage from "@/assets/header-icons/profile-image.png";
 import { getSearchResults } from "@/utils";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
@@ -166,8 +165,8 @@ export default function Header({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <img
-                className="cursor-pointer"
-                src={profileImage}
+                className="cursor-pointer h-12 w-12"
+                src={"/images/user.png"}
                 alt="profile"
               />
             </DropdownMenuTrigger>
