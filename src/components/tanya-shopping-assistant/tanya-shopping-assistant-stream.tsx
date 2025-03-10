@@ -397,6 +397,11 @@ const TanyaShoppingAssistantStream = () => {
             placeholder="Ask me anything"
             className="w-full rounded-full p-4 h-[61px] outline-none border-none focus:ring-0 focus:border-transparent"
             value={inputText}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !isLoading) {
+                handleSendMessage();
+              }
+            }}
             onChange={(e) => setInputText(e.target.value)}
           />
           <button
