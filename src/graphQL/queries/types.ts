@@ -109,6 +109,7 @@ export interface SearchProduct {
   variants: Variant[];
   objectID: string;
   title?: string;
+  price?: string;
 }
 
 export type UpdatePaymentType = {

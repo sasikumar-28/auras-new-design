@@ -216,7 +216,7 @@ const TanyaShoppingAssistantStream = () => {
           <img src={tanyaChatBotIcon} alt="Chat with Tanya" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="absolute bottom-6 -right-4 w-[436px] h-[524px] border-0 bg-white p-0 rounded-xl">
+      <PopoverContent className="absolute bottom-6 -right-4 w-[646px] h-[594px] border-0 bg-white p-0 rounded-xl">
         {/* Header */}
         <div className="flex justify-between bg-[#552864] rounded-xl p-1">
           <div className="flex">
@@ -327,7 +327,7 @@ const TanyaShoppingAssistantStream = () => {
         </div>
 
         {/* Input Field */}
-        <div className="absolute w-4/5 bottom-2 left-9 drop-shadow-xl flex items-center rounded-full bg-white">
+        <div className="absolute w-4/5 bottom-2 left-20 drop-shadow-xl flex items-center rounded-full bg-white">
           <input
             placeholder="Ask me anything"
             className="w-full rounded-full p-4 h-[61px] outline-none border-none focus:ring-0 focus:border-transparent"

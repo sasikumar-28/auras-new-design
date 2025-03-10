@@ -78,7 +78,7 @@ const CarouselSection = () => {
 
   return (
     <>
-      <div className="mb-3">
+      <div className="mb-3 flex justify-center items-center flex-col w-full">
         <Carousel
           setApi={setApi}
           opts={{
@@ -95,8 +95,12 @@ const CarouselSection = () => {
           <CarouselContent>
             {images.map((image, index) => (
               <CarouselItem key={index}>
-                <div>
-                  <img src={image} alt={"Carousel"} />
+                <div className="w-full flex justify-center ">
+                  <img
+                    src={image}
+                    alt={"Carousel"}
+                    className="rounded-[10px]"
+                  />
                   {/* {image} */}
                 </div>
               </CarouselItem>
