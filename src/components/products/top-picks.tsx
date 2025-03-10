@@ -96,9 +96,11 @@ const TopPicks: React.FC = () => {
       if (storeCode === "applebees") {
         // Handle nested categories for applebees
         const nestedPromises = categories.flatMap((category: Category) =>
-          category.children.map((subCategory: Category) =>
-            getProductByCategory(subCategory.categoryId)
-          )
+          category.children
+            .slice(0, 2)
+            .map((subCategory: Category) =>
+              getProductByCategory(subCategory.categoryId)
+            )
         );
         productsResults = await Promise.all(nestedPromises);
       } else {
