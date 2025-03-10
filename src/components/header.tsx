@@ -2,7 +2,7 @@
 import { getSearchResults } from "@/utils";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Product, SearchProduct } from "@/graphQL/queries/types";
 import {
   DropdownMenu,
@@ -15,6 +15,7 @@ import { decryptData } from "@/utils/helper";
 import { login, logout } from "@/store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart, setSelectedProduct } from "@/store/reducers/cartReducer";
+import { getShoppingAssistantForStore } from "@/utils/store-helper";
 export default function Header({
   isSortFilter,
   isProductCard,
@@ -24,14 +25,27 @@ export default function Header({
 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const selectedProduct = useSelector((state: any) => state.cart.cart);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
+  const storeCode =
+    searchParams.get("storeCode") || localStorage.getItem("storeCode");
 
   const handleSearch = async () => {
     const results: SearchProduct[] = await getSearchResults(searchQuery);
     setSearchResults(results);
   };
+
+  useEffect(() => {
+    if (storeCode) {
+      const storeDetails = getShoppingAssistantForStore(storeCode);
+      document
+        .getElementById("favicon")
+        ?.setAttribute("href", storeDetails.favicon);
+      document.title = storeDetails.name;
+    }
+  }, [storeCode]);
 
   useEffect(() => {
     if (searchQuery.length > 2) {
