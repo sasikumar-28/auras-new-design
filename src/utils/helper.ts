@@ -1,18 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Product, SearchProduct } from "@/graphQL/queries/types";
 import CryptoJS from "crypto-js";
 const SECRET_KEY = "admin_one";
+
 export const displayData = (data: { [key: string]: string } | string) => {
   if (typeof data === "string") {
-    return data;
+    return String(data);
   }
-  return data["en-US"];
+  return String(data["en-US"] || data);
 };
 
-export const imageUrlArray = (data: Product | SearchProduct) => {
-  if ("variants" in data) {
+export const imageUrlArray = (data: Product | SearchProduct | any) => {
+  if (data?.image) {
+    return [data.image];
+  } else if ("variants" in data) {
     return data.variants[0].images;
   }
-  return data.masterVariant.images.map((image) => image.url);
+  return data.masterVariant.images.map((image: any) => image.url);
 };
 
 export const currencyFormatter = (data: number, currencyCode: string) => {

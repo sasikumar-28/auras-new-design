@@ -11,12 +11,12 @@ import { getAccessToken } from "@/utils/getAccessToken";
 import { getSearchResults } from "@/utils";
 import { SearchProduct } from "@/graphQL/queries/types";
 import {
-  currencyFormatter,
+  // currencyFormatter,
   displayData,
   formatStringToHtml,
   imageUrlArray,
   initialCapital,
-  priceFormatter,
+  // priceFormatter,
   stringReducer,
 } from "@/utils/helper";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -151,7 +151,6 @@ const TanyaShoppingAssistantStream = () => {
         }
       }
       getKeywords(sanitizeKeywords(keywords));
-      // getKeywords("sofa,sofa");
     } catch (error) {
       console.error("Error sending message to Tanya:", error);
     } finally {
@@ -174,9 +173,10 @@ const TanyaShoppingAssistantStream = () => {
 
   const getKeywords = async (keywords: string[] | string) => {
     if (typeof keywords === "string") {
+      console.log("in one string");
       const splitedKeywords = keywords.split(",");
       for (const keyword of splitedKeywords) {
-        const results = await getSearchResults(keyword);
+        const results = await getSearchResults(keyword, String(storeCode));
         if (results.length > 0) {
           setChatHistory((prev) =>
             prev.map((msg, idx) =>
@@ -194,8 +194,9 @@ const TanyaShoppingAssistantStream = () => {
         }
       }
     } else {
+      console.log("in two string");
       for (const keyword of keywords) {
-        const results = await getSearchResults(keyword);
+        const results = await getSearchResults(keyword, String(storeCode));
         if (results.length > 0) {
           setChatHistory((prev) =>
             prev.map((msg, idx) =>
@@ -306,61 +307,75 @@ const TanyaShoppingAssistantStream = () => {
                     <div className="font-semibold text-[#804C9E]">
                       Explore these options to enhance your experience
                     </div>
-                    {chat?.products.map((product) => (
-                      <div key={product.keyword}>
-                        <div className="border border-[#804C9E] text-[#804C9E] w-fit rounded-[17px] p-2 my-2 bg-[#F1DCFF] font-bold">
-                          {initialCapital(product.keyword)}
-                        </div>
-                        <Swiper
-                          spaceBetween={10}
-                          slidesPerView={1}
-                          navigation
-                          pagination={{ clickable: true }}
-                          modules={[Pagination, Navigation]}
-                          className="mySwiper"
-                        >
-                          {product.items.map((item, index) => (
-                            <SwiperSlide key={index}>
-                              <div className="flex w-full justify-center h-[190px]">
-                                <div
-                                  className="flex flex-col w-[200px] h-[160px] items-center gap-2 cursor-pointer relative shadow-lg"
-                                  onClick={() => {
-                                    localStorage.setItem(
-                                      "product",
-                                      JSON.stringify(item)
-                                    );
-                                    navigate(
-                                      `/product/${item?.objectID}?category=${item?.categoryPageId[0]}&productCard=true`
-                                    );
-                                  }}
-                                >
-                                  <img
-                                    src={imageUrlArray(item)[0]}
-                                    alt={displayData(item?.name["en-US"])}
-                                    className="w-28 h-28 rounded-full"
-                                  />
-                                  <div className="absolute flex flex-col items-center justify-center text-black bg-[#E9D2F9] w-full rounded-[3px] bottom-0 h-[33px] text-[8px] font-bold">
-                                    <div>
-                                      {currencyFormatter(
-                                        priceFormatter(item).centAmount || 0,
-                                        priceFormatter(item).currencyCode ||
-                                          "USD"
-                                      )}
-                                    </div>
-                                    <div>
-                                      {stringReducer(
-                                        displayData(item?.name["en-US"]),
-                                        27
-                                      )}
+                    {chat?.products.map((product) => {
+                      return (
+                        <div key={product.keyword}>
+                          <div className="border border-[#804C9E] text-[#804C9E] w-fit rounded-[17px] p-2 my-2 bg-[#F1DCFF] font-bold">
+                            {initialCapital(product.keyword)}
+                          </div>
+                          <Swiper
+                            spaceBetween={10}
+                            slidesPerView={1}
+                            navigation
+                            pagination={{ clickable: true }}
+                            modules={[Pagination, Navigation]}
+                            className="mySwiper"
+                          >
+                            {product.items.map((item, index) => (
+                              <SwiperSlide key={index}>
+                                <div className="flex w-full justify-center h-[190px]">
+                                  <div
+                                    className="flex flex-col w-[200px] h-[160px] items-center gap-2 cursor-pointer relative shadow-lg"
+                                    onClick={() => {
+                                      if (storeCode != "applebees") {
+                                        localStorage.setItem(
+                                          "product",
+                                          JSON.stringify(item)
+                                        );
+                                        navigate(
+                                          `/product/${item?.objectID}?category=${item?.categoryPageId[0]}&productCard=true`
+                                        );
+                                      }
+                                    }}
+                                  >
+                                    <img
+                                      src={imageUrlArray(item)[0]}
+                                      alt={
+                                        storeCode == "applebees"
+                                          ? item?.title
+                                          : String(
+                                              displayData(item?.name["en-US"])
+                                            )
+                                      }
+                                      className="w-28 h-28 rounded-full"
+                                    />
+                                    <div className="absolute flex flex-col items-center justify-center text-black bg-[#E9D2F9] w-full rounded-[3px] bottom-0 h-[33px] text-[8px] font-bold">
+                                      {/* <div>
+                                        {currencyFormatter(
+                                          priceFormatter(item).centAmount || 0,
+                                          priceFormatter(item).currencyCode ||
+                                            "USD"
+                                        )}
+                                      </div> */}
+                                      <div>
+                                        {storeCode == "applebees"
+                                          ? item?.title
+                                          : stringReducer(
+                                              String(
+                                                displayData(item?.name["en-US"])
+                                              ),
+                                              27
+                                            )}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            </SwiperSlide>
-                          ))}
-                        </Swiper>
-                      </div>
-                    ))}
+                              </SwiperSlide>
+                            ))}
+                          </Swiper>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
