@@ -134,7 +134,7 @@ const TopPicks: React.FC = () => {
     <div className="bg-[#F2F2F2] p-5 rounded-xl">
       <h2 className="text-xl font-semibold mb-4">Top Picks for You</h2>
       <div className="grid grid-cols-4 gap-4">
-        {products.slice(0, 8).map((product) => {
+        {products.slice(0, 18).map((product) => {
           console.log(product, "the product");
           return (
             <div

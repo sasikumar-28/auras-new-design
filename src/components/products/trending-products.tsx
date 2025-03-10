@@ -12,6 +12,7 @@ interface Product {
 interface Category {
   categoryId: string;
   categoryName: string;
+  children?: Category[];
 }
 
 const TrendingProducts: React.FC = () => {
@@ -78,18 +79,32 @@ const TrendingProducts: React.FC = () => {
   const fetchTrendingProducts = async () => {
     try {
       setLoading(true);
-      const categories = await getAllCategories(); // Get categories
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore";
+      const categories = await getAllCategories();
 
-      const productsPromises = categories.map((category: Category) =>
-        getProductByCategory(category.children[0].categoryId)
-      );
+      let productsResults = [];
 
-      const productsResults = await Promise.all(productsPromises);
+      if (storeCode === "applebees") {
+        // Handle nested categories for applebees
+        const nestedPromises = categories.flatMap((category: Category) => {
+          if (category.children && category.children.length > 0) {
+            return [getProductByCategory(category.children[0].categoryId)];
+          }
+          return [];
+        });
+        productsResults = await Promise.all(nestedPromises);
+      } else {
+        // Handle regular categories
+        const categoryPromises = categories.map((category: Category) =>
+          getProductByCategory(category.categoryId)
+        );
+        productsResults = await Promise.all(categoryPromises);
+      }
 
-      // Filter out null responses (if a category has no products)
+      // Filter out null responses and ensure type safety
       const filteredProducts = productsResults.filter(
-        (product) => product !== null
-      ) as Product[];
+        (product): product is Product => product !== null
+      );
 
       setProducts(filteredProducts);
     } catch (error: any) {
