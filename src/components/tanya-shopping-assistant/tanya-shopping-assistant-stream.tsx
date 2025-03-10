@@ -212,6 +212,7 @@ const TanyaShoppingAssistantStream = () => {
       }
     }
   };
+  
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
