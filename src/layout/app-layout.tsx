@@ -6,14 +6,6 @@ import ProductDetailSidebar from "@/components/products/ProductDetailSidebar";
 import { useEffect } from "react";
 import { getShoppingAssistantForStore } from "@/utils/store-helper";
 
-// 🎨 Theme Mapping Based on storeCode
-const storeThemes: Record<string, string> = {
-  claires: "bg-[#553D94]", // Example theme color for Store A
-  auras: "bg-[#A21CAF]", // Example theme color for Store B
-  applebees: "bg-[#AB192D]",
-  default: "bg-[#f8f9fa]", // Default theme color if no storeCode
-};
-
 const AppLayout = () => {
   const [searchParams] = useSearchParams();
   const sortFilter = searchParams.get("sortFilter");
