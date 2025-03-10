@@ -23,7 +23,8 @@ const CategoriesList: React.FC = () => {
       if (!token) {
         throw new Error("Failed to fetch token");
       }
-      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore";
       if (!storeCode) {
         throw new Error("Store code is missing");
       }
@@ -37,7 +38,7 @@ const CategoriesList: React.FC = () => {
       });
 
       if (response.status === 200) {
-        setCategories(response.data); // Assuming the API returns an array of categories
+        setCategories(response.data);
       } else {
         throw new Error("Failed to fetch backend response");
       }
@@ -75,9 +76,13 @@ const CategoriesList: React.FC = () => {
             }
           >
             <img
-              src={`/images/categories-images/${category.categoryName}.svg`}
+              src={`/images/categories-images/${category.categoryName}.png`}
               alt={`${category.categoryName} category`}
               className="w-22 h-full object-cover mb-2"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = `/images/categories-images/${category.categoryName}.svg`;
+              }}
             />
             <p className="text-xs">{category.categoryName}</p>
           </div>

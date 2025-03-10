@@ -14,22 +14,24 @@ interface Product {
   price: number;
 }
 
-const NewAarrivals: React.FC = () => {
+const NewArrivals: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const REQUIRED_CATEGORY_NAME = "WOMEN'S CLOTHING"; // Required category name
+
+  const REQUIRED_CATEGORY_NAMES = ["WOMEN'S CLOTHING", "BAGS"]; // Multiple categories
 
   const getAllCategories = async () => {
     try {
       const token = await getAccessToken();
 
-      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore";
       if (!storeCode) {
         throw new Error("Store code is missing");
       }
+
       const categoriesResponse = await axios.get(
-        `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`, // Endpoint to fetch categories
+        `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -40,19 +42,28 @@ const NewAarrivals: React.FC = () => {
 
       if (categoriesResponse.status === 200) {
         const categories: Category[] = categoriesResponse.data;
-        const toysCategory = categories.find(
-          (category) =>
-            category.categoryName.toLowerCase() ===
-            REQUIRED_CATEGORY_NAME.toLowerCase()
+
+        // Find categories matching REQUIRED_CATEGORY_NAMES
+        const matchedCategories = categories.filter((category) =>
+          REQUIRED_CATEGORY_NAMES.includes(
+            category.categoryName.toUpperCase()
+          )
         );
 
-        if (toysCategory) {
-          // Fetch products for the "TOYS" category
-          const products = await getProductByCategory(toysCategory.categoryId);
-          // Limit to 4 products
-          setProducts(products.slice(0, 4));
+        if (matchedCategories.length > 0) {
+          const allProducts: Product[] = [];
+
+          // Fetch products for each matched category
+          for (const matchedCategory of matchedCategories) {
+            const categoryProducts = await getProductByCategory(matchedCategory.categoryId);
+            allProducts.push(...categoryProducts);
+          }
+
+          setProducts(allProducts.slice(0, 4)); // Show only 4 products
         } else {
-          setError(`Category "${REQUIRED_CATEGORY_NAME}" not found.`);
+          setError(
+            `Categories "${REQUIRED_CATEGORY_NAMES.join(", ")}" not found.`
+          );
         }
       }
     } catch (error) {
@@ -76,13 +87,10 @@ const NewAarrivals: React.FC = () => {
       });
 
       if (response.status === 200 && response.data.hits.length > 0) {
-        return response.data.hits; // Return all products
+        return response.data.hits;
       }
     } catch (error) {
-      console.error(
-        `Error fetching products for category ${categoryId}:`,
-        error
-      );
+      console.error(`Error fetching products for category ${categoryId}:`, error);
     }
     return [];
   };
@@ -98,7 +106,7 @@ const NewAarrivals: React.FC = () => {
     <div className="bg-[#F2F2F2] p-5 rounded-xl mb-32">
       <h2 className="text-xl font-semibold mb-4">New Arrivals</h2>
       <div className="grid grid-cols-4 gap-4">
-        {products.map((product: any) => (
+        {products.map((product) => (
           <div
             key={product.id}
             className="flex bg-white p-4 drop-shadow-lg rounded-xl h-28 gap-4 items-center"
@@ -115,14 +123,12 @@ const NewAarrivals: React.FC = () => {
               </div>
             )}
             <div className="flex-1 flex flex-col justify-between overflow-hidden">
-              {/* Title with truncation */}
               <p
                 className="text-sm font-medium truncate overflow-hidden text-ellipsis whitespace-nowrap"
                 title={product.title}
               >
                 {product.title || "No Title"}
               </p>
-              {/* Price */}
               <p className="text-sm font-bold text-gray-700 mt-1">
                 {product.price !== undefined
                   ? `$${product.price.toFixed(2)}`
@@ -136,4 +142,4 @@ const NewAarrivals: React.FC = () => {
   );
 };
 
-export default NewAarrivals;
+export default NewArrivals;
