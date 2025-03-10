@@ -31,8 +31,14 @@ const useCategories = () => {
       try {
         setLoading(true);
         const token = await getAccessToken();
+        const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+        if (!storeCode) {
+          throw new Error("Store code is missing");
+        }
         const response = await axios.get(
-          `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories`,
+          `${
+            import.meta.env.VITE_SERVER_BASE_URL
+          }api/mycategories?storeCode=${storeCode}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -133,13 +139,14 @@ const ProductDetailsPage = () => {
               {[product?.image].map((image, index) => (
                 <div
                   // key={index}
-                  className={`w-1/6 border-2 border-[#B93284] rounded-xl p-2`
+                  className={
+                    `w-1/6 border-2 border-[#B93284] rounded-xl p-2`
                     // selectedImageIndex === index
                     //   ? "border-4 border-[#B93284]"
                     //   : ""
                   }
                   onClick={() => setSelectedImageIndex(index)}
-                
+
                   // onClick={() => setSelectedImageIndex(index)}
                 >
                   <img

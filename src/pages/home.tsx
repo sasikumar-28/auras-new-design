@@ -5,7 +5,7 @@ import TrendingProducts from "@/components/products/trending-products";
 import CarouselSection from "@/components/carousel";
 import SalesBanner from "@/components/sales-banner";
 import TanyaShoppingAssistant from "@/components/tanya-shopping-assistant/tanya-shopping-assistant";
-
+import TanyaShoppingAssistantStream from "@/components/tanya-shopping-assistant/tanya-shopping-assistant-stream";
 
 const Home = () => {
   return (
@@ -16,6 +16,7 @@ const Home = () => {
         <CategoriesList />
         <div className="fixed right-3 bottom-5 z-50">
           <TanyaShoppingAssistant />
+          <TanyaShoppingAssistantStream/>
         </div>
         {/* Scrollable Section */}
         <div className="mt-[8rem] overflow-y-auto scrollbar-none p-4">

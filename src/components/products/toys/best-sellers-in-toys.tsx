@@ -23,8 +23,12 @@ const BestSellersInToys: React.FC = () => {
   const fetchCategories = async () => {
     try {
       const token = await getAccessToken();
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+      if (!storeCode) {
+        throw new Error("Store code is missing");
+      }
       const categoriesResponse = await axios.get(
-        `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories`, // Endpoint to fetch categories
+        `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`, // Endpoint to fetch categories
         {
           headers: {
             "Content-Type": "application/json",

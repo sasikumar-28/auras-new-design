@@ -52,8 +52,13 @@ const [categories, setCategories] = useState<CategoriesResponse | null>(null);
       if (!token) {
         throw new Error("Failed to fetch token");
       }
+
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+      if (!storeCode) {
+        throw new Error("Store code is missing");
+      }
       
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories`;
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
       const response = await axios.get<CategoriesResponse>(URL, {
         headers: {
           "Content-Type": "application/json",

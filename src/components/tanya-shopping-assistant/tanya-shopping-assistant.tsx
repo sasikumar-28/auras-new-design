@@ -22,13 +22,12 @@ import {
   ResponseContainer,
   InputField,
   ClearHistoryButton,
-  Header
+  Header,
 } from "./style";
 import useShareState from "./use-share-state";
 import { useBetween } from "use-between";
 import ProductCarousel from "./product-carousel";
 import { getAccessToken } from "@/utils/getAccessToken";
-
 
 // Define types for our response data
 interface ResponseData {
@@ -122,7 +121,9 @@ const TanyaShoppingAssistant: React.FC = () => {
       console.log("getAccessTokenChatBot", token);
 
       if (!token) throw new Error("Failed to fetch token");
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/web-bff/assistant?pdp=false&whom=grandchild&userId=123456`;
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/web-bff/assistant?pdp=false&whom=grandchild&userId=123456`;
       const response = await axios.post(
         URL,
         { prompt: input },
@@ -209,21 +210,9 @@ const TanyaShoppingAssistant: React.FC = () => {
 
   return (
     <>
-      <ShoppingAssistantButton onClick={toggleChatbot}>
-        <img
-          src="/images/chat-with-tanya.png"
-          alt="Chat with Tanya"
-          style={{
-            width: "160px",
-            height: "90px",
-            marginRight: "-100px",
-            borderRadius: "50%",
-            marginBottom: "-40px",
-          }}
-          onClick={toggleChatbot}
-        />
-      </ShoppingAssistantButton>
-
+      <button className="rounded" onClick={toggleChatbot}>
+        <img src="/images/chat-with-tanya.png" alt="Chat with Tanya" />
+      </button>
       {isChatbotVisible && (
         <WidgetContainer>
           <Header

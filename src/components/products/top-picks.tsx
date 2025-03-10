@@ -24,7 +24,11 @@ const TopPicks: React.FC = () => {
   const getAllCategories = async () => {
     try {
       const token = await getAccessToken();
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories`;
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+      if (!storeCode) {
+        throw new Error("Store code is missing");
+      }
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
 
       const response = await axios.get(URL, {
         headers: {

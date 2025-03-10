@@ -10,7 +10,6 @@ import { getAccessToken } from "@/utils/getAccessToken";
 interface Category {
   categoryId: string;
   categoryName: string;
-  
 }
 
 const useCategories = () => {
@@ -23,12 +22,21 @@ const useCategories = () => {
       try {
         setLoading(true);
         const token = await getAccessToken();
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+        if (!storeCode) {
+          throw new Error("Store code is missing");
+        }
+        const response = await axios.get(
+          `${
+            import.meta.env.VITE_SERVER_BASE_URL
+          }api/mycategories?storeCode=${storeCode}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.status === 200) {
           setCategories(response.data);
@@ -52,28 +60,47 @@ const useCategories = () => {
 const ProductListingPage = () => {
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
-  const { categories, loading: categoriesLoading, error: categoriesError } = useCategories();
-  const { products, loading: productsLoading, error: productsError } = useProductsByCategory({ categoryId: categoryFromUrl });
+  const {
+    categories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useCategories();
+  const {
+    products,
+    loading: productsLoading,
+    error: productsError,
+  } = useProductsByCategory({ categoryId: categoryFromUrl });
 
-  const initialActiveTab = categories.findIndex((c) => c.categoryId === categoryFromUrl) ?? 0;
+  const initialActiveTab =
+    categories.findIndex((c) => c.categoryId === categoryFromUrl) ?? 0;
   const [activeTab, setActiveTab] = useState(initialActiveTab);
 
   useEffect(() => {
     setActiveTab(initialActiveTab);
   }, [categoryFromUrl, categories]);
 
-  if (categoriesLoading) return <div className="p-4">Loading categories...</div>;
-  if (categoriesError) return <div className="p-4 mt-20 text-red-500">Error: {categoriesError}</div>;
+  if (categoriesLoading)
+    return <div className="p-4">Loading categories...</div>;
+  if (categoriesError)
+    return (
+      <div className="p-4 mt-20 text-red-500">Error: {categoriesError}</div>
+    );
 
   return (
     <div className="mt-20 w-full">
-      <CategoryTabs data={categories} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <CategoryTabs
+        data={categories}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
       <BreadCrumb
         list={[
           { name: "Home", link: "/" },
           {
             name: categories[activeTab]?.categoryName || "Category",
-            link: `/product-listing?category=${categories[activeTab]?.categoryId || ""}&sortFilter=true`,
+            link: `/product-listing?category=${
+              categories[activeTab]?.categoryId || ""
+            }&sortFilter=true`,
           },
         ]}
       />

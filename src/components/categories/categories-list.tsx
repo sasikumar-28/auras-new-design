@@ -18,17 +18,21 @@ const CategoriesList: React.FC = () => {
     try {
       setLoading(true);
       const token = await getAccessToken();
-      console.log(token,"accessTokenweb")
+      console.log(token, "accessTokenweb");
 
       if (!token) {
         throw new Error("Failed to fetch token");
       }
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore"; // Get storeCode dynamically
+      if (!storeCode) {
+        throw new Error("Store code is missing");
+      }
 
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories`;
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -57,7 +61,6 @@ const CategoriesList: React.FC = () => {
     return <div className="p-4 text-red-500">Error: {error}</div>;
   }
 
-
   return (
     <div className="fixed top-[6rem] bg-white z-40 mr-5">
       <div className="p-4 bg-white grid grid-cols-9 gap-4">
@@ -68,9 +71,9 @@ const CategoriesList: React.FC = () => {
             onClick={() =>
               navigate(
                 `/product-listing?category=${category.categoryId}&sortFilter=true`
-              )  
+              )
             }
-           >
+          >
             <img
               src={`/images/categories-images/${category.categoryName}.svg`}
               alt={`${category.categoryName} category`}
@@ -83,6 +86,5 @@ const CategoriesList: React.FC = () => {
     </div>
   );
 };
-
 
 export default CategoriesList;
