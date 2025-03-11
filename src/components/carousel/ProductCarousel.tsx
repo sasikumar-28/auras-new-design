@@ -10,7 +10,13 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-const ProductCarousel = ({ product }: { product: SearchProduct[] }) => {
+const ProductCarousel = ({
+  product,
+  storeDetails,
+}: {
+  product: SearchProduct[];
+  storeDetails: any;
+}) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const storeCode =
@@ -40,7 +46,7 @@ const ProductCarousel = ({ product }: { product: SearchProduct[] }) => {
         {product?.length > productsPerPage && (
           <button
             onClick={prevProducts}
-            className="bg-[#804C9E] text-white p-2 rounded flex items-center h-fit"
+            className={`bg-${storeDetails.themeDarkColor} text-white p-2 rounded flex items-center h-fit`}
           >
             <Icon icon="mdi:chevron-left" width="18" />
           </button>
@@ -69,7 +75,9 @@ const ProductCarousel = ({ product }: { product: SearchProduct[] }) => {
                   }
                   className="w-16 h-16 rounded-[3px] scale-125 transition-transform duration-300 hover:scale-150 object-cover"
                 />
-                <div className="text-black bg-[#E9D2F9] w-full rounded-[3px] p-1 text-[12px] font-bold text-center">
+                <div
+                  className={`text-black bg-${storeDetails.themeLightColor} w-full rounded-[3px] p-1 text-[12px] font-bold text-center`}
+                >
                   <div>
                     {currencyFormatter(
                       storeCode == "applebees"
@@ -91,7 +99,7 @@ const ProductCarousel = ({ product }: { product: SearchProduct[] }) => {
         {product?.length > productsPerPage && (
           <button
             onClick={nextProducts}
-            className="bg-[#804C9E] text-white p-2 rounded flex items-center h-fit"
+            className={`bg-${storeDetails.themeDarkColor} text-white p-2 rounded flex items-center h-fit`}
           >
             <Icon icon="mdi:chevron-right" width="18" />
           </button>
