@@ -318,6 +318,11 @@ const TanyaShoppingAssistantStream = () => {
                 <div className="my-2 mb-8 px-4 text-sm text-gray-700 ">
                   <p
                     className={`font-semibold text-${storeDetails.themeDarkColor}`}
+                    style={{
+                      color: storeDetails.themeDarkColor
+                        .replace("[", "")
+                        .replace("]", ""),
+                    }}
                   >
                     Why not explore these inqueries...
                   </p>
@@ -330,6 +335,11 @@ const TanyaShoppingAssistantStream = () => {
                         key={idx}
                         className={`cursor-pointer text-[#232323] border bg-[#804C9E0D] border-${storeDetails.themeDarkColor} m-1 rounded-xl px-2 py-1`}
                         onClick={() => handleSendMessage(question)}
+                        style={{
+                          color: storeDetails.themeDarkColor
+                            .replace("[", "")
+                            .replace("]", ""),
+                        }}
                       >
                         {question}
                       </button>

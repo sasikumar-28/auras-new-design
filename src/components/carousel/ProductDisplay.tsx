@@ -9,6 +9,11 @@ const ProductDisplay = ({ chat, storeDetails }: any) => {
         <div key={i}>
           <div
             className={`font-semibold text-${storeDetails.themeDarkColor} mb-2 border-${storeDetails.themeDarkColor} border p-2 w-fit rounded-[20px] bg-${storeDetails.themeLightColor}`}
+            style={{
+              color: storeDetails.themeDarkColor
+                .replace("[", "")
+                .replace("]", ""),
+            }}
           >
             {initialCapital(products.keyword) || "No keyword"}
           </div>
