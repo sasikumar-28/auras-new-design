@@ -216,9 +216,11 @@ const TanyaShoppingAssistantStream = () => {
           <img src={tanyaChatBotIcon} alt="Chat with Tanya" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="absolute bottom-6 -right-4 w-[646px] h-[594px] border-0 bg-white p-0 rounded-xl">
+      <PopoverContent className="absolute bottom-6 -right-4 w-[646px] h-[564px] border-0 bg-white p-0 rounded-xl">
         {/* Header */}
-        <div className="flex justify-between bg-[#552864] rounded-xl p-1">
+        <div
+          className={`flex justify-between bg-${storeDetails.themeDarkColor} rounded-xl p-1`}
+        >
           <div className="flex">
             <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} />
             <div>
@@ -244,12 +246,17 @@ const TanyaShoppingAssistantStream = () => {
         {/* Chat Body */}
         <div
           ref={scrollRef}
-          className="h-[400px] overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar"
+          className="h-[440px] overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar"
         >
-          <p className="text-sm text-[#000000] text-[16px] bg-[#F1DCFF] rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4">
+          <p
+            className={`text-sm text-[#000000] text-[16px] 
+
+              bg-${storeDetails.themeLightColor}
+               rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4`}
+          >
             Hey there! I'm Tanya, your new AI shopping assistant. Think of me as
             your super helpful friend who knows all the best stuff at{" "}
-            {storeDetails.name}'s. Ready to find something amazing?
+            {storeDetails.name}. Ready to find something amazing?
           </p>
           {storeCode != "applebees" && (
             <div className="mx-3 bg-blue-800 p-3 rounded-2xl">
@@ -281,7 +288,9 @@ const TanyaShoppingAssistantStream = () => {
           {chatHistory.map((chat, index) => (
             <div key={index}>
               <div className="flex justify-end">
-                <p className="text-sm text-[white] bg-[#804C9E] rounded-l-xl p-3 m-3 mb-4 rounded-br-xl roud inline-block max-w-[75%]">
+                <p
+                  className={`text-sm text-[white] bg-${storeDetails.themeDarkColor} rounded-l-xl p-3 m-3 mb-4 rounded-br-xl roud inline-block max-w-[75%]`}
+                >
                   {chat.query}
                 </p>
               </div>
@@ -297,14 +306,24 @@ const TanyaShoppingAssistantStream = () => {
               )}
               {chat?.products && chat?.products?.length > 0 && (
                 // <ProductCarousel products={chat.products} navigate={navigate} />
-                <ProductDisplay chat={chat.products} />
+                <ProductDisplay
+                  chat={chat.products}
+                  storeDetails={storeDetails}
+                />
               )}
 
               {/* Render potential questions below each response */}
 
               {chat.potentialQuestions.length > 0 && (
                 <div className="my-2 mb-8 px-4 text-sm text-gray-700 ">
-                  <p className="font-semibold text-[#804C9E]">
+                  <p
+                    className={`font-semibold text-${storeDetails.themeDarkColor}`}
+                    style={{
+                      color: storeDetails.themeDarkColor
+                        .replace("[", "")
+                        .replace("]", ""),
+                    }}
+                  >
                     Why not explore these inqueries...
                   </p>
 
@@ -314,8 +333,13 @@ const TanyaShoppingAssistantStream = () => {
                     .map((question: string, idx: number) => (
                       <button
                         key={idx}
-                        className="cursor-pointer text-[#232323] border bg-[#804C9E0D] border-[#804C9E] m-1 rounded-xl px-2 py-1"
+                        className={`cursor-pointer text-[#232323] border bg-[#804C9E0D] border-${storeDetails.themeDarkColor} m-1 rounded-xl px-2 py-1`}
                         onClick={() => handleSendMessage(question)}
+                        style={{
+                          color: storeDetails.themeDarkColor
+                            .replace("[", "")
+                            .replace("]", ""),
+                        }}
                       >
                         {question}
                       </button>
@@ -342,15 +366,21 @@ const TanyaShoppingAssistantStream = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="mr-6 text-[#552864] font-medium"
+            className={`mr-6 text-${storeDetails.themeDarkColor} font-medium`}
             onClick={() => handleSendMessage()}
           >
             {isLoading ? (
-              <div className="m-3 animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700" />
+              <div
+                className={`m-3 animate-spin rounded-full h-6 w-6 border-b-2 border-${storeDetails.themeDarkColor
+                  .replace("[", "")
+                  .replace("]", "")}`}
+              />
             ) : (
               <Icon
                 icon="fluent:send-48-filled"
-                color="purple-700"
+                color={storeDetails.themeDarkColor
+                  .replace("[", "")
+                  .replace("]", "")}
                 width="24"
                 height="24"
               />
