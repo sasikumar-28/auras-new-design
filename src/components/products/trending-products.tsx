@@ -12,6 +12,7 @@ interface Product {
 interface Category {
   categoryId: string;
   categoryName: string;
+  children?: Category[];
 }
 
 const TrendingProducts: React.FC = () => {
@@ -26,15 +27,17 @@ const TrendingProducts: React.FC = () => {
       if (!storeCode) {
         throw new Error("Store code is missing");
       }
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
-  
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/mycategories?storeCode=${storeCode}`;
+
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (response.status === 200) {
         return response.data.slice(0, 4); // Ensure only 4 categories are returned
       } else {
@@ -46,12 +49,13 @@ const TrendingProducts: React.FC = () => {
       return [];
     }
   };
-  
 
   const getProductByCategory = async (categoryId: string) => {
     try {
       const token = await getAccessToken();
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/productByCategoryId/${categoryId}?limit=1`;
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/productByCategoryId/${categoryId}?limit=1`;
 
       const response = await axios.get(URL, {
         headers: {
@@ -75,18 +79,32 @@ const TrendingProducts: React.FC = () => {
   const fetchTrendingProducts = async () => {
     try {
       setLoading(true);
-      const categories = await getAllCategories(); // Get categories
+      const storeCode = localStorage.getItem("storeCode") || "defaultStore";
+      const categories = await getAllCategories();
 
-      const productsPromises = categories.map((category: Category) =>
-        getProductByCategory(category.categoryId)
-      );
+      let productsResults = [];
 
-      const productsResults = await Promise.all(productsPromises);
+      if (storeCode === "applebees") {
+        // Handle nested categories for applebees
+        const nestedPromises = categories.flatMap((category: Category) => {
+          if (category.children && category.children.length > 0) {
+            return [getProductByCategory(category.children[0].categoryId)];
+          }
+          return [];
+        });
+        productsResults = await Promise.all(nestedPromises);
+      } else {
+        // Handle regular categories
+        const categoryPromises = categories.map((category: Category) =>
+          getProductByCategory(category.categoryId)
+        );
+        productsResults = await Promise.all(categoryPromises);
+      }
 
-      // Filter out null responses (if a category has no products)
+      // Filter out null responses and ensure type safety
       const filteredProducts = productsResults.filter(
-        (product) => product !== null
-      ) as Product[];
+        (product): product is Product => product !== null
+      );
 
       setProducts(filteredProducts);
     } catch (error: any) {
@@ -107,7 +125,9 @@ const TrendingProducts: React.FC = () => {
   return (
     <div className="bg-[#F2F2F2] p-5 rounded-xl mb-6">
       <h2 className="text-xl font-semibold mb-4">
-        Trending products you may like
+        {localStorage.getItem("storeCode") == "applebees"
+          ? "Taste Happiness in Every Bite & Sip!"
+          : "Trending products you may like"}
       </h2>
       <div className="grid grid-cols-4 gap-4">
         {products.map((product) => (
@@ -127,7 +147,7 @@ const TrendingProducts: React.FC = () => {
               </div>
             )}
             <div className="text-sm">
-              <p  className="line-clamp-2">{product.title || "No Title"}</p>
+              <p className="line-clamp-2">{product.title || "No Title"}</p>
               <p className="font-bold">
                 {product.price !== undefined
                   ? `$${product.price.toFixed(2)}`

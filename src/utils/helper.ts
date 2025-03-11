@@ -1,24 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Product, SearchProduct } from "@/graphQL/queries/types";
 import CryptoJS from "crypto-js";
 const SECRET_KEY = "admin_one";
+
 export const displayData = (data: { [key: string]: string } | string) => {
   if (typeof data === "string") {
-    return data;
+    return String(data);
   }
-  return data["en-US"];
+  return String(data["en-US"] || data);
 };
 
-export const imageUrlArray = (data: Product | SearchProduct) => {
-  if ("variants" in data) {
+export const imageUrlArray = (data: Product | SearchProduct | any) => {
+  if (data?.image) {
+    return [data.image];
+  } else if ("variants" in data) {
     return data.variants[0].images;
   }
-  return data.masterVariant.images.map((image) => image.url);
+  return data.masterVariant.images.map((image: any) => image.url);
 };
 
-export const currencyFormatter = (data: number, currencyCode: string) => {
+export const currencyFormatter = (data: number, currencyCode?: string) => {
   return data.toLocaleString("en-US", {
     style: "currency",
-    currency: currencyCode,
+    currency: currencyCode || "USD",
   });
 };
 
@@ -61,4 +65,17 @@ export const laterDate = (day: number) => {
 
 export const stringReducer = (text: string, length: number) => {
   return text.length < length ? text : text.slice(0, length) + "...";
+};
+
+export const formatStringToHtml = (str: string) => {
+  return str
+    .split("\\n")
+    .map((line, index) => {
+      const numberedPoint = line.match(/^(\d+)\.\s(.+)/);
+      if (numberedPoint) {
+        return `<p key=${index} class="mb-2"><strong>${numberedPoint[1]}.</strong> ${numberedPoint[2]}</p>`;
+      }
+      return line.trim() ? `<p key=${index} class="mb-2">${line}</p>` : "<br/>";
+    })
+    .join("");
 };

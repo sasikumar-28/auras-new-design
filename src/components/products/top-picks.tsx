@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getAccessToken } from "@/utils/getAccessToken";
+import { useSearchParams } from "react-router-dom";
 
-interface Product {
+export interface Product {
   id: string;
   title: string;
   image: string; // Updated to match API response
@@ -12,14 +13,18 @@ interface Product {
 interface Category {
   categoryId: string;
   categoryName: string;
+  children: Category[];
 }
 
 const TopPicks: React.FC = () => {
+  const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const storeCode =
+    searchParams.get("storeCode") || localStorage.getItem("storeCode");
 
-  const REQUIRED_CATEGORIES = ["HAIR", "TOYS", "ACCESSORIES", "BAGS"];
+  // const REQUIRED_CATEGORIES = ["HAIR", "TOYS", "ACCESSORIES", "BAGS"];
 
   const getAllCategories = async () => {
     try {
@@ -28,7 +33,9 @@ const TopPicks: React.FC = () => {
       if (!storeCode) {
         throw new Error("Store code is missing");
       }
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/mycategories?storeCode=${storeCode}`;
 
       const response = await axios.get(URL, {
         headers: {
@@ -36,12 +43,13 @@ const TopPicks: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      console.log(response.data, "the filtered categories un");
       if (response.status === 200) {
         // Filter categories to include only the required ones
-        return response.data.filter((category: Category) =>
-          REQUIRED_CATEGORIES.includes(category.categoryName)
-        );
+        return response.data;
+        // .filter((category: Category) =>
+        //   REQUIRED_CATEGORIES.includes(category.categoryName)
+        // );
       } else {
         throw new Error("Failed to fetch categories");
       }
@@ -55,7 +63,9 @@ const TopPicks: React.FC = () => {
   const getProductByCategory = async (categoryId: string) => {
     try {
       const token = await getAccessToken();
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/productByCategoryId/${categoryId}?limit=1`;
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/productByCategoryId/${categoryId}?limit=1`;
 
       const response = await axios.get(URL, {
         headers: {
@@ -63,7 +73,6 @@ const TopPicks: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (response.status === 200 && response.data.hits.length > 0) {
         return response.data.hits[0]; // Return the first product
       }
@@ -79,18 +88,33 @@ const TopPicks: React.FC = () => {
   const fetchTopPicksProducts = async () => {
     try {
       setLoading(true);
-      const categories = await getAllCategories(); // Get specific categories
+      const categories = await getAllCategories();
+      console.log(categories, "the filtered categories");
 
-      const productsPromises = categories.map((category: Category) =>
-        getProductByCategory(category.categoryId)
-      );
+      let productsResults = [];
 
-      const productsResults = await Promise.all(productsPromises);
+      if (storeCode === "applebees") {
+        // Handle nested categories for applebees
+        const nestedPromises = categories.flatMap((category: Category) =>
+          category.children
+            .slice(0, 3)
+            .map((subCategory: Category) =>
+              getProductByCategory(subCategory.categoryId)
+            )
+        );
+        productsResults = await Promise.all(nestedPromises);
+      } else {
+        // Handle regular categories
+        const categoryPromises = categories.map((category: Category) =>
+          getProductByCategory(category.categoryId)
+        );
+        productsResults = await Promise.all(categoryPromises);
+      }
 
-      // Filter out null responses (if a category has no products)
-      const filteredProducts = productsResults.filter(
-        (product) => product !== null
-      ) as Product[];
+      // Filter out null responses and flatten the array
+      const filteredProducts = productsResults
+        .flat()
+        .filter((product): product is Product => product !== null);
 
       setProducts(filteredProducts);
     } catch (error: any) {
@@ -110,42 +134,48 @@ const TopPicks: React.FC = () => {
 
   return (
     <div className="bg-[#F2F2F2] p-5 rounded-xl">
-      <h2 className="text-xl font-semibold mb-4">Top Picks for You</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        {storeCode == "applebees"
+          ? "Indulge, Refresh, Repeat!"
+          : "Top Picks for You"}{" "}
+      </h2>
       <div className="grid grid-cols-4 gap-4">
-        {products.map((product) => (
-          <div
-          key={product.id}
-          className="flex bg-white p-4 drop-shadow-lg rounded-xl h-28 gap-4 items-center"
-        >
-          {product.image ? (
-            <img
-              src={product.image}
-              alt={product.title || "Product Image"}
-              className="w-20 h-20 object-cover rounded-md"
-            />
-          ) : (
-            <div className="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center">
-              <span className="text-xs text-gray-500">No Image</span>
-            </div>
-          )}
-          <div className="flex-1 flex flex-col justify-between overflow-hidden">
-            {/* Title with truncation */}
-            <p
-              className="text-sm font-medium truncate overflow-hidden text-ellipsis whitespace-nowrap"
-              title={product.title}
+        {products.slice(0, 4).map((product) => {
+          console.log(product, "the product");
+          return (
+            <div
+              key={product.id}
+              className="flex bg-white p-4 drop-shadow-lg rounded-xl h-28 gap-4 items-center"
             >
-              {product.title || "No Title"}
-            </p>
-            {/* Price */}
-            <p className="text-sm font-bold text-gray-700 mt-1">
-              {product.price !== undefined
-                ? `$${product.price.toFixed(2)}`
-                : "Price Unavailable"}
-            </p>
-          </div>
-        </div>
-        
-        ))}
+              {product.image ? (
+                <img
+                  src={product.image}
+                  alt={product.title || "Product Image"}
+                  className="w-20 h-20 object-cover rounded-md"
+                />
+              ) : (
+                <div className="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center">
+                  <span className="text-xs text-gray-500">No Image</span>
+                </div>
+              )}
+              <div className="flex-1 flex flex-col justify-between overflow-hidden">
+                {/* Title with truncation */}
+                <p
+                  className="text-sm font-medium truncate overflow-hidden text-ellipsis whitespace-nowrap"
+                  title={product.title}
+                >
+                  {product.title || "No Title"}
+                </p>
+                {/* Price */}
+                <p className="text-sm font-bold text-gray-700 mt-1">
+                  {product.price !== undefined
+                    ? `$${product.price.toFixed(2)}`
+                    : "Price Unavailable"}
+                </p>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -108,6 +108,8 @@ export interface SearchProduct {
   _tags: string[];
   variants: Variant[];
   objectID: string;
+  title?: string;
+  price?: string;
 }
 
 export type UpdatePaymentType = {

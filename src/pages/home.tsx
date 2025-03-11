@@ -6,8 +6,13 @@ import CarouselSection from "@/components/carousel";
 import SalesBanner from "@/components/sales-banner";
 // import TanyaShoppingAssistant from "@/components/tanya-shopping-assistant/tanya-shopping-assistant";
 import TanyaShoppingAssistantStream from "@/components/tanya-shopping-assistant/tanya-shopping-assistant-stream";
+import { useSearchParams } from "react-router-dom";
+import AppleBeesItemDisplay from "@/components/AppleBeesItemDisplay";
 
 const Home = () => {
+  const [searchParams] = useSearchParams();
+  const storeCode =
+    searchParams.get("storeCode") || localStorage.getItem("storeCode");
   return (
     <div className="flex flex-col h-[94vh] overflow-hidden">
       {/* Main Content */}
@@ -21,11 +26,16 @@ const Home = () => {
         {/* Scrollable Section */}
         <div className="mt-[8rem] overflow-y-auto scrollbar-none p-4">
           <CarouselSection />
-          <TrendingProducts />
-          {/* special sale */}
-          <SalesBanner />
-          <BestSellersInToys />
-          <NewAarrivals />
+          {storeCode == "applebees" ? (
+            <AppleBeesItemDisplay />
+          ) : (
+            <>
+              <TrendingProducts />
+              <SalesBanner />
+              <BestSellersInToys />
+              <NewAarrivals />
+            </>
+          )}
         </div>
       </div>
     </div>
