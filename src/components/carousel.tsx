@@ -44,7 +44,6 @@ const CarouselSection = () => {
 
         if (response.status === 200) {
           const data = response.data;
-          console.log(data, "datamy");
           setImages(data.carouselImages.web);
         } else {
           throw new Error("Failed to fetch logo details");
@@ -57,22 +56,21 @@ const CarouselSection = () => {
     fetchLogo();
   }, []);
 
-  useEffect(() => {
-    const getCarouselImages = async () => {
-      const storeCode = localStorage.getItem("storeCode");
-      try {
-        const images = await getContentfulImages(
-          storeCode == "applebees" ? storeCode : "bannerImagesSecond"
-        );
-        console.log(images, "the images");
-        // setImages(images);
-      } catch (error) {
-        console.error("Error fetching Contentful data:", error);
-        return [];
-      }
-    };
-    getCarouselImages();
-  }, []);
+  // useEffect(() => {
+  //   const getCarouselImages = async () => {
+  //     const storeCode = localStorage.getItem("storeCode");
+  //     try {
+  //       const images = await getContentfulImages(
+  //         storeCode == "applebees" ? storeCode : "bannerImagesSecond"
+  //       );
+  //       // setImages(images);
+  //     } catch (error) {
+  //       console.error("Error fetching Contentful data:", error);
+  //       return [];
+  //     }
+  //   };
+  //   getCarouselImages();
+  // }, []);
 
   if (images.length === 0) return <p>Not found</p>;
 

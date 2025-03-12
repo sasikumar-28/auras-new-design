@@ -16,6 +16,8 @@ import { login, logout } from "@/store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart, setSelectedProduct } from "@/store/reducers/cartReducer";
 import { getShoppingAssistantForStore } from "@/utils/store-helper";
+import { fetchStoreConfig } from "@/server/api";
+import { setStore } from "@/store/reducers/storeReducer";
 export default function Header({
   isSortFilter,
   isProductCard,
@@ -39,6 +41,9 @@ export default function Header({
 
   useEffect(() => {
     if (storeCode) {
+      fetchStoreConfig(storeCode).then((res) => {
+        dispatch(setStore(res));
+      });
       const storeDetails = getShoppingAssistantForStore(storeCode);
       document
         .getElementById("favicon")

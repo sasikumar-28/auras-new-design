@@ -32,8 +32,7 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
   const getCategories = async () => {
     try {
       setLoading(true);
-      const token = await getAccessToken(); 
-      console.log(token, "accessTokenweb");
+      const token = await getAccessToken();
 
       if (!token) {
         throw new Error("Failed to fetch token");
@@ -43,7 +42,9 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
       if (!storeCode) {
         throw new Error("Store code is missing");
       }
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/mycategories?storeCode=${storeCode}`;
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",

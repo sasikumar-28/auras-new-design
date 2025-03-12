@@ -156,3 +156,44 @@ export type AddressInputData = {
   id: string;
   actions: Action[];
 };
+
+export interface Store {
+  storeCode: string;
+  storeName: string;
+  storeDescription: string;
+  activeCatalogId: number;
+  isDefault: boolean;
+  logoDarkBg: string;
+  logoLightBg: string;
+  logoTransparent: string;
+  catalogs: number[];
+  themeColor: string;
+  themeContrastColor: string;
+  tanyaThemeColor: string;
+  tanyaThemeColorLight: string;
+  favicon: string;
+  websiteTitle: string;
+  flowId: string;
+  aliasId: string;
+  searchConfigs: SearchConfig;
+  homePageCategories: homePageCategories[];
+  carouselImages: {
+    web: string[];
+    mobile: string[];
+  };
+  otherImages: {
+    web: string[];
+    mobile: string[];
+  };
+}
+
+export interface homePageCategories {
+  categoryID: number;
+  carouselTitle: string;
+}
+
+export interface SearchConfig {
+  endpoint: string;
+  accessKey: string;
+  secretKey: string;
+}

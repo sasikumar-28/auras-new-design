@@ -248,16 +248,20 @@ const TanyaShoppingAssistantStream = () => {
           ref={scrollRef}
           className="h-[440px] overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar"
         >
-          <p
-            className={`text-sm text-[#000000] text-[16px] 
-
-              bg-${storeDetails.themeLightColor}
+          <div
+            className={`text-sm text-[#000000] text-[16px] bg-${storeDetails.themeLightColor}
+              
                rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4`}
+            style={{
+              backgroundColor: storeDetails.themeLightColor
+                .replace("[", "#")
+                .replace("]", ""),
+            }}
           >
             Hey there! I'm Tanya, your new AI shopping assistant. Think of me as
             your super helpful friend who knows all the best stuff at{" "}
             {storeDetails.name}. Ready to find something amazing?
-          </p>
+          </div>
           {storeCode != "applebees" && (
             <div className="mx-3 bg-blue-800 p-3 rounded-2xl">
               <p className="font-semibold text-white">
