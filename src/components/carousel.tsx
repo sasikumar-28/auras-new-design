@@ -72,8 +72,6 @@ const CarouselSection = () => {
   //   getCarouselImages();
   // }, []);
 
-  if (images.length === 0) return <p>Not found</p>;
-
   return (
     <>
       <div className="mb-3 flex justify-center items-center flex-col w-full">

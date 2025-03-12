@@ -8,6 +8,7 @@ import SalesBanner from "@/components/sales-banner";
 import TanyaShoppingAssistantStream from "@/components/tanya-shopping-assistant/tanya-shopping-assistant-stream";
 import { useSearchParams } from "react-router-dom";
 import AppleBeesItemDisplay from "@/components/AppleBeesItemDisplay";
+import DefaultSkeleton from "@/components/landingPage/DefaultSkeleton";
 
 const Home = () => {
   const [searchParams] = useSearchParams();
@@ -26,7 +27,8 @@ const Home = () => {
         {/* Scrollable Section */}
         <div className="mt-[8rem] overflow-y-auto scrollbar-none p-4">
           <CarouselSection />
-          {storeCode == "applebees" ? (
+          <DefaultSkeleton />
+          {/* {storeCode == "applebees" ? (
             <AppleBeesItemDisplay />
           ) : (
             <>
@@ -35,7 +37,7 @@ const Home = () => {
               <BestSellersInToys />
               <NewAarrivals />
             </>
-          )}
+          )} */}
         </div>
       </div>
     </div>

@@ -29,7 +29,28 @@ const initialState: StoreState = {
       accessKey: "",
       secretKey: "",
     },
-    homePageCategories: [],
+    homePageCategories: [
+      //   {
+      //     categoryID: 1,
+      //     carouselTitle:
+      //       "Start with a Crunch – Appetizers That Steal the Spotlight!",
+      //   },
+      //   {
+      //     categoryID: 5,
+      //     carouselTitle:
+      //       "Sip, Savor, Refresh – Perfect Beverages for Every Moment!",
+      //   },
+      //   {
+      //     categoryID: 112,
+      //     carouselTitle:
+      //       "Sweeten Every Moment – Indulge in Irresistible Desserts!",
+      //   },
+      //   {
+      //     categoryID: 121,
+      //     carouselTitle:
+      //       "Savor the Heart of the Meal – Delicious Main Courses for Every Craving!",
+      //   },
+    ],
     carouselImages: {
       web: [],
       mobile: [],

@@ -2,6 +2,8 @@ export interface Category {
   id: string;
   key: string;
   name: string; // Now a string type for the localized name
+  categoryId: string;
+  children?: Category[];
 }
 
 export interface CategoriesResponse {
