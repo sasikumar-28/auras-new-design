@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { decryptData } from "@/utils/helper";
+import { decryptData, displayData, imageUrlArray } from "@/utils/helper";
 import { login, logout } from "@/store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart, setSelectedProduct } from "@/store/reducers/cartReducer";
@@ -33,16 +33,22 @@ export default function Header({
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  const store = useSelector((s) => s.store.store);
 
   const handleSearch = async () => {
-    const results: SearchProduct[] = await getSearchResults(searchQuery);
+    const results: SearchProduct[] = await getSearchResults(
+      searchQuery,
+      store.searchConfigs
+    );
+    console.log(results, "the result");
     setSearchResults(results);
   };
 
   useEffect(() => {
     if (storeCode) {
       fetchStoreConfig(storeCode).then((res) => {
-        dispatch(setStore(res));
+        console.log(res, "the res");
+        dispatch(setStore({ ...res, storeCode: storeCode }));
       });
       const storeDetails = getShoppingAssistantForStore(storeCode);
       document
@@ -107,7 +113,7 @@ export default function Header({
           />
         </div>
         <div className="absolute top-16 left-0 w-4/6 bg-white rounded-xl shadow-md">
-          {searchResults.map((result, index) => (
+          {searchResults.slice(0, 5).map((result, index) => (
             <div key={index} className="p-4 border-b cursor-pointer">
               <div
                 className="flex justify-between items-center"
@@ -115,19 +121,29 @@ export default function Header({
                   localStorage.setItem("product", JSON.stringify(result));
                   setSearchQuery("");
                   navigate(
-                    `/product/${result?.objectID}?category=${result?.categoryPageId[0]}&productCard=true`
+                    `/product/${result?.objectID}?category=${
+                      storeCode == "applebees"
+                        ? result?.categoryId
+                        : result?.categoryPageId[0]
+                    }&productCard=true`
                   );
                   setSearchResults([]);
                 }}
               >
                 <div className="flex items-center gap-2">
                   <img
-                    src={result.variants[0].images[0]}
-                    alt={result.name["en-US"]}
+                    src={imageUrlArray(result)[0]}
+                    alt={
+                      storeCode == "applebees"
+                        ? result?.title
+                        : displayData(result.name["en-US"])
+                    }
                     className="w-10 h-10 rounded-full"
                   />
                   <p className="text-gray-500 hover:underline">
-                    {result.name["en-US"]}
+                    {storeCode == "applebees"
+                      ? result?.title
+                      : displayData(result.name["en-US"])}
                   </p>
                 </div>
                 <div className="-rotate-45">
@@ -146,7 +162,10 @@ export default function Header({
 
       <div className="flex w-2/6 items-center gap-6">
         <div className="flex items-center gap-2 bg-[#2C2C2C] h-[53px] min-w-[172px] rounded-full px-2 ">
-          <div className="p-2  bg-[#B93284] rounded-full ">
+          <div
+            className="p-2 rounded-full "
+            style={{ backgroundColor: `${store.themeColor}` }}
+          >
             <Icon
               icon="mdi:cart-outline"
               width="20"

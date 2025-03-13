@@ -89,7 +89,6 @@ const CategoryProductList = ({
       let categoriesData: Product[] = [];
       for (const category of firstSixCategories) {
         let allProducts: Product[] = [];
-
         if (storeCode == "applebees") {
           if (category.children && category.children.length > 0) {
             for (const childCategory of category.children) {

@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
+import { useSelector } from "react-redux";
 
 interface Category {
   categoryId: string;
@@ -25,7 +26,7 @@ interface CategoryTabsProps {
 const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
-  console.log(categories);
+  const store = useSelector((s) => s.store.store);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -105,7 +106,10 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
       {/* Sort Icon with Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="relative bg-[#B93284] rounded-full p-2 cursor-pointer">
+          <div
+            className="relative rounded-full p-2 cursor-pointer"
+            style={{ backgroundColor: store.themeColor }}
+          >
             <Icon
               icon="mdi:sort"
               className="text-white text-2xl transition"

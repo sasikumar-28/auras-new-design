@@ -1,7 +1,7 @@
 import BreadCrumb from "@/components/breadcrumb/BreadCrumb";
 import CategoryTabs from "@/components/categories/categoryTabs";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { setProducts as setProductsAction } from "@/store/reducers/productReducer";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -53,7 +53,6 @@ const useCategories = () => {
           throw new Error("Failed to fetch categories");
         }
       } catch (error: any) {
-        console.error("Error fetching categories:", error);
         setError(error.message || "Failed to fetch categories");
       } finally {
         setLoading(false);
@@ -73,7 +72,7 @@ const ProductDetailsPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const categoryFromUrl = searchParams.get("category");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  console.log(selectedImageIndex);
+  const store = useSelector((s) => s.store.store);
   const { id } = useParams();
   const {
     categories,
@@ -140,13 +139,13 @@ const ProductDetailsPage = () => {
                 <div
                   // key={index}
                   className={
-                    `w-1/6 border-2 border-[#B93284] rounded-xl p-2`
+                    `w-1/6 rounded-xl p-2`
                     // selectedImageIndex === index
                     //   ? "border-4 border-[#B93284]"
                     //   : ""
                   }
                   onClick={() => setSelectedImageIndex(index)}
-
+                  style={{ border: `2px solid ${store.themeColor}` }}
                   // onClick={() => setSelectedImageIndex(index)}
                 >
                   <img
@@ -159,7 +158,8 @@ const ProductDetailsPage = () => {
             </div>
             <div
               onClick={() => navigate(-1)}
-              className="flex gap-2 justify-center mt-2 text-sm underline text-[#B93284] cursor-pointer"
+              className="flex gap-2 justify-center mt-2 text-sm underline cursor-pointer"
+              style={{ color: store.themeColor }}
             >
               Go Back
             </div>
@@ -167,7 +167,8 @@ const ProductDetailsPage = () => {
           <div className="flex flex-col gap-2 p-3">
             <div
               onClick={() => navigate(-1)}
-              className="mb-2 text-md underline text-[#B93284] cursor-pointer"
+              className="mb-2 text-md underline cursor-pointer"
+              style={{ color: store.themeColor }}
             >
               Visit Store
             </div>

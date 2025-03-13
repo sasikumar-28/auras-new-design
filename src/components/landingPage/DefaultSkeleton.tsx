@@ -8,7 +8,7 @@ const DefaultSkeleton = () => {
   );
 
   return (
-    <div>
+    <div className="mb-10">
       {homePageCategories?.map((category, index) => (
         <CategoryProductList
           key={index}

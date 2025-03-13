@@ -47,21 +47,22 @@ export function Sidebar({
   const store: Store = useSelector((s) => s.store.store);
   const navigate = useNavigate();
   const [logo, setLogo] = useState<string>("");
-  const [themeColor, setThemeColor] = useState<string>("#552864");
+  const [themeColor, setThemeColor] = useState<string>("");
 
   useEffect(() => {
     // setLogo(store?.logoTransparent || store.logoDarkBg || store?.logoLightBg);
     setLogo(store.logoDarkBg || store?.logoLightBg);
-    setThemeColor(store?.themeColor || "#552864");
+    setThemeColor(store?.themeColor);
   }, [store]);
 
   if (isRightSidebar) {
     return (
       <div
-        className={`w-54 text-${
-          store?.themeContrastColor || "white"
-        } flex justify-end items-end p-2`}
-        style={{ backgroundColor: themeColor }}
+        className={`w-54 flex justify-end items-end p-2`}
+        style={{
+          backgroundColor: themeColor,
+          color: store?.themeContrastColor,
+        }}
       >
         <div className="flex w-34 flex-col items-center justify-around gap-2 h-full">
           <div className="flex flex-col items-center gap-1">
@@ -97,8 +98,11 @@ export function Sidebar({
   if (sortFilter) {
     return (
       <div
-        className={`w-45 text-${store?.themeContrastColor || "white"} flex`}
-        style={{ backgroundColor: themeColor }}
+        className={`w-45 flex`}
+        style={{
+          backgroundColor: themeColor,
+          color: store?.themeContrastColor,
+        }}
       >
         <div className="flex flex-col items-center h-screen">
           <div className="pt-7 flex flex-col items-center gap-2 h-[100px]">
@@ -127,8 +131,11 @@ export function Sidebar({
   return (
     <div
       // className="w-30 text-white flex`"
-      className={`w-30 text-${store?.themeContrastColor || "white"} flex`}
-      style={{ backgroundColor: store.themeColor }}
+      className={`w-30 text-[${store?.themeContrastColor}] flex`}
+      style={{
+        backgroundColor: store.themeColor,
+        color: store?.themeContrastColors,
+      }}
     >
       <div className="flex flex-col justify-between items-center h-screen">
         <div className="pt-7">
@@ -140,30 +147,33 @@ export function Sidebar({
             className="flex flex-col items-center gap-1 cursor-pointer"
           >
             <img width={22} src={heartIcon} alt="Home" />
-            <p>My Wishlist</p>
+            <p style={{ color: store?.themeContrastColor }}>My Wishlist</p>
           </div>
           <div
             onClick={() => navigate("/account?tab=orders")}
             className="flex flex-col items-center gap-1 cursor-pointer"
           >
             <img width={22} src={returnIcon} alt="Return" />
-            <div className="text-center">
+            <div
+              className="text-center"
+              style={{ color: store?.themeContrastColor }}
+            >
               <p>My Orders</p>
             </div>
           </div>
           <div className="flex flex-col items-center gap-1">
             <img width={22} src={trendingIcon} alt="Trending" />
-            <p>Top Deals</p>
+            <p style={{ color: store?.themeContrastColor }}>Top Deals</p>
           </div>
         </div>
         <div className="flex flex-col justify-center items-center text-xs gap-4 mb-4">
           <div className="flex flex-col items-center border-y p-3 gap-1">
             <img width={22} src={chatWithTanyaIcon} alt="Chat-icon" />
-            <p>Chat with Tanya</p>
+            <p style={{ color: store?.themeContrastColor }}>Chat with Tanya</p>
           </div>
           <div className="flex flex-col items-center gap-1">
             <img width={22} src={languageIcon} alt="language" />
-            <p>English</p>
+            <p style={{ color: store?.themeContrastColor }}>English</p>
           </div>
         </div>
       </div>

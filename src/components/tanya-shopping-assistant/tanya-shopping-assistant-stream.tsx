@@ -19,6 +19,7 @@ import { useSearchParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { getShoppingAssistantForStore } from "@/utils/store-helper";
 import ProductDisplay from "../carousel/ProductDisplay";
+import { useSelector } from "react-redux";
 
 const TanyaShoppingAssistantStream = () => {
   // Shopping options
@@ -48,7 +49,7 @@ const TanyaShoppingAssistantStream = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
-  const storeDetails = getShoppingAssistantForStore(storeCode || "");
+  const storeDetails = useSelector((s) => s.store.store);
 
   // Handle selecting "whom" option
   const handleWhomSelection = (selected: string) => {
@@ -94,8 +95,8 @@ const TanyaShoppingAssistantStream = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          flowId: storeDetails.tanyaAssistant.flowId,
-          flowAliasId: storeDetails.tanyaAssistant.aliasId,
+          flowId: storeDetails.flowId,
+          flowAliasId: storeDetails.aliasId,
           input: {
             userPrompt: newQuery,
             whom: sanatizedWhom,
@@ -170,7 +171,10 @@ const TanyaShoppingAssistantStream = () => {
       console.log("in one string");
       const splitedKeywords = keywords.split(",");
       for (const keyword of splitedKeywords) {
-        const results = await getSearchResults(keyword, String(storeCode));
+        const results = await getSearchResults(
+          keyword,
+          storeDetails.searchConfigs
+        );
         if (results.length > 0) {
           setChatHistory((prev) =>
             prev.map((msg, idx) =>
@@ -219,13 +223,17 @@ const TanyaShoppingAssistantStream = () => {
       <PopoverContent className="absolute bottom-6 -right-4 w-[646px] h-[564px] border-0 bg-white p-0 rounded-xl">
         {/* Header */}
         <div
-          className={`flex justify-between bg-${storeDetails.themeDarkColor} rounded-xl p-1`}
+          className={`flex justify-between rounded-xl p-1`}
+          style={{ background: storeDetails.tanyaThemeColor }}
         >
-          <div className="flex">
+          <div
+            className="flex"
+            style={{ color: storeDetails.themeContrastColor }}
+          >
             <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} />
             <div>
-              <p className="text-xs font-light text-white mt-1">Chat with</p>
-              <p className="font-bold text-white">
+              <p className="text-xs font-light mt-1">Chat with</p>
+              <p className="font-bold">
                 TANYA{" "}
                 <span className="text-xs font-light">(Shopping Assistant)</span>
               </p>
@@ -249,13 +257,11 @@ const TanyaShoppingAssistantStream = () => {
           className="h-[440px] overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar"
         >
           <div
-            className={`text-sm text-[#000000] text-[16px] bg-${storeDetails.themeLightColor}
-              
+            className={`text-sm text-[16px]
                rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4`}
             style={{
-              backgroundColor: storeDetails.themeLightColor
-                .replace("[", "#")
-                .replace("]", ""),
+              backgroundColor: storeDetails.tanyaThemeColorLight,
+              // color: storeDetails.themeContrastColor,
             }}
           >
             Hey there! I'm Tanya, your new AI shopping assistant. Think of me as
@@ -293,7 +299,11 @@ const TanyaShoppingAssistantStream = () => {
             <div key={index}>
               <div className="flex justify-end">
                 <p
-                  className={`text-sm text-[white] bg-${storeDetails.themeDarkColor} rounded-l-xl p-3 m-3 mb-4 rounded-br-xl roud inline-block max-w-[75%]`}
+                  style={{
+                    color: storeDetails.themeContrastColor,
+                    backgroundColor: storeDetails.themeColor,
+                  }}
+                  className={`text-sm rounded-l-xl p-3 m-3 mb-4 rounded-br-xl roud inline-block max-w-[75%]`}
                 >
                   {chat.query}
                 </p>
@@ -323,9 +333,7 @@ const TanyaShoppingAssistantStream = () => {
                   <p
                     className={`font-semibold text-${storeDetails.themeDarkColor}`}
                     style={{
-                      color: storeDetails.themeDarkColor
-                        .replace("[", "")
-                        .replace("]", ""),
+                      color: storeDetails.themeDarkColor,
                     }}
                   >
                     Why not explore these inqueries...
@@ -340,9 +348,7 @@ const TanyaShoppingAssistantStream = () => {
                         className={`cursor-pointer text-[#232323] border bg-[#804C9E0D] border-${storeDetails.themeDarkColor} m-1 rounded-xl px-2 py-1`}
                         onClick={() => handleSendMessage(question)}
                         style={{
-                          color: storeDetails.themeDarkColor
-                            .replace("[", "")
-                            .replace("]", ""),
+                          color: storeDetails.themeDarkColor,
                         }}
                       >
                         {question}
@@ -370,21 +376,24 @@ const TanyaShoppingAssistantStream = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`mr-6 text-${storeDetails.themeDarkColor} font-medium`}
+            className={`mr-6 text-[${storeDetails.themeDarkColor}] font-medium`}
+            style={{
+              color: storeDetails.themeDarkColor,
+            }}
             onClick={() => handleSendMessage()}
           >
             {isLoading ? (
               <div
-                className={`m-3 animate-spin rounded-full h-6 w-6 border-b-2 border-${storeDetails.themeDarkColor
-                  .replace("[", "")
-                  .replace("]", "")}`}
+                className={`m-3 animate-spin rounded-full h-6 w-6 border-b-2`}
+                style={{
+                  border: storeDetails.tanyaThemeColor,
+                  borderBottom: "2px solid",
+                }}
               />
             ) : (
               <Icon
                 icon="fluent:send-48-filled"
-                color={storeDetails.themeDarkColor
-                  .replace("[", "")
-                  .replace("]", "")}
+                color={storeDetails.tanyaThemeColor}
                 width="24"
                 height="24"
               />
