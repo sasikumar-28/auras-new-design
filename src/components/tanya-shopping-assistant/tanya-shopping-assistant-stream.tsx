@@ -266,7 +266,7 @@ const TanyaShoppingAssistantStream = () => {
           >
             Hey there! I'm Tanya, your new AI shopping assistant. Think of me as
             your super helpful friend who knows all the best stuff at{" "}
-            {storeDetails.name}. Ready to find something amazing?
+            {storeDetails.websiteTitle}. Ready to find something amazing?
           </div>
           {storeCode != "applebees" && (
             <div className="mx-3 bg-blue-800 p-3 rounded-2xl">

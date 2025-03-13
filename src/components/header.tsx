@@ -54,7 +54,7 @@ export default function Header({
       document
         .getElementById("favicon")
         ?.setAttribute("href", storeDetails.favicon);
-      document.title = storeDetails.name;
+      document.title = store.websiteTitle;
     }
   }, [storeCode]);
 
