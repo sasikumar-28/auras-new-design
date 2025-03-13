@@ -136,14 +136,14 @@ export default function Header({
                     alt={
                       storeCode == "applebees"
                         ? result?.title
-                        : displayData(result.name["en-US"])
+                        : displayData(result?.name["en-US"])
                     }
                     className="w-10 h-10 rounded-full"
                   />
                   <p className="text-gray-500 hover:underline">
                     {storeCode == "applebees"
                       ? result?.title
-                      : displayData(result.name["en-US"])}
+                      : displayData(result?.name["en-US"])}
                   </p>
                 </div>
                 <div className="-rotate-45">
