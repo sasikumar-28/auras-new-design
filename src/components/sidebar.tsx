@@ -48,8 +48,8 @@ export function Sidebar({
   const [themeColor, setThemeColor] = useState<string>("");
 
   useEffect(() => {
-    // setLogo(store?.logoTransparent || store.logoDarkBg || store?.logoLightBg);
-    setLogo(store.logoDarkBg || store?.logoLightBg);
+    setLogo(store?.logoTransparent || store.logoDarkBg || store?.logoLightBg);
+    // setLogo(store.logoDarkBg || store?.logoLightBg);
     setThemeColor(store?.themeColor);
   }, [store]);
 
