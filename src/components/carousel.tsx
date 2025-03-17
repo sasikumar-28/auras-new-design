@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import {
@@ -6,7 +7,6 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import { getContentfulImages } from "@/contentful/getContentfulImages";
 import { getAccessToken } from "@/utils/getAccessToken";
 import axios from "axios";
 

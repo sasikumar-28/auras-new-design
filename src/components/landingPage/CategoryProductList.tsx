@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Category, homePageCategories, Product } from "@/graphQL/queries/types";
 import { getAccessToken } from "@/utils/getAccessToken";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const CategoryProductList = ({
   category,
@@ -25,7 +26,7 @@ const CategoryProductList = ({
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  console.log(loading, error);
   const getAllCategories = async () => {
     try {
       const token = await getAccessToken();
@@ -84,7 +85,7 @@ const CategoryProductList = ({
       const categories: Category[] = await getAllCategories();
 
       const firstSixCategories = categories
-        .filter((c) => c.categoryId == category.categoryID)
+        .filter((c: any) => c.categoryId == category.categoryID)
         .slice(0, 6);
       let categoriesData: Product[] = [];
       for (const category of firstSixCategories) {

@@ -11,7 +11,7 @@ import { Product } from "@/graphQL/queries/types";
 
 const ProductDetailSidebar = () => {
   const product = useSelector((state: any) => state.product.product);
-  const store = useSelector((s) => s.store.store);
+  const store = useSelector((s: any) => s.store.store);
   const cart = useSelector((state: any) => state.cart.cart);
   const dispatch = useDispatch();
   return (

@@ -1,15 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Checkbox } from "./ui/checkbox";
 import languageIcon from "@/assets/sidebar-icons/language-icon.png";
 import heartIcon from "@/assets/sidebar-icons/heart-icon.png";
 import returnIcon from "@/assets/sidebar-icons/return-icon.png";
 import trendingIcon from "@/assets/sidebar-icons/Icon feather-trending-up.png";
 import chatWithTanyaIcon from "@/assets/sidebar-icons/chat-with-tanya-icon.png";
-import { getAccessToken } from "@/utils/getAccessToken";
 import { useSelector } from "react-redux";
 import { Store } from "@/graphQL/queries/types";
 
@@ -38,13 +37,12 @@ const filterData = [
 export function Sidebar({
   sortFilter,
   isRightSidebar,
-  storeCode, // Pass storeCode as a prop
 }: {
   sortFilter?: boolean;
   isRightSidebar?: boolean;
   storeCode: string;
 }) {
-  const store: Store = useSelector((s) => s.store.store);
+  const store: Store = useSelector((s: any) => s.store.store);
   const navigate = useNavigate();
   const [logo, setLogo] = useState<string>("");
   const [themeColor, setThemeColor] = useState<string>("");
@@ -134,7 +132,7 @@ export function Sidebar({
       className={`w-30 text-[${store?.themeContrastColor}] flex`}
       style={{
         backgroundColor: store.themeColor,
-        color: store?.themeContrastColors,
+        color: store?.themeContrastColor,
       }}
     >
       <div className="flex flex-col justify-between items-center h-screen">

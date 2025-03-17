@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +19,7 @@ interface Category {
 }
 
 interface CategoryTabsProps {
-  data: Category[];
+  data: any;
   activeTab: number;
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -26,10 +27,10 @@ interface CategoryTabsProps {
 const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
-  const store = useSelector((s) => s.store.store);
+  const store = useSelector((s: any) => s.store.store);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
+  console.log(categories);
   const getCategories = async () => {
     try {
       setLoading(true);
@@ -79,7 +80,7 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : data.length > 0 ? (
-          data.map((category, index) => (
+          data.map((category: Category, index: number) => (
             <button
               key={index}
               className={`relative px-4 py-2 text-gray-600 font-medium transition-all 

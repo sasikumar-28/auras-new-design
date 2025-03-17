@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useRef, useEffect } from "react";
 import {
   Popover,
@@ -17,7 +18,6 @@ import {
 } from "@/utils/helper";
 import { useSearchParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { getShoppingAssistantForStore } from "@/utils/store-helper";
 import ProductDisplay from "../carousel/ProductDisplay";
 import { useSelector } from "react-redux";
 
@@ -49,7 +49,7 @@ const TanyaShoppingAssistantStream = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
-  const storeDetails = useSelector((s) => s.store.store);
+  const storeDetails = useSelector((s: any) => s.store.store);
 
   // Handle selecting "whom" option
   const handleWhomSelection = (selected: string) => {
@@ -194,7 +194,10 @@ const TanyaShoppingAssistantStream = () => {
     } else {
       console.log("in two string");
       for (const keyword of keywords) {
-        const results = await getSearchResults(keyword, String(storeCode));
+        const results = await getSearchResults(
+          keyword,
+          storeDetails.searchConfigs
+        );
         if (results.length > 0) {
           setChatHistory((prev) =>
             prev.map((msg, idx) =>

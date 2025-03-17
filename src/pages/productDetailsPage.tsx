@@ -72,14 +72,14 @@ const ProductDetailsPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const categoryFromUrl = searchParams.get("category");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const store = useSelector((s) => s.store.store);
+  const store = useSelector((s: any) => s.store.store);
   const { id } = useParams();
   const {
     categories,
     loading: categoriesLoading,
     error: categoriesError,
   } = useCategories();
-
+  console.log(selectedImageIndex);
   const initialActiveTab =
     categories.findIndex((c) => c.categoryId === categoryFromUrl) ?? 0;
   const [activeTab, setActiveTab] = useState(initialActiveTab);

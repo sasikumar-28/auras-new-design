@@ -1,19 +1,15 @@
 import CategoriesList from "@/components/categories/categories-list";
-import NewAarrivals from "@/components/products/new-arrivals/new-arrivals";
-import BestSellersInToys from "@/components/products/toys/best-sellers-in-toys";
-import TrendingProducts from "@/components/products/trending-products";
 import CarouselSection from "@/components/carousel";
-import SalesBanner from "@/components/sales-banner";
 // import TanyaShoppingAssistant from "@/components/tanya-shopping-assistant/tanya-shopping-assistant";
 import TanyaShoppingAssistantStream from "@/components/tanya-shopping-assistant/tanya-shopping-assistant-stream";
 import { useSearchParams } from "react-router-dom";
-import AppleBeesItemDisplay from "@/components/AppleBeesItemDisplay";
 import DefaultSkeleton from "@/components/landingPage/DefaultSkeleton";
 
 const Home = () => {
   const [searchParams] = useSearchParams();
   const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  console.log(storeCode);
   return (
     <div className="flex flex-col h-[94vh] overflow-hidden">
       {/* Main Content */}

@@ -28,6 +28,8 @@ export interface Product {
     }[];
     images: Image[];
   };
+  image?: string;
+  price?: number;
 }
 
 export interface Image {
@@ -112,6 +114,7 @@ export interface SearchProduct {
   objectID: string;
   title?: string;
   price?: string;
+  categoryId?: string;
 }
 
 export type UpdatePaymentType = {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { getSearchResults } from "@/utils";
 import { Icon } from "@iconify/react";
@@ -33,7 +34,7 @@ export default function Header({
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
-  const store = useSelector((s) => s.store.store);
+  const store = useSelector((s: any) => s.store.store);
 
   const handleSearch = async () => {
     const results: SearchProduct[] = await getSearchResults(
