@@ -4,7 +4,6 @@ import { Outlet } from "react-router";
 import { useSearchParams, useNavigate } from "react-router";
 import ProductDetailSidebar from "@/components/products/ProductDetailSidebar";
 import { useEffect } from "react";
-import { getShoppingAssistantForStore } from "@/utils/store-helper";
 import { useSelector } from "react-redux";
 
 const AppLayout = () => {
