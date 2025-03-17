@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import {
@@ -6,7 +7,6 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import { getContentfulImages } from "@/contentful/getContentfulImages";
 import { getAccessToken } from "@/utils/getAccessToken";
 import axios from "axios";
 
@@ -44,7 +44,6 @@ const CarouselSection = () => {
 
         if (response.status === 200) {
           const data = response.data;
-          console.log(data, "datamy");
           setImages(data.carouselImages.web);
         } else {
           throw new Error("Failed to fetch logo details");
@@ -57,24 +56,21 @@ const CarouselSection = () => {
     fetchLogo();
   }, []);
 
-  useEffect(() => {
-    const getCarouselImages = async () => {
-      const storeCode = localStorage.getItem("storeCode");
-      try {
-        const images = await getContentfulImages(
-          storeCode == "applebees" ? storeCode : "bannerImagesSecond"
-        );
-        console.log(images, "the images");
-        // setImages(images);
-      } catch (error) {
-        console.error("Error fetching Contentful data:", error);
-        return [];
-      }
-    };
-    getCarouselImages();
-  }, []);
-
-  if (images.length === 0) return <p>Not found</p>;
+  // useEffect(() => {
+  //   const getCarouselImages = async () => {
+  //     const storeCode = localStorage.getItem("storeCode");
+  //     try {
+  //       const images = await getContentfulImages(
+  //         storeCode == "applebees" ? storeCode : "bannerImagesSecond"
+  //       );
+  //       // setImages(images);
+  //     } catch (error) {
+  //       console.error("Error fetching Contentful data:", error);
+  //       return [];
+  //     }
+  //   };
+  //   getCarouselImages();
+  // }, []);
 
   return (
     <>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getAccessToken } from "@/utils/getAccessToken";
@@ -13,13 +14,13 @@ const CategoriesList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [storeCode, setStoreCode] = useState<string>("");
+  console.log(storeCode);
   const navigate = useNavigate();
 
   const getCategories = async () => {
     try {
       setLoading(true);
       const token = await getAccessToken();
-      console.log(token, "accessTokenweb");
 
       if (!token) {
         throw new Error("Failed to fetch token");
@@ -64,8 +65,6 @@ const CategoriesList: React.FC = () => {
   if (error) {
     return <div className="p-4 text-red-500">Error: {error}</div>;
   }
-
-  console.log(storeCode == "applebees", "the store code");
 
   return (
     <div className="fixed top-[6rem] bg-white z-40 mr-5">

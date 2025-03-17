@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 import { useSearchParams, useNavigate } from "react-router";
 import ProductDetailSidebar from "@/components/products/ProductDetailSidebar";
 import { useEffect } from "react";
-import { getShoppingAssistantForStore } from "@/utils/store-helper";
+import { useSelector } from "react-redux";
 
 const AppLayout = () => {
   const [searchParams] = useSearchParams();
@@ -12,7 +12,7 @@ const AppLayout = () => {
   const productCard = searchParams.get("productCard");
   let storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
-  const storeDetails = getShoppingAssistantForStore(storeCode || "");
+  const storeDetails = useSelector((state: any) => state.store.store);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,8 +27,7 @@ const AppLayout = () => {
   }, [storeCode, navigate]);
 
   // 🎨 Select Theme Color Based on storeCode
-  const themeColor = storeDetails.background;
-
+  const themeColor = storeDetails.themeColor;
   return (
     <>
       <div className="flex justify-between h-[100vh] overflow-hidden">
@@ -41,7 +40,7 @@ const AppLayout = () => {
         >
           <Sidebar sortFilter={!!sortFilter} storeCode={storeCode || ""} />
           {/* Apply Dynamic Theme Here */}
-          <div className={`flex-1 w-full ${themeColor}`}>
+          <div className={`flex-1 w-full bg-[${themeColor}]`}>
             <main
               className={`bg-white px-4 w-full min-h-screen ${
                 sortFilter || productCard

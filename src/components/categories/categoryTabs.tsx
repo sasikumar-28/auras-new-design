@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +11,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
+import { useSelector } from "react-redux";
 
 interface Category {
   categoryId: string;
@@ -17,7 +19,7 @@ interface Category {
 }
 
 interface CategoryTabsProps {
-  data: Category[];
+  data: any;
   activeTab: number;
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -25,15 +27,14 @@ interface CategoryTabsProps {
 const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
-  console.log(categories);
+  const store = useSelector((s: any) => s.store.store);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
+  console.log(categories);
   const getCategories = async () => {
     try {
       setLoading(true);
-      const token = await getAccessToken(); 
-      console.log(token, "accessTokenweb");
+      const token = await getAccessToken();
 
       if (!token) {
         throw new Error("Failed to fetch token");
@@ -43,7 +44,9 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
       if (!storeCode) {
         throw new Error("Store code is missing");
       }
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/mycategories?storeCode=${storeCode}`;
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +80,7 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : data.length > 0 ? (
-          data.map((category, index) => (
+          data.map((category: Category, index: number) => (
             <button
               key={index}
               className={`relative px-4 py-2 text-gray-600 font-medium transition-all 
@@ -104,7 +107,10 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
       {/* Sort Icon with Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="relative bg-[#B93284] rounded-full p-2 cursor-pointer">
+          <div
+            className="relative rounded-full p-2 cursor-pointer"
+            style={{ backgroundColor: store.themeColor }}
+          >
             <Icon
               icon="mdi:sort"
               className="text-white text-2xl transition"
