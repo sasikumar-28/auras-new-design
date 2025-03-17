@@ -14,6 +14,7 @@ const CategoriesList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [storeCode, setStoreCode] = useState<string>("");
+  console.log(storeCode);
   const navigate = useNavigate();
 
   const getCategories = async () => {
