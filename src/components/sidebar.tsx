@@ -48,8 +48,8 @@ export function Sidebar({
   const [themeColor, setThemeColor] = useState<string>("");
 
   useEffect(() => {
-    // setLogo(store?.logoTransparent || store.logoDarkBg || store?.logoLightBg);
-    setLogo(store.logoDarkBg || store?.logoLightBg);
+    setLogo(store?.logoTransparent || store.logoDarkBg || store?.logoLightBg);
+    // setLogo(store.logoDarkBg || store?.logoLightBg);
     setThemeColor(store?.themeColor);
   }, [store]);
 
@@ -137,7 +137,7 @@ export function Sidebar({
     >
       <div className="flex flex-col justify-between items-center h-screen">
         <div className="pt-7">
-          {logo && <img width={80} src={logo} alt="auras-logo" />}
+          {logo && <img width={80} src={logo} alt={store.storeCode} />}
         </div>
         <div className="space-y-6 text-xs ">
           <div
