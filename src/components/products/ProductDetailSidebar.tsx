@@ -11,16 +11,20 @@ import { Product } from "@/graphQL/queries/types";
 
 const ProductDetailSidebar = () => {
   const product = useSelector((state: any) => state.product.product);
+  const store = useSelector((s) => s.store.store);
   const cart = useSelector((state: any) => state.cart.cart);
   const dispatch = useDispatch();
   return (
-    <div className="bg-[#F2DCF9] flex flex-col justify-around gap-4 h-[100vh] w-[17vw] p-4">
+    <div
+      className="flex flex-col justify-around gap-4 h-[100vh] w-[17vw] p-4"
+      style={{ background: store.themeColor, color: store.themeContrastColor }}
+    >
       <div className="flex flex-col gap-2 p-2">
         <div className="text-lg font-bold">Orders Details</div>
         <div className="text-sm">Sold by Brand and Fulfilled by Asipre</div>
       </div>
       <div className="bg-gradient-to-b from-[#2C2C2C] to-[#444444] rounded-xl p-4 gap-y-4 text-3xl flex flex-col">
-        <div className="text-white">
+        <div style={{ color: store.themeContrastColor }}>
           <span className="font-bold">
             {product &&
               currencyFormatter(
@@ -71,14 +75,18 @@ const ProductDetailSidebar = () => {
         <div className="flex flex-col">
           <div
             onClick={() => dispatch(addToCart(product))}
-            className="bg-[#B93284] text-xs text-white rounded-t-xl h-14 flex items-center justify-center gap-2 cursor-pointer"
+            className="text-xs text-white rounded-t-xl h-14 flex items-center justify-center gap-2 cursor-pointer"
+            style={{ background: store.themeColor }}
           >
             <Icon icon="solar:cart-plus-broken" width="24" height="24" />
             {cart.some((p: Product) => p.id == product.id)
               ? "Added to Cart"
               : "Add to Cart"}
           </div>
-          <div className="bg-[#D24C9E] text-xs text-white rounded-b-xl h-14 flex items-center justify-center gap-2 cursor-pointer">
+          <div
+            className="text-xs text-white rounded-b-xl h-14 flex items-center justify-center gap-2 cursor-pointer"
+            style={{ background: store.themeColor + "90" }}
+          >
             <Icon icon="tdesign:gesture-click" width="24" height="24" />
             1-Click order
           </div>
@@ -114,7 +122,9 @@ const ProductDetailSidebar = () => {
               )}
             </div>
           </div>
-          <div className="bg-gradient-to-b cursor-pointer rounded-full from-[#B93284] to-[#F2DCF9] p-1 h-10 w-10 flex items-center justify-center">
+          <div
+            className={`bg-gradient-to-b cursor-pointer rounded-full from-[#B93284] to-[#F2DCF9] p-1 h-10 w-10 flex items-center justify-center`}
+          >
             <Icon icon="mdi:arrow-right" width="24" height="24" color="white" />
           </div>
         </div>

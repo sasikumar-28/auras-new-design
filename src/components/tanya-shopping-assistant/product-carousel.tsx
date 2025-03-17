@@ -29,19 +29,19 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
 
   // Get search term from either route params or passed keywords prop
   const search = searchParams.get("query") || keywords || "";
-  
+
   // Number of items to display at once
   const itemsPerPage = 3;
   // Calculate max index (for last page)
   const maxStartIndex = Math.max(0, responses.length - itemsPerPage);
-  
+
   useEffect(() => {
     if (search) {
       fetchKeywordResultData();
       // Reset current index when search term changes
       setCurrentIndex(0);
       // Update image key to force refresh
-      setImageKey(prevKey => prevKey + 1);
+      setImageKey((prevKey) => prevKey + 1);
     } else {
       // Clear responses if search is empty
       setResponses([]);
@@ -52,7 +52,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   const fetchKeywordResultData = async (): Promise<void> => {
     setLoading(true);
     setError(null);
-    
+
     // Don't make API call if search is empty
     if (!search) {
       setLoading(false);
@@ -60,46 +60,51 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       onResultsUpdate?.(false);
       return;
     }
-    
+
     try {
-      console.log(`Searching for products with keyword: "${search}"`);
-      
       // Try both methods of API calling
       let response;
       try {
         // Method 1: Using search in URL params
-        response = await fetch(`${import.meta.env.VITE_SERVER_BASE_URL}api/search-product?search=${encodeURIComponent(search)}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // Add cache-busting parameter
-          cache: "no-store"
-        });
+        response = await fetch(
+          `${
+            import.meta.env.VITE_SERVER_BASE_URL
+          }api/search-product?search=${encodeURIComponent(search)}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // Add cache-busting parameter
+            cache: "no-store",
+          }
+        );
       } catch (err) {
-        console.log("Method 1 failed, trying method 2");
         // Method 2: Using search in headers
-        response = await fetch(`${import.meta.env.VITE_SERVER_BASE_URL}api/search-product`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            search: search,
-          },
-          // Add cache-busting parameter
-          cache: "no-store"
-        });
+        response = await fetch(
+          `${import.meta.env.VITE_SERVER_BASE_URL}api/search-product`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              search: search,
+            },
+            // Add cache-busting parameter
+            cache: "no-store",
+          }
+        );
       }
-      
+
       if (!response.ok) {
         throw new Error(`API responded with status ${response.status}`);
       }
-      
+
       const result = await response.json();
       console.log("API Response:", result);
-      
+
       // Check different possible response structures
       let products: Product[] = [];
-      
+
       if (result?.data?.hits && Array.isArray(result.data.hits)) {
         products = result.data.hits;
       } else if (result?.hits && Array.isArray(result.hits)) {
@@ -111,11 +116,11 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       } else {
         throw new Error("Unexpected API response format");
       }
-      
+
       if (products.length === 0) {
         console.log("No products found in API response");
       }
-      
+
       setResponses(products);
       onResultsUpdate?.(products.length > 0);
     } catch (error) {
@@ -129,28 +134,31 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   };
 
   const goToNext = (): void => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       Math.min(prevIndex + itemsPerPage, maxStartIndex)
     );
   };
 
   const goToPrevious = (): void => {
-    setCurrentIndex((prevIndex) =>
-      Math.max(0, prevIndex - itemsPerPage)
-    );
+    setCurrentIndex((prevIndex) => Math.max(0, prevIndex - itemsPerPage));
   };
 
   // If no keyword is provided, show a helpful message instead of rendering nothing
   if (!search) {
     return (
       <div style={styles.carouselContainer}>
-        <div style={styles.noResults}>Please enter a search term to find products</div>
+        <div style={styles.noResults}>
+          Please enter a search term to find products
+        </div>
       </div>
     );
   }
 
   // Get the visible items based on the current index
-  const visibleProducts = responses.slice(currentIndex, currentIndex + itemsPerPage);
+  const visibleProducts = responses.slice(
+    currentIndex,
+    currentIndex + itemsPerPage
+  );
 
   return (
     <div style={styles.carouselContainer}>
@@ -159,12 +167,12 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       ) : (
         <div style={styles.carouselWrapper}>
           {error && <div style={styles.errorMessage}>{error}</div>}
-          
+
           {responses.length > 0 ? (
             <>
               <button
                 onClick={goToPrevious}
-                style={{...styles.navigationButton, left: "2px"}}
+                style={{ ...styles.navigationButton, left: "2px" }}
                 aria-label="Previous product"
                 disabled={currentIndex <= 0}
               >
@@ -178,10 +186,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
                       key={`${product.id || index}-${imageKey}`}
                       style={styles.carouselItem}
                     >
-                      <Link
-                        to={`/product/${product.id}`}
-                        style={styles.link}
-                      >
+                      <Link to={`/product/${product.id}`} style={styles.link}>
                         <div style={styles.productCard}>
                           <div style={styles.imageContainer}>
                             {product.image ? (
@@ -205,7 +210,10 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
                             {product.title || "Untitled Product"}
                           </h2>
                           <p style={styles.productPrice}>
-                            Price: ${typeof product.price === 'number' ? product.price.toFixed(2) : product.price || "N/A"}
+                            Price: $
+                            {typeof product.price === "number"
+                              ? product.price.toFixed(2)
+                              : product.price || "N/A"}
                           </p>
                         </div>
                       </Link>
@@ -224,7 +232,9 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
               </button>
 
               <div style={styles.dotContainer}>
-                {Array.from({ length: Math.ceil(responses.length / itemsPerPage) }).map((_, i) => {
+                {Array.from({
+                  length: Math.ceil(responses.length / itemsPerPage),
+                }).map((_, i) => {
                   const pageIndex = i * itemsPerPage;
                   return (
                     <button

@@ -19,7 +19,6 @@ const CategoriesList: React.FC = () => {
     try {
       setLoading(true);
       const token = await getAccessToken();
-      console.log(token, "accessTokenweb");
 
       if (!token) {
         throw new Error("Failed to fetch token");
@@ -64,8 +63,6 @@ const CategoriesList: React.FC = () => {
   if (error) {
     return <div className="p-4 text-red-500">Error: {error}</div>;
   }
-
-  console.log(storeCode == "applebees", "the store code");
 
   return (
     <div className="fixed top-[6rem] bg-white z-40 mr-5">

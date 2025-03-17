@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
+import { useSelector } from "react-redux";
 
 interface Category {
   categoryId: string;
@@ -25,15 +26,14 @@ interface CategoryTabsProps {
 const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
-  console.log(categories);
+  const store = useSelector((s) => s.store.store);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const getCategories = async () => {
     try {
       setLoading(true);
-      const token = await getAccessToken(); 
-      console.log(token, "accessTokenweb");
+      const token = await getAccessToken();
 
       if (!token) {
         throw new Error("Failed to fetch token");
@@ -43,7 +43,9 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
       if (!storeCode) {
         throw new Error("Store code is missing");
       }
-      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}api/mycategories?storeCode=${storeCode}`;
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }api/mycategories?storeCode=${storeCode}`;
       const response = await axios.get(URL, {
         headers: {
           "Content-Type": "application/json",
@@ -104,7 +106,10 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
       {/* Sort Icon with Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="relative bg-[#B93284] rounded-full p-2 cursor-pointer">
+          <div
+            className="relative rounded-full p-2 cursor-pointer"
+            style={{ backgroundColor: store.themeColor }}
+          >
             <Icon
               icon="mdi:sort"
               className="text-white text-2xl transition"

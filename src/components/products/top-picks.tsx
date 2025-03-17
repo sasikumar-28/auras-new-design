@@ -89,7 +89,6 @@ const TopPicks: React.FC = () => {
     try {
       setLoading(true);
       const categories = await getAllCategories();
-      console.log(categories, "the filtered categories");
 
       let productsResults = [];
 
