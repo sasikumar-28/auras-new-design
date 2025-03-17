@@ -40,14 +40,12 @@ export default function Header({
       searchQuery,
       store.searchConfigs
     );
-    console.log(results, "the result");
     setSearchResults(results);
   };
 
   useEffect(() => {
     if (storeCode) {
       fetchStoreConfig(storeCode).then((res) => {
-        console.log(res, "the res");
         dispatch(setStore({ ...res, storeCode: storeCode }));
       });
       const storeDetails = getShoppingAssistantForStore(storeCode);
