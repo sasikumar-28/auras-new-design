@@ -233,7 +233,7 @@ const TanyaShoppingAssistantStream = () => {
           <img src={tanyaChatBotIcon} alt="Chat with Tanya" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="absolute bottom-6 -right-4 w-[646px] h-[564px] border-0 bg-white p-0 rounded-xl">
+      <PopoverContent className="absolute bottom-1 -right-4 w-[646px] h-[550px] border-0 bg-white p-0 rounded-xl">
         {/* Header */}
         <div
           className={`flex justify-between rounded-xl p-1`}
