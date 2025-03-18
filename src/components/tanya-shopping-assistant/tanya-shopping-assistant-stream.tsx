@@ -24,7 +24,6 @@ import { useSelector } from "react-redux";
 const TanyaShoppingAssistantStream = () => {
   // Shopping options
   const shoppingOptions = [
-    "himself",
     "Myself",
     "My Child",
     "My Grandchild",
@@ -32,11 +31,21 @@ const TanyaShoppingAssistantStream = () => {
     "My Friends",
     "Others",
   ];
+
+  const payloadMapping: Record<string, string> = {
+    "Myself": "himself/herself",
+    "My Child": "his/her child",
+    "My Grandchild": "his/her grandchild",
+    "Niece/Nephew": "his/her niece/nephew",
+    "My Friends": "his/her friends",
+    "Others": "others",
+  };
+
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [inputText, setInputText] = useState("");
-  const [whom, setWhom] = useState(shoppingOptions[0]);
+  const [whom, setWhom] = useState(payloadMapping[shoppingOptions[0]]);
   const [chatHistory, setChatHistory] = useState<
     {
       query: string;
@@ -53,7 +62,7 @@ const TanyaShoppingAssistantStream = () => {
 
   // Handle selecting "whom" option
   const handleWhomSelection = (selected: string) => {
-    setWhom(selected);
+    setWhom(payloadMapping[selected]);
   };
 
   useEffect(() => {
@@ -216,6 +225,7 @@ const TanyaShoppingAssistantStream = () => {
       }
     }
   };
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -272,7 +282,13 @@ const TanyaShoppingAssistantStream = () => {
             {storeDetails.websiteTitle}. Ready to find something amazing?
           </div>
           {storeCode != "applebees" && (
-            <div className="mx-3 bg-blue-800 p-3 rounded-2xl">
+            <div
+              className="mx-3 p-3 rounded-2xl"
+              style={{
+                color: storeDetails.themeContrastColor,
+                backgroundColor: storeDetails.themeColor,
+              }}
+            >
               <p className="font-semibold text-white">
                 Who are you shopping for?
               </p>
@@ -282,7 +298,7 @@ const TanyaShoppingAssistantStream = () => {
                     key={option}
                     onClick={() => handleWhomSelection(option)}
                     className={`px-4 py-2 text-sm border-2 rounded-xl ${
-                      whom === option
+                      whom === payloadMapping[option]
                         ? "bg-pink-300 text-white"
                         : "bg-transparent text-white"
                     }`}
@@ -292,7 +308,12 @@ const TanyaShoppingAssistantStream = () => {
                 ))}
               </div>
               {whom && (
-                <p className="mt-2 text-sm text-white">Selected: {whom}</p>
+                <p className="mt-2 text-sm text-white">
+                  Selected:{" "}
+                  {Object.keys(payloadMapping).find(
+                    (key) => payloadMapping[key] === whom
+                  )}
+                </p>
               )}
             </div>
           )}
