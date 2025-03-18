@@ -8,7 +8,7 @@ import {
 } from "@/utils/helper";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ProductCarousel = ({
   product,
@@ -18,9 +18,7 @@ const ProductCarousel = ({
   storeDetails: any;
 }) => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const storeCode =
-    searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  
   const [startIndex, setStartIndex] = useState(0);
   const productsPerPage = 3;
 
