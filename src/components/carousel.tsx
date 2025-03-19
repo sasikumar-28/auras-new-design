@@ -99,7 +99,9 @@ const CarouselSection = () => {
                     alt={"Carousel"}
                     className="rounded-[10px]"
                   />
+
                   {/* {image} */}
+                  
                 </div>
               </CarouselItem>
             ))}
