@@ -139,7 +139,7 @@ const TopPicks: React.FC = () => {
           : "Top Picks for You"}{" "}
       </h2>
       <div className="grid grid-cols-4 gap-4">
-        {products.slice(0, 18).map((product) => {
+        {products.slice(0, 4).map((product) => {
           console.log(product, "the product");
           return (
             <div
