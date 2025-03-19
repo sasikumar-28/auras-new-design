@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/carousel";
 import { getAccessToken } from "@/utils/getAccessToken";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 const CarouselSection = () => {
   const [images, setImages] = useState<string[]>([]);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState<number>(0);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (!api) {
@@ -27,7 +29,7 @@ const CarouselSection = () => {
 
   useEffect(() => {
     const fetchLogo = async () => {
-      const storeCode = localStorage.getItem("storeCode");
+      const storeCode = searchParams.get("storeCode");
       try {
         const token = await getAccessToken();
         const response = await axios.get(
