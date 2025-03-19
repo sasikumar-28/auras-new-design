@@ -4,10 +4,13 @@
 `npm install -g npm`
 
 # Setup the project
-`nnpm install`
+`npm install`
 
 # Start the project
  `npm run dev`
 
 # Build the project
 `npm run build`
+
+# Code format
+`npm run format`

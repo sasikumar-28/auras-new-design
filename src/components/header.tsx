@@ -53,11 +53,11 @@ export default function Header({
       const storeDetails = getShoppingAssistantForStore(storeCode);
       document
         .getElementById("favicon")
-        ?.setAttribute("href", storeDetails.favicon);
+        ?.setAttribute("href",   store.favicon ? store.favicon : storeDetails.favicon);
 
       document.title = "Loading...";
     }
-  }, [storeCode]);
+  }, [storeCode, store?.favicon]);
 
   useEffect(() => {
     if (store.websiteTitle) {
