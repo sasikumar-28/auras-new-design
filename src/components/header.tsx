@@ -49,13 +49,21 @@ export default function Header({
       fetchStoreConfig(storeCode).then((res) => {
         dispatch(setStore({ ...res, storeCode: storeCode }));
       });
+
       const storeDetails = getShoppingAssistantForStore(storeCode);
       document
         .getElementById("favicon")
-        ?.setAttribute("href", storeDetails.favicon);
+        ?.setAttribute("href",   store.favicon ? store.favicon : storeDetails.favicon);
+
+      document.title = "Loading...";
+    }
+  }, [storeCode, store?.favicon]);
+
+  useEffect(() => {
+    if (store.websiteTitle) {
       document.title = store.websiteTitle;
     }
-  }, [storeCode]);
+  }, [store.websiteTitle]);
 
   useEffect(() => {
     if (searchQuery.length > 2) {

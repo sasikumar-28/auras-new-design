@@ -8,7 +8,7 @@ import {
 } from "@/utils/helper";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ProductCarousel = ({
   product,
@@ -18,9 +18,7 @@ const ProductCarousel = ({
   storeDetails: any;
 }) => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const storeCode =
-    searchParams.get("storeCode") || localStorage.getItem("storeCode");
+  
   const [startIndex, setStartIndex] = useState(0);
   const productsPerPage = 3;
 
@@ -69,9 +67,7 @@ const ProductCarousel = ({
                 <img
                   src={imageUrlArray(prod)[0]}
                   alt={
-                    storeCode == "applebees"
-                      ? prod?.title
-                      : displayData(prod?.name["en-US"])
+                    prod?.title ? prod.title : displayData(prod?.name["en-US"])
                   }
                   className="w-16 h-16 rounded-[3px] scale-125 transition-transform duration-300 hover:scale-150 object-cover"
                 />
@@ -80,15 +76,15 @@ const ProductCarousel = ({
                 >
                   <div>
                     {currencyFormatter(
-                      storeCode == "applebees"
+                      prod?.price
                         ? Number(prod?.price)
                         : priceFormatter(prod).centAmount || 0,
                       priceFormatter(prod)?.currencyCode
                     )}
                   </div>
                   <div>
-                    {storeCode == "applebees"
-                      ? prod?.title
+                    {prod?.title
+                      ? prod.title
                       : stringReducer(displayData(prod?.name["en-US"]), 30)}
                   </div>
                 </div>
