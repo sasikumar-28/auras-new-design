@@ -339,6 +339,7 @@ const TanyaShoppingAssistantStream = () => {
                     dangerouslySetInnerHTML={{
                       __html: formatStringToHtml(chat.response),
                     }}
+                     style={{backgroundColor: "rgb(229, 186, 192)", margin:"0.75rem"}}
                   />
                 </div>
               )}
@@ -372,7 +373,7 @@ const TanyaShoppingAssistantStream = () => {
                         className={`cursor-pointer text-[#232323] border bg-[#804C9E0D] border-${storeDetails.themeDarkColor} m-1 rounded-xl px-2 py-1`}
                         onClick={() => handleSendMessage(question)}
                         style={{
-                          color: storeDetails.themeDarkColor,
+                          color: storeDetails.themeDarkColor,backgroundColor: "rgb(229, 186, 192)"
                         }}
                       >
                         {question}
