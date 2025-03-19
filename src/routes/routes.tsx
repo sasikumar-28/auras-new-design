@@ -1,59 +1,78 @@
+import React, { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
-// import ErrorBoundary from "./components/ErrorBoundary";
-import AppLayout from "@/layout/app-layout";
-import NotFound from "@/components/not-found";
-import Home from "@/pages/home";
-import ProductListingPage from "@/pages/productListingPage";
-import ProductDetailsPage from "@/pages/productDetailsPage";
-import CartPage from "@/pages/cartPage";
-import Account from "@/pages/account";
-import Login from "@/pages/login";
-import SignUp from "@/pages/signUp";
-import Checkout from "@/pages/checkout";
+
+import { ErrorBoundary } from "@/components/errorBoundary";
+const AppLayout = lazy(() => import("@/layout/app-layout"));
+const NotFound = lazy(() => import("@/components/not-found"));
+const Home = lazy(() => import("@/pages/home"));
+const ProductListingPage = lazy(() => import("@/pages/productListingPage"));
+const ProductDetailsPage = lazy(() => import("@/pages/productDetailsPage"));
+const CartPage = lazy(() => import("@/pages/cartPage"));
+const Account = lazy(() => import("@/pages/account"));
+const Login = lazy(() => import("@/pages/login"));
+const SignUp = lazy(() => import("@/pages/signUp"));
+const Checkout = lazy(() => import("@/pages/checkout"));
+
+const withSuspense = (
+  Component: React.LazyExoticComponent<() => JSX.Element>,
+) => (
+  <Suspense
+    fallback={
+      <div className="flex justify-center items-center h-screen text-lg">
+        Loading...
+      </div>
+    }
+  >
+    <Component />
+  </Suspense>
+);
 
 const routes = createBrowserRouter([
   {
     path: "/",
-    element: <AppLayout />,
-    // errorElement: <ErrorBoundary />,
+    element: <ErrorBoundary>{withSuspense(AppLayout)}</ErrorBoundary>,
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <ErrorBoundary> {withSuspense(Home)}</ErrorBoundary>,
       },
       {
         path: "/product-listing",
-        element: <ProductListingPage />,
+        element: (
+          <ErrorBoundary> {withSuspense(ProductListingPage)}</ErrorBoundary>
+        ),
       },
       {
         path: "/product/:id",
-        element: <ProductDetailsPage />,
+        element: (
+          <ErrorBoundary> {withSuspense(ProductDetailsPage)}</ErrorBoundary>
+        ),
       },
       {
         path: "/cart",
-        element: <CartPage />,
+        element: <ErrorBoundary> {withSuspense(CartPage)}</ErrorBoundary>,
       },
       {
         path: "/account",
-        element: <Account />,
+        element: <ErrorBoundary> {withSuspense(Account)}</ErrorBoundary>,
       },
       {
         path: "/checkout",
-        element: <Checkout />,
+        element: <ErrorBoundary> {withSuspense(Checkout)}</ErrorBoundary>,
       },
     ],
   },
   {
     path: "/login",
-    element: <Login />,
+    element: <ErrorBoundary>{withSuspense(Login)}</ErrorBoundary>,
   },
   {
     path: "/SignUp",
-    element: <SignUp />,
+    element: <ErrorBoundary> {withSuspense(SignUp)}</ErrorBoundary>,
   },
   {
     path: "*",
-    element: <NotFound />,
+    element: <ErrorBoundary> {withSuspense(NotFound)}</ErrorBoundary>,
   },
 ]);
 
