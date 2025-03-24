@@ -229,15 +229,16 @@ const TanyaShoppingAssistantStream = () => {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <button className="rounded" onClick={() => setIsOpen(true)}>
-          <img src={tanyaChatBotIcon} alt="Chat with Tanya" />
+        <button className="flex gap-2 pl-[10px] rounded rounded-br-[20px] rounded-tr-[20px] w-[90%]" onClick={() => setIsOpen(true)} style={{alignItems:"center", background: storeDetails.themeColor }}>
+          <span className="text-white">AI Shopping Assistant</span>
+          <img src={tanyaChatBotIcon} alt="Chat with Tanya" className="w-[20%]" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="absolute bottom-1 -right-4 w-[646px] h-[550px] border-0 bg-white p-0 rounded-xl">
+      <PopoverContent className="absolute bottom-1 -left-20 w-[646px] h-[530px] border-0 bg-white p-0 rounded-xl">
         {/* Header */}
         <div
           className={`flex justify-between rounded-xl p-1`}
-          style={{ background: storeDetails.tanyaThemeColor }}
+          style={{ background: storeDetails.themeColor }}
         >
           <div
             className="flex"
@@ -411,14 +412,14 @@ const TanyaShoppingAssistantStream = () => {
               <div
                 className={`m-3 animate-spin rounded-full h-6 w-6 border-b-2`}
                 style={{
-                  border: storeDetails.tanyaThemeColor,
+                  border: storeDetails.themeColor,
                   borderBottom: "2px solid",
                 }}
               />
             ) : (
               <Icon
                 icon="fluent:send-48-filled"
-                color={storeDetails.tanyaThemeColor}
+                color={storeDetails.themeColor}
                 width="24"
                 height="24"
               />

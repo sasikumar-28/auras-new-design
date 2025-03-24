@@ -3,7 +3,7 @@ import { Category, homePageCategories, Product } from "@/graphQL/queries/types";
 import { getAccessToken } from "@/utils/getAccessToken";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import { Icon } from "@iconify/react";
 const CategoryProductList = ({
   category,
   index,
@@ -86,7 +86,7 @@ const CategoryProductList = ({
 
       const firstSixCategories = categories
         .filter((c: any) => c.categoryId == category.categoryID)
-        .slice(0, 6);
+        .slice(0, 3);
       let categoriesData: Product[] = [];
       for (const category of firstSixCategories) {
         let allProducts: Product[] = [];
@@ -124,21 +124,34 @@ const CategoryProductList = ({
   }, [storeCode]);
 
   return (
-    <div key={category.categoryID} className="space-y-8">
+    <div
+      key={category.categoryID}
+      className="space-y-8 max-w-6xl mx-auto relative"
+    >
       {/* Main Category Name */}
       <h2 className="text-2xl font-bold text-[#1E1E1E] text-center mb-8">
         {category.carouselTitle}
       </h2>
 
       {/* Products Grid - Centered */}
-      <div className="max-w-6xl mx-auto">
+      <div className="relative max-w-6xl mx-auto">
+        {/* Left Arrow Button */}
+        <button className="absolute left-[-55px] top-1/2 -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md transition z-10">
+          <Icon
+            icon="mdi:chevron-left"
+            className="text-gray-700"
+            width={30}
+            height={30}
+          />
+        </button>
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 justify-items-center">
           {products
-            .slice(0, Math.min((products.length / 4) * 4, 8))
+            .slice(0, Math.min((products.length / 4) * 4, 4))
             .map((product) => (
               <div
                 key={product.id}
-                className="bg-white p-4 rounded-xl shadow-xl w-full max-w-[300px] text-center"
+                className="bg-white p-4 rounded-xl shadow-xl w-full max-w-[250px] text-center"
               >
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
@@ -152,16 +165,26 @@ const CategoryProductList = ({
               </div>
             ))}
         </div>
+
+        {/* Right Arrow Button */}
+        <button className="absolute right-[-55px] top-1/2 -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md transition z-10">
+          <Icon
+            icon="mdi:chevron-right"
+            className="text-gray-700"
+            width={30}
+            height={30}
+          />
+        </button>
       </div>
 
       {/* Banner image - Centered */}
       <div className="flex justify-center mt-12">
-        {bannerImages.slice(index * 3, index * 3 + 3).map((image, i) => (
+        {bannerImages.slice(index * 2, index * 2 + 2).map((image, i) => (
           <img
             key={i}
             src={image}
             alt={`category banner`}
-            className="h-80 w-80 rounded-[10px] mr-4"
+            className="p-[15px] w-1/2 object-cover rounded-[10px]"
           />
         ))}
       </div>
