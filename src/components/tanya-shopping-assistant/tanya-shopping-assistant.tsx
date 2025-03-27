@@ -258,7 +258,7 @@ const TanyaShoppingAssistant: React.FC = () => {
                 >
                   TANYA
                   <span style={{ fontSize: ".75rem", marginLeft: "5px" }}>
-                    (Shopping Assistant)
+                    (AI Shopping Assistant)
                   </span>
                 </p>
               </div>
