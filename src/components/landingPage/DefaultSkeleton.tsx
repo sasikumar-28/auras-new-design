@@ -1,15 +1,14 @@
-import { Store } from "@/graphQL/queries/types";
 import { useSelector } from "react-redux";
 import CategoryProductList from "./CategoryProductList";
 import { RootState } from "@/store";
 
 const DefaultSkeleton = () => {
-  const { homePageCategories, storeCode }: Store = useSelector(
-    (state: any) => state.store.store
-  );
-
+  const { homePageCategories, storeCode } = useSelector((state: RootState) => 
+    state?.store?.store ?? { homePageCategories: [], storeCode: "" });
+  
   const squareImages = useSelector((state: RootState) => state.cmsImage.squareImages);
   const selectedCategories = homePageCategories?.slice(0, 3) || [];
+
 
   return (
     <div className="mb-10">
