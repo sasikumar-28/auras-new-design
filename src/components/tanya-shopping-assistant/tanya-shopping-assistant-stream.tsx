@@ -244,7 +244,7 @@ const TanyaShoppingAssistantStream = () => {
         <button
           className="flex gap-2 rounded-bl-[25px] rounded-tl-[25px] w-auto fixed right-0 bottom-[100px]"
           onClick={() => setIsOpen(true)}
-          style={{ alignItems: "center", background: storeDetails.themeColor }}
+          style={{ alignItems: "center", background: storeDetails.tanyaThemeColor }}
         >
           <img
             src={tanyaChatBotIcon}
@@ -264,7 +264,7 @@ const TanyaShoppingAssistantStream = () => {
         {/* Header */}
         <div
           className="flex justify-between rounded-l-xl p-1"
-          style={{ background: storeDetails.themeColor }}
+          style={{ background: storeDetails.tanyaThemeColor }}
         >
           <div
             className="flex"
@@ -308,12 +308,12 @@ const TanyaShoppingAssistantStream = () => {
           </div>
 
           {/* Shopping Options */}
-          {storeCode != "applebees" && (
+          {storeDetails?.whomRequired && (
             <div
               className="mx-3 p-3 rounded-2xl"
               style={{
                 color: storeDetails.themeContrastColor,
-                backgroundColor: storeDetails.themeColor,
+                backgroundColor: storeDetails.tanyaThemeColor,
                 width: "fit-content"
               }}
             >
@@ -350,17 +350,17 @@ const TanyaShoppingAssistantStream = () => {
             </div>
           )}
 
-          {storeCode != "applebees" && whom && (
+          {storeDetails?.whomRequired && whom && (
             <div className="flex items-center mx-3 mt-1">
               <Icon
                 icon="fluent:shopping-bag-24-filled"
-                color={storeDetails.themeColor}
+                color={storeDetails.tanyaThemeColor}
                 width="22"
                 height="22"
               />
               <p
                 className="text-sm text-white  p-2 font-bold"
-                style={{ color: storeDetails.themeColor }}
+                style={{ color: storeDetails.tanyaThemeColor }}
               >
                 {(() => {
                   const selectedKey = Object.keys(payloadMapping).find(
@@ -380,7 +380,7 @@ const TanyaShoppingAssistantStream = () => {
                   className="text-sm rounded-l-xl p-3 m-3 mb-4 rounded-br-xl max-w-[75%]"
                   style={{
                     color: storeDetails.themeContrastColor,
-                    backgroundColor: storeDetails.themeColor,
+                    backgroundColor: storeDetails.tanyaThemeColor,
                   }}
                 >
                   {chat.query}
@@ -462,7 +462,7 @@ const TanyaShoppingAssistantStream = () => {
             ) : (
               <Icon
                 icon="fluent:send-48-filled"
-                color={storeDetails.themeColor}
+                color={storeDetails.tanyaThemeColor}
                 width="24"
                 height="24"
               />
