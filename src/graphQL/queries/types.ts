@@ -4,6 +4,7 @@ export interface Category {
   name: string; // Now a string type for the localized name
   categoryId: string;
   children?: Category[];
+  requestParam?: number[];
 }
 
 export interface CategoriesResponse {
