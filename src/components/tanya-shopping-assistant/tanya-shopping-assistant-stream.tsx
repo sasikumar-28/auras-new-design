@@ -6,8 +6,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import tanyaChatBotIcon from "@/assets/tanya-chatbot/chat-with-tanya.png";
-import dotsHorizontal from "@/assets/tanya-chatbot/dots-horizontal.png";
-import arrowDown from "@/assets/tanya-chatbot/arrow-down.png";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { getSearchResults } from "@/utils";
 import { SearchProduct } from "@/graphQL/queries/types";
@@ -33,19 +31,33 @@ const TanyaShoppingAssistantStream = () => {
   ];
 
   const payloadMapping: Record<string, string> = {
-    "Myself": "himself/herself",
+    Myself: "himself/herself",
     "My Child": "his/her child",
     "My Grandchild": "his/her grandchild",
     "Niece/Nephew": "his/her niece/nephew",
     "My Friends": "his/her friends",
-    "Others": "others",
+    Others: "others",
+  };
+
+  const messageMapping: Record<string, string> = {
+    Myself: "Great choice! Let’s find something special just for you.",
+    "My Child": "Aww, shopping for your little one? Let’s find the best picks!",
+    "My Grandchild":
+      "How sweet! Let’s find something your grandchild will love.",
+    "Niece/Nephew":
+      "Shopping for your niece or nephew? Let’s pick something fun!",
+    "My Friends":
+      "Finding the perfect gift for your friends? Let’s get started!",
+    Others: "Shopping for someone special? Let’s make it amazing!",
   };
 
   const [searchParams] = useSearchParams();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(
+    searchParams.get("shoppingassist") === "true"
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [inputText, setInputText] = useState("");
-  const [whom, setWhom] = useState(payloadMapping[shoppingOptions[0]]);
+  const [whom, setWhom] = useState("");
   const [chatHistory, setChatHistory] = useState<
     {
       query: string;
@@ -142,8 +154,8 @@ const TanyaShoppingAssistantStream = () => {
                         [parsedData.index == 0
                           ? "response"
                           : parsedData.index == 1
-                          ? "keywords"
-                          : "potentialQuestions"]: parsedData.data,
+                            ? "keywords"
+                            : "potentialQuestions"]: parsedData.data,
                       }
                     : msg
                 )
@@ -228,16 +240,31 @@ const TanyaShoppingAssistantStream = () => {
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <button className="rounded" onClick={() => setIsOpen(true)}>
-          <img src={tanyaChatBotIcon} alt="Chat with Tanya" />
+      <PopoverTrigger>
+        <button
+          className="flex gap-2 rounded-bl-[25px] rounded-tl-[25px] w-auto fixed right-0 bottom-[100px]"
+          onClick={() => setIsOpen(true)}
+          style={{ alignItems: "center", background: storeDetails.themeColor }}
+        >
+          <img
+            src={tanyaChatBotIcon}
+            alt="Chat with Tanya"
+            className="w-[20%] pl-[5px] pt-[2px]"
+          />
+          <div className="flex flex-col p-[5px]">
+            <span className="text-white text-[14px]">TANYA</span>
+            <span className="text-white text-[12px]">
+              Your AI Shopping Assistant
+            </span>
+          </div>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="absolute bottom-1 -right-4 w-[646px] h-[550px] border-0 bg-white p-0 rounded-xl">
+
+      <PopoverContent className="relative top-[5vh] w-[64.7vw] h-screen border-0 bg-white p-0 rounded-xl overflow-hidden flex flex-col z-50">
         {/* Header */}
         <div
-          className={`flex justify-between rounded-xl p-1`}
-          style={{ background: storeDetails.tanyaThemeColor }}
+          className="flex justify-between rounded-l-xl p-1"
+          style={{ background: storeDetails.themeColor }}
         >
           <div
             className="flex"
@@ -248,86 +275,113 @@ const TanyaShoppingAssistantStream = () => {
               <p className="text-xs font-light mt-1">Chat with</p>
               <p className="font-bold">
                 TANYA{" "}
-                <span className="text-xs font-light">(Shopping Assistant)</span>
+                <span className="text-xs font-light">
+                  (AI Shopping Assistant)
+                </span>
               </p>
             </div>
           </div>
           <div className="flex items-center gap-5 m-3">
-            <img src={dotsHorizontal} alt="Options" width={15} />
-            <img
-              src={arrowDown}
-              alt="Close Chat"
-              width={15}
+            <Icon
+              icon="fluent:dismiss-24-filled"
+              color="#FFFFFF"
+              width="24"
+              height="24"
               className="cursor-pointer"
               onClick={() => setIsOpen(false)}
             />
           </div>
         </div>
 
-        {/* Chat Body */}
+        {/* Chat Body - Scrollable */}
         <div
           ref={scrollRef}
-          className="h-[440px] overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar"
+          className="overflow-y-auto pr-5 pb-2 space-y-4 hide-scrollbar flex-grow"
         >
           <div
-            className={`text-sm text-[16px]
-               rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4`}
-            style={{
-              backgroundColor: storeDetails.tanyaThemeColorLight,
-              // color: storeDetails.themeContrastColor,
-            }}
+            className="text-sm text-[16px] rounded-r-xl p-3 m-3 rounded-bl-xl w-3/4"
+            style={{ backgroundColor: storeDetails.tanyaThemeColorLight }}
           >
-            Hey there! I'm Tanya, your new AI shopping assistant. Think of me as
-            your super helpful friend who knows all the best stuff at{" "}
+            Hey there! I'm Tanya, your AI shopping assistant. Think of me as
+            your helpful friend who knows all the best stuff at{" "}
             {storeDetails.websiteTitle}. Ready to find something amazing?
           </div>
+
+          {/* Shopping Options */}
           {storeCode != "applebees" && (
             <div
               className="mx-3 p-3 rounded-2xl"
               style={{
                 color: storeDetails.themeContrastColor,
                 backgroundColor: storeDetails.themeColor,
+                width: "fit-content"
               }}
             >
-              <p className="font-semibold text-white">
-                Who are you shopping for?
-              </p>
+              <div className="flex gap-2">
+                <Icon
+                  icon="mdi:shopping"
+                  color="white"
+                  width="22"
+                  height="22"
+                />
+                <p className="font-semibold text-white">
+                  Who are you shopping for?
+                </p>
+              </div>
+
               <div className="flex flex-wrap gap-2 mt-2">
                 {shoppingOptions.map((option) => (
                   <button
                     key={option}
                     onClick={() => handleWhomSelection(option)}
-                    className={`px-4 py-2 text-sm border-2 rounded-xl ${
-                      whom === payloadMapping[option]
-                        ? "bg-pink-300 text-white"
-                        : "bg-transparent text-white"
-                    }`}
+                    className={`px-4 py-2 text-sm border-2 rounded-xl ${whom === payloadMapping[option] ? "text-black" : "bg-transparent"}`}
+                    style={{
+                      backgroundColor:
+                        whom === payloadMapping[option]
+                          ? storeDetails.tanyaThemeColorLight
+                          : "transparent",
+                      borderColor: storeDetails.tanyaThemeColorLight,
+                    }}
                   >
                     {option}
                   </button>
                 ))}
               </div>
-              {whom && (
-                <p className="mt-2 text-sm text-white">
-                  Selected:{" "}
-                  {Object.keys(payloadMapping).find(
-                    (key) => payloadMapping[key] === whom
-                  )}
-                </p>
-              )}
             </div>
           )}
 
-          {/* Display chat history */}
+          {storeCode != "applebees" && whom && (
+            <div className="flex items-center mx-3 mt-1">
+              <Icon
+                icon="fluent:shopping-bag-24-filled"
+                color={storeDetails.themeColor}
+                width="22"
+                height="22"
+              />
+              <p
+                className="text-sm text-white  p-2 font-bold"
+                style={{ color: storeDetails.themeColor }}
+              >
+                {(() => {
+                  const selectedKey = Object.keys(payloadMapping).find(
+                    (key) => payloadMapping[key] === whom
+                  );
+                  return selectedKey ? messageMapping[selectedKey] : "";
+                })()}
+              </p>
+            </div>
+          )}
+
+          {/* Chat History */}
           {chatHistory.map((chat, index) => (
             <div key={index}>
               <div className="flex justify-end">
                 <p
+                  className="text-sm rounded-l-xl p-3 m-3 mb-4 rounded-br-xl max-w-[75%]"
                   style={{
                     color: storeDetails.themeContrastColor,
                     backgroundColor: storeDetails.themeColor,
                   }}
-                  className={`text-sm rounded-l-xl p-3 m-3 mb-4 rounded-br-xl roud inline-block max-w-[75%]`}
                 >
                   {chat.query}
                 </p>
@@ -339,57 +393,52 @@ const TanyaShoppingAssistantStream = () => {
                     dangerouslySetInnerHTML={{
                       __html: formatStringToHtml(chat.response),
                     }}
-                     style={{backgroundColor: "rgb(229, 186, 192)", margin:"0.75rem"}}
+                    style={{
+                      backgroundColor: storeDetails.tanyaThemeColorLight,
+                      margin: "0.75rem",
+                    }}
                   />
                 </div>
               )}
               {chat?.products && chat?.products?.length > 0 && (
-                // <ProductCarousel products={chat.products} navigate={navigate} />
                 <ProductDisplay
                   chat={chat.products}
                   storeDetails={storeDetails}
                 />
               )}
 
-              {/* Render potential questions below each response */}
-
+              {/* Potential Questions */}
               {chat.potentialQuestions.length > 0 && (
-                <div className="my-2 mb-8 px-4 text-sm text-gray-700 ">
+                <div className="my-2 mb-8 px-4 text-sm text-gray-700">
                   <p
-                    className={`font-semibold text-${storeDetails.themeDarkColor}`}
-                    style={{
-                      color: storeDetails.themeDarkColor,
-                    }}
+                    className="font-semibold"
+                    style={{ color: storeDetails.themeDarkColor }}
                   >
-                    Why not explore these inqueries...
+                    Why not explore these inquiries...
                   </p>
-
-                  {chat?.potentialQuestions
-                    ?.split(",")
-                    // .split(`\\n`)
-                    .map((question: string, idx: number) => (
-                      <button
-                        key={idx}
-                        className={`cursor-pointer text-[#232323] border bg-[#804C9E0D] border-${storeDetails.themeDarkColor} m-1 rounded-xl px-2 py-1`}
-                        onClick={() => handleSendMessage(question)}
-                        style={{
-                          color: storeDetails.themeDarkColor,backgroundColor: "rgb(229, 186, 192)"
-                        }}
-                      >
-                        {question}
-                      </button>
-                    ))}
+                  {chat.potentialQuestions.split(",").map((question, idx) => (
+                    <button
+                      key={idx}
+                      className={`cursor-pointer text-[#232323] border bg-[#804C9E0D] border-${storeDetails.themeDarkColor} m-1 rounded-xl px-2 py-1`}
+                      onClick={() => handleSendMessage(question)}
+                      style={{
+                        backgroundColor: storeDetails.tanyaThemeColorLight,
+                      }}
+                    >
+                      {question}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
           ))}
         </div>
 
-        {/* Input Field */}
-        <div className="absolute w-4/5 bottom-2 left-20 drop-shadow-xl flex items-center rounded-full bg-white">
+        {/* Input Field - Always at Bottom */}
+        <div className="sticky bottom-0 w-[96%] drop-shadow-xl flex items-center rounded-full bg-white border border-gray-300 m-[15px]">
           <input
             placeholder="Ask me anything"
-            className="w-full rounded-full p-4 h-[61px] outline-none border-none focus:ring-0 focus:border-transparent"
+            className="w-full rounded-full p-4 outline-none border-none focus:ring-0 focus:border-transparent"
             value={inputText}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !isLoading) {
@@ -402,23 +451,18 @@ const TanyaShoppingAssistantStream = () => {
             type="submit"
             disabled={isLoading}
             className={`mr-6 text-[${storeDetails.themeDarkColor}] font-medium`}
-            style={{
-              color: storeDetails.themeDarkColor,
-            }}
+            style={{ color: storeDetails.themeDarkColor }}
             onClick={() => handleSendMessage()}
           >
             {isLoading ? (
               <div
-                className={`m-3 animate-spin rounded-full h-6 w-6 border-b-2`}
-                style={{
-                  border: storeDetails.tanyaThemeColor,
-                  borderBottom: "2px solid",
-                }}
+                className="m-3 animate-spin rounded-full h-6 w-6 border-b-2"
+                style={{ borderBottom: "2px solid" }}
               />
             ) : (
               <Icon
                 icon="fluent:send-48-filled"
-                color={storeDetails.tanyaThemeColor}
+                color={storeDetails.themeColor}
                 width="24"
                 height="24"
               />

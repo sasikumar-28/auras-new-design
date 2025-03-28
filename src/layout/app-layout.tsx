@@ -1,5 +1,4 @@
 import Header from "@/components/header";
-import { Sidebar } from "@/components/sidebar";
 import { Outlet } from "react-router";
 import { useSearchParams, useNavigate } from "react-router";
 import ProductDetailSidebar from "@/components/products/ProductDetailSidebar";
@@ -10,7 +9,7 @@ const AppLayout = () => {
   const [searchParams] = useSearchParams();
   const sortFilter = searchParams.get("sortFilter");
   const productCard = searchParams.get("productCard");
-  let storeCode =
+  const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
   const storeDetails = useSelector((state: any) => state.store.store);
   const navigate = useNavigate();
@@ -38,7 +37,7 @@ const AppLayout = () => {
               : "bg-[#552864]"
           }`}
         >
-          <Sidebar sortFilter={!!sortFilter} storeCode={storeCode || ""} />
+          {/* <Sidebar sortFilter={!!sortFilter} storeCode={storeCode || ""} /> */}
           {/* Apply Dynamic Theme Here */}
           <div className={`flex-1 w-full bg-[${themeColor}]`}>
             <main
@@ -59,13 +58,13 @@ const AppLayout = () => {
             sortFilter ? "ml-56" : productCard ? "ml-28" : "ml-36"
           }`}
         >
-          <Header isSortFilter={!!sortFilter} isProductCard={!!productCard} />
+          <Header/>
         </div>
 
         {/* Right Sidebar */}
-        {sortFilter && (
+        {/* {sortFilter && (
           <Sidebar isRightSidebar={true} storeCode={storeCode || ""} />
-        )}
+        )} */}
 
         {/* Product Detail Sidebar */}
         {productCard && <ProductDetailSidebar />}
