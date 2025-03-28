@@ -8,11 +8,11 @@ const ProductDisplay = ({ chat, storeDetails }: any) => {
       {chat.map((products: any, i: number) => (
         <div key={i}>
           <div
-            className={`font-semibold text-${storeDetails.themeDarkColor} mb-2 border-${storeDetails.themeDarkColor} border p-2 w-fit rounded-[20px] bg-${storeDetails.themeLightColor}`}
+            className={`font-semibold mb-2 border p-2 w-fit rounded-[20px]`}
             style={{
               color: storeDetails.themeDarkColor,
               border: `1px solid ${storeDetails.themeColor}`,
-              backgroundColor: "rgb(229, 186, 192)"
+              backgroundColor: storeDetails.themeLightColor
             }}
           >
             {initialCapital(products.keyword) || "No keyword"}

@@ -4,6 +4,7 @@ import { getAccessToken } from "@/utils/getAccessToken";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
+
 const CategoryProductList = ({
   category,
   index,
@@ -57,20 +58,14 @@ const CategoryProductList = ({
     }
   };
 
-  const getProductsByCategory = async (
-    categoryId: string,
-    pageNum: number,
-    storeCode?: string
-  ) => {
+  const getProductsByCategory = async (categoryId: string, pageNum: number) => {
     try {
       const limit = 4;
       const token = await getAccessToken();
 
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
-      }api/productByCategoryId/${categoryId}?hitsPerPage=${limit}&page=${pageNum}${
-        storeCode ? `&storeCode=${storeCode}` : ""
-      }`;
+      }api/productByCategoryId/${categoryId}?hitsPerPage=${limit}&page=${pageNum}`;
 
       console.log(`Requesting: ${URL}`);
 
@@ -103,39 +98,18 @@ const CategoryProductList = ({
 
       const categories: Category[] = await getAllCategories();
 
-      const firstSixCategories = categories
+      const slicedCategories = categories
         .filter((c: any) => c.categoryId == category.categoryID)
         .slice(0, 3);
-      let categoriesData: Product[] = [];
 
-      for (const category of firstSixCategories) {
-        let allProducts: Product[] = [];
-
-        if (storeCode == "applebees") {
-          if (category.children && category.children.length > 0) {
-            for (const childCategory of category.children) {
-              const products = await getProductsByCategory(
-                childCategory.categoryId,
-                pageNum
-              );
-              allProducts = [...allProducts, ...products];
-              if (allProducts.length >= 8) break;
-            }
-          }
-
-          if (allProducts.length > 0) {
-            categoriesData = allProducts;
-          }
-        } else {
-          const products = await getProductsByCategory(
-            category.categoryId,
-            pageNum
-          );
-          categoriesData = products;
-        }
-
-        setProducts(categoriesData);
+      const reqParamId = slicedCategories[0]?.requestParam?.join(",") || "";
+      if (!reqParamId) {
+        throw new Error("Request parameter ID is missing");
       }
+
+      const products = await getProductsByCategory(reqParamId, pageNum);
+
+      setProducts(products);
     } catch (error: any) {
       console.error("Error fetching category products:", error);
       setError(error.message || "Failed to fetch products");
@@ -146,7 +120,7 @@ const CategoryProductList = ({
 
   useEffect(() => {
     fetchCategoryProducts(page);
-  }, [storeCode, page]); // Re-fetch when page changes
+  }, [storeCode, page]);
 
   const handlePrevPage = () => {
     if (page > 1) {
