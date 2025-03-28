@@ -18,9 +18,9 @@ const ProductCarousel = ({
   storeDetails: any;
 }) => {
   const navigate = useNavigate();
-  
+
   const [startIndex, setStartIndex] = useState(0);
-  const productsPerPage = 3;
+  const productsPerPage = 4;
 
   const nextProducts = () => {
     setStartIndex((prevIndex) =>
@@ -40,13 +40,14 @@ const ProductCarousel = ({
 
   return (
     <div className="mb-4">
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center mt-4 gap-[20px]">
         {product?.length > productsPerPage && (
           <button
             onClick={prevProducts}
-            className={`bg-${storeDetails.themeDarkColor} text-white p-2 rounded flex items-center h-fit`}
+            className={`text-white p-2 rounded flex items-center h-fit`}
+            style={{color: storeDetails.themeColor}}
           >
-            <Icon icon="mdi:chevron-left" width="18" />
+            <Icon icon="mdi:chevron-left" width="25" />
           </button>
         )}
 
@@ -56,7 +57,7 @@ const ProductCarousel = ({
             .map((prod) => (
               <div
                 key={prod.objectID}
-                className="flex flex-col w-[150px] h-[160px] items-center justify-between cursor-pointer shadow-lg"
+                className="flex flex-col w-[150px] h-[180px] items-center justify-between cursor-pointer shadow-lg"
                 onClick={() => {
                   localStorage.setItem("product", JSON.stringify(prod));
                   navigate(
@@ -64,6 +65,7 @@ const ProductCarousel = ({
                   );
                 }}
               >
+                {/* Product Image */}
                 <img
                   src={imageUrlArray(prod)[0]}
                   alt={
@@ -71,10 +73,14 @@ const ProductCarousel = ({
                   }
                   className="w-16 h-16 rounded-[3px] scale-125 transition-transform duration-300 hover:scale-150 object-cover"
                 />
+
+                {/* Price & Name Container */}
                 <div
-                  className={`text-black bg-${storeDetails.themeLightColor} w-full rounded-[3px] p-1 text-[12px] font-bold text-center`}
+                  className={`text-black w-full rounded-[3px] p-2 text-[12px] font-bold text-center`}
+                  style={{background: storeDetails.tanyaThemeColorLight}}
                 >
-                  <div>
+                  {/* Product Price */}
+                  <div className="text-[14px] font-semibold">
                     {currencyFormatter(
                       prod?.price
                         ? Number(prod?.price)
@@ -82,10 +88,20 @@ const ProductCarousel = ({
                       priceFormatter(prod)?.currencyCode
                     )}
                   </div>
-                  <div>
-                    {prod?.title
-                      ? prod.title
-                      : stringReducer(displayData(prod?.name["en-US"]), 30)}
+                  {/* Product Name - 2 Lines & Overflow */}
+                  <div className="relative inline-block group">
+                    <div className="w-full line-clamp-1 overflow-hidden text-ellipsis">
+                      {prod?.title
+                        ? prod.title
+                        : stringReducer(displayData(prod?.name["en-US"]), 60)}
+                    </div>
+
+                    {/* Full Text on Hover - Only Shows When Hovering on Text */}
+                    <div className="absolute left-0 top-full mt-1 w-max max-w-[200px] p-2 bg-white shadow-lg text-black text-xs rounded opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-50 pointer-events-none">
+                      {prod?.title
+                        ? prod.title
+                        : stringReducer(displayData(prod?.name["en-US"]), 60)}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -95,9 +111,10 @@ const ProductCarousel = ({
         {product?.length > productsPerPage && (
           <button
             onClick={nextProducts}
-            className={`bg-${storeDetails.themeDarkColor} text-white p-2 rounded flex items-center h-fit`}
+            className={`text-white p-2 rounded flex items-center h-fit`}
+            style={{color: storeDetails.themeColor}}
           >
-            <Icon icon="mdi:chevron-right" width="18" />
+            <Icon icon="mdi:chevron-right" width="25" />
           </button>
         )}
       </div>

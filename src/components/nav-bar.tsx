@@ -64,12 +64,12 @@ const NavBar: React.FC = () => {
   }
 
   return (
-    <nav className="fixed flex justify-center top-[5.7rem] left-0 right-0 bg-white w-full p-[0.5rem] px-4 border-b border-gray-200 z-10">
-      <ul className="flex items-center space-x-8 text-xs gap-[35px] relative">
+    <nav className="fixed flex justify-center top-[5.7rem] left-0 right-0 bg-white w-full p-[0.5rem] px-4 border-b border-gray-200 z-[-1]">
+      <ul className="flex justify-center items-center w-full text-xs gap-[35px]">
         {categories.map((category) => (
           <li
             key={category.categoryId}
-            className="relative group"
+            className="relative group text-center flex flex-col items-center"
             onMouseEnter={() => setHoveredCategory(category.categoryId)}
             onMouseLeave={() => setHoveredCategory(null)}
           >
@@ -89,7 +89,7 @@ const NavBar: React.FC = () => {
             {hoveredCategory === category.categoryId &&
               category.children &&
               category.children.length > 0 && (
-                <ul className="absolute left-0 top-full bg-white shadow-lg border border-gray-200 rounded-md py-2 w-48">
+                <ul className="absolute left-0 top-full bg-white shadow-lg border border-gray-200 rounded-md py-2 w-48 max-h-[300px] overflow-y-auto">
                   {category.children.map((subCategory) => (
                     <li key={subCategory.categoryId} className="px-4 py-2">
                       <button
@@ -100,10 +100,11 @@ const NavBar: React.FC = () => {
                               : subCategory.categoryId
                           )
                         }
-                        // className="flex items-center justify-start w-full text-gray-800 hover:text-black font-medium"
-                        className="flex items-start justify-start w-full text-gray-800 hover:text-black font-medium text-left"
+                        className="flex items-start justify-start w-full text-gray-800 hover:text-black font-medium text-left text-sm"
                       >
-                        <span className="whitespace-normal break-words flex-1">{subCategory.categoryName}</span>
+                        <span className="whitespace-normal break-words flex-1">
+                          {subCategory.categoryName}
+                        </span>
                         {subCategory.children &&
                           subCategory.children.length > 0 && (
                             <Icon
@@ -125,7 +126,7 @@ const NavBar: React.FC = () => {
                       {openSubcategory === subCategory.categoryId &&
                         subCategory.children &&
                         subCategory.children.length > 0 && (
-                          <ul className="mt-1 ml-4 border-gray-300 pl-2">
+                          <ul className="mt-1 ml-4 pl-2 border-gray-300 max-h-[200px] overflow-y-auto">
                             {subCategory.children.map((childCategory) => (
                               <li
                                 key={childCategory.categoryId}

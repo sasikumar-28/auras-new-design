@@ -168,74 +168,79 @@ const CategoryProductList = ({
       </h2>
 
       <div className="relative max-w-6xl mx-auto">
-        {/* Previous Button (Always visible, but disabled on page 1 or loading) */}
-        <button
-          className={`absolute left-[-45px] top-1/2 -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md transition z-10 ${
-            loading || page === 1 ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          onClick={handlePrevPage}
-          disabled={loading || page === 1}
-        >
-          <Icon
-            icon="mdi:chevron-left"
-            className="text-gray-700"
-            width={30}
-            height={30}
-          />
-        </button>
-
-        {/* Products Grid or Skeleton Loader */}
-        {error ? (
-          <div className="text-red-600 font-semibold text-center mt-4">
-            {error}
+        {/* Show error message if there's an error or no products */}
+        {error || (!loading && products.length === 0) ? (
+          <div className="text-center text-red-600 font-semibold">
+            {error ? error : "No products available for this category."}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center">
-            {loading
-              ? Array.from({ length: 4 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-gray-300 animate-pulse p-4 rounded-xl shadow-xl w-full max-w-[250px] text-center"
-                  >
-                    <div className="aspect-square bg-gray-400 rounded-lg mb-4"></div>
-                    <p className="h-6 bg-gray-400 rounded-md w-3/4 mx-auto mb-2"></p>
-                    <p className="h-5 bg-gray-400 rounded-md w-1/2 mx-auto"></p>
-                  </div>
-                ))
-              : products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="bg-white p-4 rounded-xl shadow-xl w-full max-w-[250px] text-center"
-                  >
-                    <div className="aspect-square overflow-hidden rounded-lg mb-4">
-                      <img
-                        src={product.image}
-                        alt={product.title}
-                        className="w-full h-full object-cover rounded-[10px]"
-                      />
-                    </div>
-                    <p className="text-xl font-bold">${product.price}</p>
-                    <h3 className="text-lg truncate mb-2">{product.title}</h3>
-                  </div>
-                ))}
-          </div>
-        )}
+          <>
+            {/* Previous Button (Hidden if error or no products) */}
+            {!loading && products.length > 0 && (
+              <button
+                className={`absolute left-[-45px] top-1/2 -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md transition z-10 ${
+                  page === 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                onClick={handlePrevPage}
+                disabled={page === 1}
+              >
+                <Icon
+                  icon="mdi:chevron-left"
+                  className="text-gray-700"
+                  width={30}
+                  height={30}
+                />
+              </button>
+            )}
 
-        {/* Next Button (Always visible, but disabled while loading) */}
-        <button
-          className={`absolute right-[-45px] top-1/2 -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md transition z-10 ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          onClick={handleNextPage}
-          disabled={loading}
-        >
-          <Icon
-            icon="mdi:chevron-right"
-            className="text-gray-700"
-            width={30}
-            height={30}
-          />
-        </button>
+            {/* Products Grid or Skeleton Loader */}
+            <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center">
+              {loading
+                ? Array.from({ length: 4 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="bg-gray-300 animate-pulse p-4 rounded-xl shadow-xl w-full max-w-[250px] text-center"
+                    >
+                      <div className="aspect-square bg-gray-400 rounded-lg mb-4"></div>
+                      <p className="h-6 bg-gray-400 rounded-md w-3/4 mx-auto mb-2"></p>
+                      <p className="h-5 bg-gray-400 rounded-md w-1/2 mx-auto"></p>
+                    </div>
+                  ))
+                : products.map((product) => (
+                    <div
+                      key={product.id}
+                      className="bg-white p-4 rounded-xl shadow-xl w-full max-w-[250px] text-center"
+                    >
+                      <div className="aspect-square overflow-hidden rounded-lg mb-4">
+                        <img
+                          src={product.image}
+                          alt={product.title}
+                          className="w-full h-full object-cover rounded-[10px]"
+                        />
+                      </div>
+                      <p className="text-xl font-bold">${product.price}</p>
+                      <h3 className="text-lg truncate mb-2">{product.title}</h3>
+                    </div>
+                  ))}
+            </div>
+
+            {/* Next Button (Hidden if error or no products) */}
+            {!loading && products.length > 0 && (
+              <button
+                className="absolute right-[-45px] top-1/2 -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md transition z-10"
+                onClick={handleNextPage}
+                disabled={loading}
+              >
+                <Icon
+                  icon="mdi:chevron-right"
+                  className="text-gray-700"
+                  width={30}
+                  height={30}
+                />
+              </button>
+            )}
+          </>
+        )}
       </div>
 
       {/* Banner Images */}
