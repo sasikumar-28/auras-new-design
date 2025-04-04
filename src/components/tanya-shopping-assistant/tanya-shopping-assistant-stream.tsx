@@ -296,6 +296,7 @@ const TanyaShoppingAssistantStream = () => {
             />
           </div>
         </div>
+        </div>
 
         {/* Chat Body - Scrollable */}
         <div

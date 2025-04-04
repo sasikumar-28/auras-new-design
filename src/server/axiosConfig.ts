@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { getAccessToken } from "@/utils/getAccessToken";
 
-const token = await getAccessToken();
+const token = getAccessToken();
 
 const AxiosApi = axios.create({
   headers: {
