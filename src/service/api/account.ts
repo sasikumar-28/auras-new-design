@@ -1,4 +1,5 @@
 import AxiosApi from "../../server/axiosConfig";
+import { ENDPOINTS } from "@/server/endpoints";
 
 interface LoginRequest {
   emailId: string;
@@ -6,36 +7,22 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  accessToken: string;
-  refreshToken?: string;
-  user?: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  message: string;
+  customerNumber?: number;
 }
 
 export const loginUser = async (
   credentials: LoginRequest,
 ): Promise<LoginResponse> => {
-  const URL = "/api/customers/login";
-  const hed = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  };
   try {
-    const response = await AxiosApi.post<LoginResponse>(URL, credentials, {
-      headers: hed,
-    });
-    return response.data;
-  } catch (error: any) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    console.error(
-      "Login failed:",
-      error,
-      error.response?.data || error.message,
+    const response = await AxiosApi.post<LoginResponse>(
+      `${import.meta.env.VITE_SERVER_BASE_URL}${ENDPOINTS.LOGIN}`,
+      credentials,
     );
-    throw new Error(error.response?.data?.message || "Login request failed");
+    return response.data;
+  } catch (error) {
+    console.error("Login failed:", error);
+    throw new Error("Login request failed");
   }
 };
 
