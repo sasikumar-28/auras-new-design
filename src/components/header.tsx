@@ -29,6 +29,11 @@ import {
   setError,
 } from "@/store/reducers/categoryReducer";
 
+const logout = () => {
+  localStorage.clear();
+  window.location.reload();
+};
+
 export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,19 +46,16 @@ export default function Header() {
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const store = useSelector((s: any) => s.store.store);
   const isLogin = customerNumber || localStorage.getItem("customerNumber");
-
-  const { categories, error } = useSelector(
-    (state: any) => state?.category
-  );
+  const { categories, error } = useSelector((state: any) => state?.category);
 
   const storeCode = useMemo(
     () => searchParams.get("storeCode") || localStorage.getItem("storeCode"),
-    [searchParams]
+    [searchParams],
   );
 
   const logo = useMemo(
     () => store?.logoTransparent || store?.logoDarkBg || store?.logoLightBg,
-    [store]
+    [store],
   );
   const themeColor = useMemo(() => store?.themeColor, [store]);
 
@@ -107,7 +109,7 @@ export default function Header() {
       const storeDetails = getShoppingAssistantForStore(storeCode);
       document
         .getElementById("favicon")
-        ?.setAttribute("href", store.favicon || storeDetails.favicon,);
+        ?.setAttribute("href", store.favicon || storeDetails.favicon);
 
       document.title = store.websiteTitle || "Loading...";
     }
@@ -143,10 +145,6 @@ export default function Header() {
   if (window.location.pathname.includes("checkout")) {
     return <></>;
   }
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.reload();
-  };
 
   return (
     <>
@@ -188,127 +186,144 @@ export default function Header() {
               />
             </div>
 
-          {/* Search Results - Positioned below search box */}
-          {searchResults.length > 0 && (
-            <div className="absolute top-full left-0 w-full bg-white rounded-xl shadow-md mt-1">
-              {searchResults.slice(0, 5).map((result, index) => (
-                <div key={index} className="p-4 border-b cursor-pointer">
-                  <div
-                    className="flex justify-between items-center"
-                    onClick={() => {
-                      localStorage.setItem("product", JSON.stringify(result));
-                      setSearchQuery("");
-                      navigate(
-                        `/product/${result?.objectID}?category=${
-                          storeCode == "applebees"
-                            ? result?.categoryId
-                            : result?.categoryPageId[0]
-                        }&productCard=true`
-                      );
-                      setSearchResults([]);
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={imageUrlArray(result)[0]}
-                        alt={
-                          storeCode == "applebees"
+            {/* Search Results */}
+            {searchResults.length > 0 && (
+              <div className="absolute top-full left-0 w-full bg-white rounded-xl shadow-md mt-1">
+                {searchResults.slice(0, 5).map((result, index) => (
+                  <div key={index} className="p-4 border-b cursor-pointer">
+                    <div
+                      className="flex justify-between items-center"
+                      onClick={() => {
+                        localStorage.setItem("product", JSON.stringify(result));
+                        setSearchQuery("");
+                        navigate(
+                          `/product/${result?.objectID}?category=${
+                            storeCode == "applebees"
+                              ? result?.categoryId
+                              : result?.categoryPageId[0]
+                          }&productCard=true`,
+                        );
+                        setSearchResults([]);
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={imageUrlArray(result)[0]}
+                          alt={
+                            storeCode == "applebees"
+                              ? result?.title
+                              : displayData(result?.name["en-US"])
+                          }
+                          className="w-10 h-10 rounded-full"
+                        />
+                        <p className="text-gray-500 hover:underline">
+                          {storeCode == "applebees"
                             ? result?.title
-                            : displayData(result?.name["en-US"])
-                        }
-                        className="w-10 h-10 rounded-full"
-                      />
-                      <p className="text-gray-500 hover:underline">
-                        {storeCode == "applebees"
-                          ? result?.title
-                          : displayData(result?.name["en-US"])}
-                      </p>
-                    </div>
-                    <div className="-rotate-45">
-                      <Icon
-                        icon="line-md:arrow-right"
-                        color="gray-500"
-                        width="24"
-                        height="24"
-                      />
+                            : displayData(result?.name["en-US"])}
+                        </p>
+                      </div>
+                      <div className="-rotate-45">
+                        <Icon
+                          icon="line-md:arrow-right"
+                          color="gray-500"
+                          width="24"
+                          height="24"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="flex w-2/6 items-center justify-center gap-10">
-          <div className="p-1 relative flex flex-col items-center text-white">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="flex flex-col items-center cursor-pointer">
-                  <Icon
-                    icon="mdi:account-outline"
-                    className="text-white opacity-90"
-                    width={26}
-                    height={26}
-                  />
-                  <span className="text-sm font-medium">Account</span>
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-44 bg-white shadow-xl p-2 rounded">
-                <DropdownMenuGroup className="flex flex-col gap-y-2 text-black">
-                  <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
-                    <div>
-                      <Icon icon="prime:user" width="24" height="24" />
-                    </div>
-                    <div>My Account</div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
-                    <div>
-                      <Icon icon="ph:chat-light" width="24" height="24" />
-                    </div>
-                    <div>Recommendations</div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
-                    <div>
-                      <Icon icon="bxs:hot" width="24" height="24" />
-                    </div>
-                    <div>Trending</div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
-                    <div>
-                      <Icon
-                        icon="icon-park-outline:return"
-                        width="24"
-                        height="24"
-                      />
-                    </div>
-                    <div> Return & Refund</div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
-                    <div>
-                      <Icon icon="proicons:cart" width="24" height="24" />
-                    </div>
-                    <div>Buy it Again</div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-[13px] cursor-pointer flex gap-4 items-center"
-                    onClick={() => {
-                      dispatch(logout());
-                      navigate("/login");
-                    }}
-                  >
-                    <div>
-                      <Icon
-                        icon="qlementine-icons:log-out-16"
-                        width="24"
-                        height="24"
-                      />
-                    </div>
-                    <div>Logout</div>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                ))}
+              </div>
+            )}
           </div>
+
+          {/* Icons Section */}
+          <div className="flex w-[300px] items-center justify-center gap-6">
+            <div className="p-1 relative flex flex-col items-center text-white">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="flex flex-col items-center cursor-pointer">
+                    <Icon
+                      icon="mdi:account-outline"
+                      className="text-white opacity-90"
+                      width={26}
+                      height={26}
+                    />
+                    <span className="text-sm font-medium">Account</span>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-44 bg-white shadow-xl p-2 rounded">
+                  <DropdownMenuGroup className="flex flex-col gap-y-2 text-black">
+                    <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                      {isLogin !== null ? (
+                        <button
+                          onClick={() => {
+                            navigate("/account");
+                          }}
+                          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md border border-blue-600"
+                        >
+                          My Account
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            navigate("/login");
+                          }}
+                          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md border border-blue-600"
+                        >
+                          Sign In
+                        </button>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                      <div>
+                        <Icon icon="ph:chat-light" width="24" height="24" />
+                      </div>
+                      <div>Recommendations</div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                      <div>
+                        <Icon icon="bxs:hot" width="24" height="24" />
+                      </div>
+                      <div>Trending</div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                      <div>
+                        <Icon
+                          icon="icon-park-outline:return"
+                          width="24"
+                          height="24"
+                        />
+                      </div>
+                      <div> Return & Refund</div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                      <div>
+                        <Icon icon="proicons:cart" width="24" height="24" />
+                      </div>
+                      <div>Buy it Again</div>
+                    </DropdownMenuItem>
+                    {isLogin !== null && (
+                      <DropdownMenuItem
+                        className="text-[13px] cursor-pointer flex gap-4 items-center"
+                        onClick={() => {
+                          logout();
+                        }}
+                      >
+                        <div>
+                          <Icon
+                            icon="qlementine-icons:log-out-16"
+                            width="24"
+                            height="24"
+                          />
+                        </div>
+                        <div>Logout</div>
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
 
             <div className="p-1 relative flex flex-col items-center text-white cursor-pointer">
               <Icon
@@ -320,25 +335,26 @@ export default function Header() {
               <span className="text-sm font-medium">Wishlist</span>
             </div>
 
-          <div className="p-1 relative flex flex-col items-center text-white cursor-pointer">
-            <Icon
-              icon="mdi:shopping-outline"
-              className="text-white opacity-90"
-              width={25}
-              height={25}
-            />
-            <span className="text-sm font-medium">Cart</span>
-            {/* Product count badge */}
-            <p className="absolute  -right-1 bg-white text-black text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
-              {selectedProduct.reduce(
-                (acc: number, item: Product) => acc + (item.quantity || 0),
-                0
-              )}
-            </p>
+            <div className="p-1 relative flex flex-col items-center text-white cursor-pointer">
+              <Icon
+                icon="mdi:shopping-outline"
+                className="text-white opacity-90"
+                width={25}
+                height={25}
+              />
+              <span className="text-sm font-medium">Cart</span>
+              {/* Product count badge */}
+              <p className="absolute  -right-1 bg-white text-black text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                {selectedProduct.reduce(
+                  (acc: number, item: Product) => acc + (item.quantity || 0),
+                  0,
+                )}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-      <NavBar />
+      <NavBar categories={categories} error={error} />
     </>
   );
 }

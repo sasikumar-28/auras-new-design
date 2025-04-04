@@ -20,7 +20,6 @@ import ProductDisplay from "../carousel/ProductDisplay";
 import { useSelector } from "react-redux";
 import useSessionTracker from "@/hooks/useSessionTracker";
 
-
 const TanyaShoppingAssistantStream = () => {
   // Shopping options
   const shoppingOptions = [
@@ -73,7 +72,7 @@ const TanyaShoppingAssistantStream = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
-  const storeDetails = useSelector((s: any) => s.store.store);  
+  const storeDetails = useSelector((s: any) => s.store.store);
 
   // Handle selecting "whom" option
   const handleWhomSelection = (selected: string) => {
