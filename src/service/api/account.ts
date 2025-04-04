@@ -1,21 +1,13 @@
-import AxiosApi from "../../server/axiosConfig";
-import { ENDPOINTS } from "@/server/endpoints";
-
-interface LoginRequest {
-  emailId: string;
-  password: string;
-}
-
-interface LoginResponse {
-  message: string;
-  customerNumber?: number;
-}
+import { getAxiosInstance } from "../../server/axiosConfig";
+import { ENDPOINTS } from "@/constants/endpoints";
+import { LoginResponse, LoginRequest } from "@/types/customer";
 
 export const loginUser = async (
   credentials: LoginRequest,
 ): Promise<LoginResponse> => {
   try {
-    const response = await AxiosApi.post<LoginResponse>(
+    const axiosInstance = await getAxiosInstance();
+    const response = await axiosInstance.post<LoginResponse>(
       `${import.meta.env.VITE_SERVER_BASE_URL}${ENDPOINTS.LOGIN}`,
       credentials,
     );
@@ -26,26 +18,16 @@ export const loginUser = async (
   }
 };
 
-// export const getOrder = async (): Promise<LoginResponse> => {
-//   const hed = {
-//     "Content-Type": "application/json",
-//     Accept: "application/json",
-//   };
-//   try {
-//     const response = await AxiosApi.get<LoginResponse>(
-//       "/api/web-bff/orders?customerId=616",
-//       {
-//         headers: hed,
-//       },
-//     );
-//     return response.data;
-//   } catch (error: any) {
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     console.error(
-//       "Login failed:",
-//       error,
-//       error.response?.data || error.message,
-//     );
-//     throw new Error(error.response?.data?.message || "Login request failed");
-//   }
-// };
+export const getOrder = async (): Promise<LoginResponse> => {
+  const customerNumber = localStorage.getItem("customerNumber");
+  try {
+    const axiosInstance = await getAxiosInstance();
+    const response = await axiosInstance.get<LoginResponse>(
+      `${import.meta.env.VITE_SERVER_BASE_URL}${ENDPOINTS.GET_ORDER_BY_ID}${customerNumber}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Get Order failed:", error);
+    throw new Error("order request failed");
+  }
+};

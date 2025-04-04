@@ -1,0 +1,27 @@
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+export interface AccountState {
+  customerNumber: number | null;
+}
+
+const initialState: AccountState = {
+  customerNumber: null,
+};
+
+const accountSlice = createSlice({
+  name: "account",
+  initialState,
+  reducers: {
+    setAccountInfo: (state, action: PayloadAction<AccountState>) => {
+      return action.payload;
+    },
+    updateCustomerNumber: (state, action: PayloadAction<AccountState>) => {
+      state.customerNumber = action.payload.customerNumber;
+    },
+    clearAccount: () => initialState,
+  },
+});
+
+export const { setAccountInfo, updateCustomerNumber, clearAccount } =
+  accountSlice.actions;
+export default accountSlice.reducer;

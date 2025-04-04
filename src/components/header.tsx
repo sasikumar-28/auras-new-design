@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { decryptData, displayData, imageUrlArray } from "@/utils/helper";
-import { login, logout } from "@/store/reducers/authReducer";
+import { login } from "@/store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart, setSelectedProduct } from "@/store/reducers/cartReducer";
 import { getShoppingAssistantForStore } from "@/utils/store-helper";
@@ -27,11 +27,15 @@ export default function Header() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedProduct = useSelector((state: any) => state.cart.cart);
+  const { customerNumber } = useSelector(
+    (state: any) => state?.customerAccount,
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
   const store = useSelector((s: any) => s.store.store);
+  const isLogin = customerNumber || localStorage.getItem("customerNumber");
 
   const [logo, setLogo] = useState<string>("");
   const [themeColor, setThemeColor] = useState<string>("");
@@ -45,7 +49,7 @@ export default function Header() {
   const handleSearch = async () => {
     const results: SearchProduct[] = await getSearchResults(
       searchQuery,
-      store.searchConfigs
+      store.searchConfigs,
     );
     setSearchResults(results);
   };
@@ -61,7 +65,7 @@ export default function Header() {
         .getElementById("favicon")
         ?.setAttribute(
           "href",
-          store.favicon ? store.favicon : storeDetails.favicon
+          store.favicon ? store.favicon : storeDetails.favicon,
         );
 
       document.title = "Loading...";
@@ -104,6 +108,10 @@ export default function Header() {
   if (window.location.pathname.includes("checkout")) {
     return <></>;
   }
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
 
   return (
     <>
@@ -156,7 +164,7 @@ export default function Header() {
                           storeCode == "applebees"
                             ? result?.categoryId
                             : result?.categoryPageId[0]
-                        }&productCard=true`
+                        }&productCard=true`,
                       );
                       setSearchResults([]);
                     }}
@@ -209,17 +217,33 @@ export default function Header() {
               <DropdownMenuContent className="w-44 bg-white shadow-xl p-2 rounded">
                 <DropdownMenuGroup className="flex flex-col gap-y-2 text-black">
                   <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
-                    <div>
-                      <Icon icon="prime:user" width="24" height="24" />
-                    </div>
-                    <div>My Account</div>
+                    {isLogin !== null ? (
+                      <button
+                        onClick={() => {
+                          navigate("/account");
+                        }}
+                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md border border-blue-600"
+                      >
+                        My Account
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          navigate("/login");
+                        }}
+                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md border border-blue-600"
+                      >
+                        Sign In
+                      </button>
+                    )}
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
-                    <div>
-                      <Icon icon="ph:chat-light" width="24" height="24" />
-                    </div>
-                    <div>Recommendations</div>
-                  </DropdownMenuItem>
+                  {isLogin === null && (
+                    <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                      <button className="w-full border border-blue-600 text-blue-600 py-2 rounded-lg hover:bg-blue-100 transition font-semibold shadow-md">
+                        Create Account
+                      </button>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
                     <div>
                       <Icon icon="bxs:hot" width="24" height="24" />
@@ -245,8 +269,7 @@ export default function Header() {
                   <DropdownMenuItem
                     className="text-[13px] cursor-pointer flex gap-4 items-center"
                     onClick={() => {
-                      dispatch(logout());
-                      navigate("/login");
+                      handleLogout();
                     }}
                   >
                     <div>
@@ -285,7 +308,7 @@ export default function Header() {
             <p className="absolute  -right-1 bg-white text-black text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
               {selectedProduct.reduce(
                 (acc: number, item: Product) => acc + (item.quantity || 0),
-                0
+                0,
               )}
             </p>
           </div>

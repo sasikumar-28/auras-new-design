@@ -77,7 +77,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
             },
             // Add cache-busting parameter
             cache: "no-store",
-          }
+          },
         );
       } catch (err) {
         // Method 2: Using search in headers
@@ -91,7 +91,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
             },
             // Add cache-busting parameter
             cache: "no-store",
-          }
+          },
         );
       }
 
@@ -135,7 +135,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
 
   const goToNext = (): void => {
     setCurrentIndex((prevIndex) =>
-      Math.min(prevIndex + itemsPerPage, maxStartIndex)
+      Math.min(prevIndex + itemsPerPage, maxStartIndex),
     );
   };
 
@@ -157,7 +157,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   // Get the visible items based on the current index
   const visibleProducts = responses.slice(
     currentIndex,
-    currentIndex + itemsPerPage
+    currentIndex + itemsPerPage,
   );
 
   return (

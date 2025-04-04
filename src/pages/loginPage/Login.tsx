@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { updateCustomerNumber } from "@/store/reducers/accountReducer";
 
 import { loginUser } from "../../service/api/account";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -14,8 +17,16 @@ const Login = () => {
     event.preventDefault();
     try {
       const data = await loginUser({ emailId: email, password });
-      console.log("console1", data);
       toast.success("Log in successful");
+      localStorage.setItem(
+        "customerNumber",
+        JSON.stringify(data.customerNumber),
+      );
+      dispatch(
+        updateCustomerNumber({
+          customerNumber: data.customerNumber,
+        }),
+      );
       navigate("/account");
     } catch (err) {
       toast.error("Invalid Login Details");
