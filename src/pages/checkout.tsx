@@ -41,7 +41,7 @@ const Checkout = () => {
   const [enablePay, setEnablePay] = useState<boolean>(false);
   const { itemShippingAddresses: addressList } = useAddress();
   const [selectedAddress, setSelectedAddress] = useState<Address>(
-    addressList[0]
+    addressList[0],
   );
   useEffect(() => {
     setSelectedAddress(addressList[0]);
@@ -186,7 +186,7 @@ const Checkout = () => {
                       acc +
                       (item?.masterVariant?.prices[0]?.value?.centAmount || 0) *
                         (item.quantity || 1),
-                    0
+                    0,
                   )
                   .toLocaleString("en-US", {
                     style: "currency",

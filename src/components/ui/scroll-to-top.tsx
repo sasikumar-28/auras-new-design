@@ -5,11 +5,15 @@ interface ScrollToTopButtonProps {
   themeColor?: string;
 }
 
-const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({ themeColor = "#333" }) => {
+const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({
+  themeColor = "#333",
+}) => {
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   useEffect(() => {
-    const scrollContainer = document.querySelector(".scrollable-content") as HTMLElement;
+    const scrollContainer = document.querySelector(
+      ".scrollable-content",
+    ) as HTMLElement;
     if (!scrollContainer) return;
 
     const handleScroll = () => {
@@ -21,7 +25,9 @@ const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({ themeColor = "#33
   }, []);
 
   const scrollToTop = useCallback(() => {
-    document.querySelector(".scrollable-content")?.scrollTo({ top: 0, behavior: "smooth" });
+    document
+      .querySelector(".scrollable-content")
+      ?.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   return (

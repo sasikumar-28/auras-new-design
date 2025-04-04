@@ -58,7 +58,7 @@ const AppLayout = () => {
             sortFilter ? "ml-56" : productCard ? "ml-28" : "ml-36"
           }`}
         >
-          <Header/>
+          <Header />
         </div>
 
         {/* Right Sidebar */}

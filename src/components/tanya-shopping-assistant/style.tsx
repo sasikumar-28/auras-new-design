@@ -42,8 +42,8 @@ export const ClearHistoryButton = styled.button`
 `;
 
 export const Header = styled.div`
-  background-color:rgb(85 40 100 / var(--tw-bg-opacity, 1));
-  color: black;;
+  background-color: rgb(85 40 100 / var(--tw-bg-opacity, 1));
+  color: black;
   font-size: 18px;
   font-weight: 700;
   padding: 15px;
@@ -52,7 +52,6 @@ export const Header = styled.div`
   border-top-right-radius: 10px;
   position: relative;
 `;
-
 
 export const CloseButton = styled.div`
   position: absolute;
@@ -112,17 +111,17 @@ export const ShoppingAssistantButton = styled.div`
 
 export const SectionTitle = styled.h3`
   font-size: 16px;
-  font-weight:600px;
+  font-weight: 600px;
   margin-bottom: 10px;
-  color:black;
+  color: black;
 `;
 
 export const UserQuery = styled.div`
   padding: 15px;
   border-radius: 2px 12px 10px;
   margin-bottom: 10px;
-  color:black;
-  font-size: .875rem;
+  color: black;
+  font-size: 0.875rem;
   background-color: rgb(241 220 255 / var(--tw-bg-opacity, 1));
   width: 200px;
   margin-top: 30px;
@@ -231,7 +230,6 @@ export const WelcomeMessage = styled(StaticMessage)`
   margin-top: 20px;
   margin-bottom: 20px;
   background-color: rgb(241 220 255 / var(--tw-bg-opacity, 1));
-  font-size: .875rem;
-  border-radius: 2px 12px 20px
+  font-size: 0.875rem;
+  border-radius: 2px 12px 20px;
 `;
-

@@ -19,7 +19,7 @@ export const productSlice = createSlice({
     },
     updateFilter: (
       state,
-      action: PayloadAction<{ key: FilterKeys; value: number }>
+      action: PayloadAction<{ key: FilterKeys; value: number }>,
     ) => {
       const { key, value } = action.payload;
       state.filter[key] = value;

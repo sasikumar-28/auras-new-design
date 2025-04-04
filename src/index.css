@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -79,7 +79,6 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
-
 
 /* @layer base {
   :root {
@@ -245,7 +244,6 @@ button:focus-visible {
   }
 } */
 
-
 /* @layer base {
   :root {
     --sidebar-background: #552864,
@@ -279,15 +277,8 @@ button:focus-visible {
   }
 } */
 
-
-
-
-
-@layer base {}
-
-
-
-
+@layer base {
+}
 
 @layer base {
   * {

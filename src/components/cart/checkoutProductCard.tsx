@@ -35,7 +35,7 @@ const CheckoutProductCard = ({ product }: { product: Product }) => {
           <div className="text-3xl my-3">
             {currencyFormatter(
               priceFormatter(product)?.centAmount || 0,
-              priceFormatter(product)?.currencyCode || "USD"
+              priceFormatter(product)?.currencyCode || "USD",
             )}
           </div>
           {/* quantity card */}
@@ -60,7 +60,7 @@ const CheckoutProductCard = ({ product }: { product: Product }) => {
                   addToCart({
                     ...product,
                     quantity: (product.quantity ?? 0) + 1,
-                  })
+                  }),
                 );
                 updateQuantity(1);
               }}

@@ -53,7 +53,7 @@ const TanyaShoppingAssistantStream = () => {
 
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(
-    searchParams.get("shoppingassist") === "true"
+    searchParams.get("shoppingassist") === "true",
   );
   const [isLoading, setIsLoading] = useState(false);
   const [inputText, setInputText] = useState("");
@@ -157,8 +157,8 @@ const TanyaShoppingAssistantStream = () => {
                             ? "keywords"
                             : "potentialQuestions"]: parsedData.data,
                       }
-                    : msg
-                )
+                    : msg,
+                ),
               );
             } catch (error) {
               console.error("Error parsing JSON:", error);
@@ -176,7 +176,7 @@ const TanyaShoppingAssistantStream = () => {
 
   const sanitizeKeywords = (response: string) => {
     const keywordMatch = response.match(
-      /top five relevant product or category names are: (.*)/i
+      /top five relevant product or category names are: (.*)/i,
     );
     const keywordsString = keywordMatch ? keywordMatch[1] : response;
     const keywordsArray = keywordsString.split(", ");
@@ -194,7 +194,7 @@ const TanyaShoppingAssistantStream = () => {
       for (const keyword of splitedKeywords) {
         const results = await getSearchResults(
           keyword,
-          storeDetails.searchConfigs
+          storeDetails.searchConfigs,
         );
         if (results.length > 0) {
           setChatHistory((prev) =>
@@ -207,8 +207,8 @@ const TanyaShoppingAssistantStream = () => {
                       { keyword: keyword, items: results },
                     ],
                   }
-                : msg
-            )
+                : msg,
+            ),
           );
         }
       }
@@ -217,7 +217,7 @@ const TanyaShoppingAssistantStream = () => {
       for (const keyword of keywords) {
         const results = await getSearchResults(
           keyword,
-          storeDetails.searchConfigs
+          storeDetails.searchConfigs,
         );
         if (results.length > 0) {
           setChatHistory((prev) =>
@@ -230,8 +230,8 @@ const TanyaShoppingAssistantStream = () => {
                       { keyword: keyword, items: results },
                     ],
                   }
-                : msg
-            )
+                : msg,
+            ),
           );
         }
       }
@@ -244,7 +244,10 @@ const TanyaShoppingAssistantStream = () => {
         <button
           className="flex gap-2 rounded-bl-[25px] rounded-tl-[25px] w-auto fixed right-0 bottom-[100px]"
           onClick={() => setIsOpen(true)}
-          style={{ alignItems: "center", background: storeDetails.tanyaThemeColor }}
+          style={{
+            alignItems: "center",
+            background: storeDetails.tanyaThemeColor,
+          }}
         >
           <img
             src={tanyaChatBotIcon}
@@ -314,7 +317,7 @@ const TanyaShoppingAssistantStream = () => {
               style={{
                 color: storeDetails.themeContrastColor,
                 backgroundColor: storeDetails.tanyaThemeColor,
-                width: "fit-content"
+                width: "fit-content",
               }}
             >
               <div className="flex gap-2">
@@ -364,7 +367,7 @@ const TanyaShoppingAssistantStream = () => {
               >
                 {(() => {
                   const selectedKey = Object.keys(payloadMapping).find(
-                    (key) => payloadMapping[key] === whom
+                    (key) => payloadMapping[key] === whom,
                   );
                   return selectedKey ? messageMapping[selectedKey] : "";
                 })()}
