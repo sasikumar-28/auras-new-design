@@ -321,7 +321,7 @@ const TanyaShoppingAssistantStream = () => {
               className="mx-3 p-3 rounded-2xl"
               style={{
                 color: storeDetails.themeContrastColor,
-                backgroundColor: storeDetails.tanyaThemeColor,
+                backgroundColor: storeDetails.themeColor,
                 width: "fit-content",
               }}
             >

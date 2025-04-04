@@ -60,7 +60,6 @@ const CategoryProductList = ({
     try {
       const limit = 4;
       const token = await getAccessToken();
-
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
       }api/productByCategoryId/${categoryId}?hitsPerPage=${limit}&page=${pageNum}`;
