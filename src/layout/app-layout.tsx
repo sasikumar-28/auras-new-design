@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from "react-router";
 import ProductDetailSidebar from "@/components/products/ProductDetailSidebar";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import ScrollToTopButton from "@/components/ui/scroll-to-top";
 
 const AppLayout = () => {
   const [searchParams] = useSearchParams();
@@ -27,9 +28,10 @@ const AppLayout = () => {
 
   // 🎨 Select Theme Color Based on storeCode
   const themeColor = storeDetails.themeColor;
+
   return (
     <>
-      <div className="flex justify-between h-[100vh] overflow-hidden">
+      <div className="flex justify-between min-h-screen">
         <div
           className={`flex w-full ${
             productCard
@@ -37,7 +39,6 @@ const AppLayout = () => {
               : "bg-[#552864]"
           }`}
         >
-          {/* <Sidebar sortFilter={!!sortFilter} storeCode={storeCode || ""} /> */}
           {/* Apply Dynamic Theme Here */}
           <div className={`flex-1 w-full bg-[${themeColor}]`}>
             <main
@@ -58,17 +59,15 @@ const AppLayout = () => {
             sortFilter ? "ml-56" : productCard ? "ml-28" : "ml-36"
           }`}
         >
-          <Header/>
+          <Header />
         </div>
-
-        {/* Right Sidebar */}
-        {/* {sortFilter && (
-          <Sidebar isRightSidebar={true} storeCode={storeCode || ""} />
-        )} */}
 
         {/* Product Detail Sidebar */}
         {productCard && <ProductDetailSidebar />}
       </div>
+
+      {/* Scroll-To-Top Button (Always Visible on Every Page) */}
+      <ScrollToTopButton themeColor={themeColor} />
     </>
   );
 };

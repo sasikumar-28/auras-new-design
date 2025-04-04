@@ -3,7 +3,7 @@ import axios from "axios";
 
 /**
  * Custom hook to fetch products by category.
- * 
+ *
  * @param params - Object containing parameters to control the query.
  * @param params.limit - The maximum number of products to fetch per category (default is 1).
  * @param params.offset - The starting point to fetch products from (default is 0).
@@ -17,7 +17,11 @@ interface Product {
   image: string;
 }
 
-const useProductsByCategory = ({ categoryId }: { categoryId: string | null }) => {
+const useProductsByCategory = ({
+  categoryId,
+}: {
+  categoryId: string | null;
+}) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,10 +32,13 @@ const useProductsByCategory = ({ categoryId }: { categoryId: string | null }) =>
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_BASE_URL}api/productByCategoryId/${categoryId}`, {
-          params: { limit: 100, offset: 1 },
-          headers: { "Content-Type": "application/json" },
-        });
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_BASE_URL}api/productByCategoryId/${categoryId}`,
+          {
+            params: { limit: 100, offset: 1 },
+            headers: { "Content-Type": "application/json" },
+          },
+        );
 
         if (response.status === 200) {
           setProducts(response.data.hits);
@@ -53,5 +60,3 @@ const useProductsByCategory = ({ categoryId }: { categoryId: string | null }) =>
 };
 
 export default useProductsByCategory;
-
-

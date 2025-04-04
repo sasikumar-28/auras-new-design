@@ -2,10 +2,10 @@ import { useSelector } from "react-redux";
 import CategoryProductList from "./CategoryProductList";
 import { RootState } from "@/store";
 
-
 const DefaultSkeleton = () => {
-  const { homePageCategories, storeCode } = useSelector((state: RootState) => 
-    state?.store?.store ?? { homePageCategories: [], storeCode: "" }
+  const { homePageCategories, storeCode } = useSelector(
+    (state: RootState) =>
+      state?.store?.store ?? { homePageCategories: [], storeCode: "" },
   );
   
   const squareImages = useSelector((state: RootState) => state.cmsImage.squareImages);

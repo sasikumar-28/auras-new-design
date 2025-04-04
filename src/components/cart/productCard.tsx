@@ -38,7 +38,7 @@ const ProductCard = ({
         return prevSelected.map((p) =>
           p.id === product.id
             ? { ...p, quantity: (p.quantity || 1) + value }
-            : p
+            : p,
         );
       } else {
         return prevSelected;
@@ -102,7 +102,7 @@ const ProductCard = ({
                       addToCart({
                         ...product,
                         quantity: (product.quantity ?? 0) + 1,
-                      })
+                      }),
                     );
                     updateQuantity(1);
                   }}
@@ -133,13 +133,13 @@ const ProductCard = ({
             <div className="text-2xl font-bold">
               {currencyFormatter(
                 priceFormatter(product)?.centAmount || 0,
-                priceFormatter(product)?.currencyCode || "USD"
+                priceFormatter(product)?.currencyCode || "USD",
               )}
             </div>
             <div className="text-xs text-gray-400 line-through">
               {currencyFormatter(
                 priceFormatter(product)?.centAmount || 0,
-                priceFormatter(product)?.currencyCode || "USD"
+                priceFormatter(product)?.currencyCode || "USD",
               )}
             </div>
           </div>

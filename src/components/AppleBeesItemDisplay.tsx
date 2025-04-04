@@ -95,7 +95,7 @@ const AppleBeesItemDisplay = () => {
     } catch (error) {
       console.error(
         `Error fetching products for category ${categoryId}:`,
-        error
+        error,
       );
     }
     return [];
@@ -117,7 +117,7 @@ const AppleBeesItemDisplay = () => {
           if (category.children && category.children.length > 0) {
             for (const childCategory of category.children) {
               const products = await getProductsByCategory(
-                childCategory.categoryId
+                childCategory.categoryId,
               );
               allProducts = [...allProducts, ...products];
               if (allProducts.length >= 8) break; // Stop once we have 6 products

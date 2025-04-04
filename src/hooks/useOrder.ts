@@ -48,7 +48,7 @@ export const useOrder = () => {
     where = "",
     sort = ["createdAt desc"],
     limit = 10,
-    offset = 0
+    offset = 0,
   ) => {
     try {
       const { data } = await refetch({ where, sort, limit, offset });

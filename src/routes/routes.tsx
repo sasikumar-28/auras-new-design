@@ -8,8 +8,8 @@ const Home = lazy(() => import("@/pages/home"));
 const ProductListingPage = lazy(() => import("@/pages/productListingPage"));
 const ProductDetailsPage = lazy(() => import("@/pages/productDetailsPage"));
 const CartPage = lazy(() => import("@/pages/cartPage"));
-const Account = lazy(() => import("@/pages/account"));
-const Login = lazy(() => import("@/pages/login"));
+//const Account = lazy(() => import("@/pages/account/Account"));
+const Login = lazy(() => import("@/pages/loginPage/Login"));
 const SignUp = lazy(() => import("@/pages/signUp"));
 const Checkout = lazy(() => import("@/pages/checkout"));
 
@@ -37,7 +37,7 @@ const routes = createBrowserRouter([
         element: <ErrorBoundary> {withSuspense(Home)}</ErrorBoundary>,
       },
       {
-        path: "/product-listing",
+        path: "/product-listing/:categoryId?/:subCategoryId?/:subSubCategoryId?",
         element: (
           <ErrorBoundary> {withSuspense(ProductListingPage)}</ErrorBoundary>
         ),
@@ -52,10 +52,10 @@ const routes = createBrowserRouter([
         path: "/cart",
         element: <ErrorBoundary> {withSuspense(CartPage)}</ErrorBoundary>,
       },
-      {
-        path: "/account",
-        element: <ErrorBoundary> {withSuspense(Account)}</ErrorBoundary>,
-      },
+      // {
+      //   path: "/account",
+      //   element: <ErrorBoundary> {withSuspense(Account)}</ErrorBoundary>,
+      // },
       {
         path: "/checkout",
         element: <ErrorBoundary> {withSuspense(Checkout)}</ErrorBoundary>,

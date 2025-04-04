@@ -28,11 +28,11 @@ interface ContentfulResponse {
  * @returns A promise that resolves to an array of image URLs.
  */
 export const getContentfulImages = async (
-  fieldName: string
+  fieldName: string,
 ): Promise<string[]> => {
   try {
     const response: ContentfulResponse = await contentfulAPI.get(
-      "?content_type=commerceCatalyst"
+      "?content_type=commerceCatalyst",
     );
     const items = response.data.items[0]?.fields[fieldName] || [];
     const assets = response.data.includes.Asset;
