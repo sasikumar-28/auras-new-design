@@ -76,7 +76,7 @@ const NavBar: React.FC = () => {
             <button
               onClick={() =>
                 navigate(
-                  `/product-listing?category=${category.categoryId}&sortFilter=true`
+                  `/product-listing?category=${category.categoryId}&sortFilter=true`,
                 )
               }
               className="text-sm font-medium hover:text-black transition-colors duration-200 relative"
@@ -97,7 +97,7 @@ const NavBar: React.FC = () => {
                           setOpenSubcategory((prev) =>
                             prev === subCategory.categoryId
                               ? null
-                              : subCategory.categoryId
+                              : subCategory.categoryId,
                           )
                         }
                         className="flex items-start justify-start w-full text-gray-800 hover:text-black font-medium text-left text-sm"
@@ -135,7 +135,7 @@ const NavBar: React.FC = () => {
                                 <button
                                   onClick={() =>
                                     navigate(
-                                      `/product-listing?category=${childCategory.categoryId}&sortFilter=true`
+                                      `/product-listing?category=${childCategory.categoryId}&sortFilter=true`,
                                     )
                                   }
                                   className="text-gray-600 hover:text-black w-full text-left text-sm"

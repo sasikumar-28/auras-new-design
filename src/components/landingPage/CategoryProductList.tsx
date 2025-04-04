@@ -82,7 +82,7 @@ const CategoryProductList = ({
     } catch (error) {
       console.error(
         `Error fetching products for category ${categoryId}:`,
-        error
+        error,
       );
     }
     return [];

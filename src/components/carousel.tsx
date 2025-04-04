@@ -14,7 +14,9 @@ const CarouselSection = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState<number>(0);
 
-  const images = useSelector((state: RootState) => state.cmsImage.carouselImages);
+  const images = useSelector(
+    (state: RootState) => state.cmsImage.carouselImages,
+  );
 
   useEffect(() => {
     if (!api) {
@@ -53,16 +55,18 @@ const CarouselSection = () => {
       </Carousel>
       <div className="py-3 text-center">
         <div className="flex justify-center space-x-2">
-          {images && images.length > 1 && images.map((_, index) => (
-            <div
-              key={index}
-              className={`w-3 h-3 rounded-full ${
-                current === index + 1
-                  ? "bg-[#552864] border border-[#552864]"
-                  : "bg-[#FFFFFF] border border-[#552864]"
-              }`}
-            ></div>
-          ))}
+          {images &&
+            images.length > 1 &&
+            images.map((_, index) => (
+              <div
+                key={index}
+                className={`w-3 h-3 rounded-full ${
+                  current === index + 1
+                    ? "bg-[#552864] border border-[#552864]"
+                    : "bg-[#FFFFFF] border border-[#552864]"
+                }`}
+              ></div>
+            ))}
         </div>
       </div>
     </div>

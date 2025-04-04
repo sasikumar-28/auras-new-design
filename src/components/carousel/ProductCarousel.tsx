@@ -26,7 +26,7 @@ const ProductCarousel = ({
     setStartIndex((prevIndex) =>
       prevIndex + productsPerPage >= product.length
         ? 0
-        : prevIndex + productsPerPage
+        : prevIndex + productsPerPage,
     );
   };
 
@@ -34,7 +34,7 @@ const ProductCarousel = ({
     setStartIndex((prevIndex) =>
       prevIndex - productsPerPage < 0
         ? product.length - (product.length % productsPerPage || productsPerPage)
-        : prevIndex - productsPerPage
+        : prevIndex - productsPerPage,
     );
   };
 
@@ -45,7 +45,7 @@ const ProductCarousel = ({
           <button
             onClick={prevProducts}
             className={`text-white p-2 rounded flex items-center h-fit`}
-            style={{color: storeDetails.themeColor}}
+            style={{ color: storeDetails.themeColor }}
           >
             <Icon icon="mdi:chevron-left" width="25" />
           </button>
@@ -61,7 +61,7 @@ const ProductCarousel = ({
                 onClick={() => {
                   localStorage.setItem("product", JSON.stringify(prod));
                   navigate(
-                    `/product/${prod.objectID}?category=${prod.categoryPageId[0]}&productCard=true`
+                    `/product/${prod.objectID}?category=${prod.categoryPageId[0]}&productCard=true`,
                   );
                 }}
               >
@@ -77,7 +77,7 @@ const ProductCarousel = ({
                 {/* Price & Name Container */}
                 <div
                   className={`text-black w-full rounded-[3px] p-2 text-[12px] font-bold text-center`}
-                  style={{background: storeDetails.tanyaThemeColorLight}}
+                  style={{ background: storeDetails.tanyaThemeColorLight }}
                 >
                   {/* Product Price */}
                   <div className="text-[14px] font-semibold">
@@ -85,7 +85,7 @@ const ProductCarousel = ({
                       prod?.price
                         ? Number(prod?.price)
                         : priceFormatter(prod).centAmount || 0,
-                      priceFormatter(prod)?.currencyCode
+                      priceFormatter(prod)?.currencyCode,
                     )}
                   </div>
                   {/* Product Name - 2 Lines & Overflow */}
@@ -112,7 +112,7 @@ const ProductCarousel = ({
           <button
             onClick={nextProducts}
             className={`text-white p-2 rounded flex items-center h-fit`}
-            style={{color: storeDetails.themeColor}}
+            style={{ color: storeDetails.themeColor }}
           >
             <Icon icon="mdi:chevron-right" width="25" />
           </button>
