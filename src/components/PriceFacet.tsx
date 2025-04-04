@@ -30,7 +30,7 @@ const PriceFacet: React.FC<PriceFacetProps> = ({
   };
 
   // Apply slider values when released
-  const handleSliderCommit = (_: Event, newValue: number | number[]) => {
+  const handleSliderCommit = (event: Event | React.SyntheticEvent<Element, Event>, newValue: number | number[]) => {
     if (loading) return;
     if (Array.isArray(newValue)) {
       setSliderRange(newValue);
