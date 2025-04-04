@@ -21,4 +21,4 @@ export const orders = [
     returnWindowDate: "30 May 2024",
     shippingAddress: "Sri Krishna Nanda",
   },
-]
+];

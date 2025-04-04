@@ -266,21 +266,23 @@ export default function Header() {
                     </div>
                     <div>Buy it Again</div>
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-[13px] cursor-pointer flex gap-4 items-center"
-                    onClick={() => {
-                      handleLogout();
-                    }}
-                  >
-                    <div>
-                      <Icon
-                        icon="qlementine-icons:log-out-16"
-                        width="24"
-                        height="24"
-                      />
-                    </div>
-                    <div>Logout</div>
-                  </DropdownMenuItem>
+                  {isLogin !== null && (
+                    <DropdownMenuItem
+                      className="text-[13px] cursor-pointer flex gap-4 items-center"
+                      onClick={() => {
+                        handleLogout();
+                      }}
+                    >
+                      <div>
+                        <Icon
+                          icon="qlementine-icons:log-out-16"
+                          width="24"
+                          height="24"
+                        />
+                      </div>
+                      <div>Logout</div>
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
