@@ -4,7 +4,7 @@ import { SearchConfig } from "@/graphQL/queries/types";
 
 export const getSearchResults = async (
   query: string,
-  searchConfigs: SearchConfig
+  searchConfigs: SearchConfig,
 ) => {
   const token = await getAccessToken();
   if (!token) throw new Error("Failed to fetch token");
@@ -19,7 +19,7 @@ export const getSearchResults = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
     return response.data.hits;
   } catch (error) {

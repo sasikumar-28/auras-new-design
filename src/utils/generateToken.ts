@@ -23,7 +23,7 @@ export const generateToken = async (): Promise<string | null> => {
           "Content-Type": "application/x-www-form-urlencoded",
           Authorization: authHeader,
         },
-      }
+      },
     );
 
     if (response.status === 200 && response.data.access_token) {

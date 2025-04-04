@@ -35,7 +35,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === carouselData.length - 1 ? 0 : prevIndex + 1
+        prevIndex === carouselData.length - 1 ? 0 : prevIndex + 1,
       );
     }, 3000);
     return () => clearInterval(interval);

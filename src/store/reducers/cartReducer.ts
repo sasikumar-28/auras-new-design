@@ -21,7 +21,7 @@ export const cartSlice = createSlice({
     },
     addToCart: (state, action: PayloadAction<Product>) => {
       const existingItem = state.cart.find(
-        (item) => item.id === action.payload.id
+        (item) => item.id === action.payload.id,
       );
       if (existingItem) {
         existingItem.quantity = action.payload.quantity;
@@ -32,13 +32,13 @@ export const cartSlice = createSlice({
     },
     removeFromCart: (state, action: PayloadAction<{ id: string }>) => {
       const existingItem = state.cart.find(
-        (item) => item.id === action.payload.id
+        (item) => item.id === action.payload.id,
       );
       if (existingItem && existingItem.quantity) {
         existingItem.quantity -= 1;
         if (existingItem.quantity === 0) {
           state.cart = state.cart.filter(
-            (item) => item.id !== action.payload.id
+            (item) => item.id !== action.payload.id,
           );
         }
       }
@@ -48,19 +48,19 @@ export const cartSlice = createSlice({
       state.selectedProduct = action.payload;
       localStorage.setItem(
         "selectedProduct",
-        JSON.stringify(state.selectedProduct)
+        JSON.stringify(state.selectedProduct),
       );
     },
     removeAllSelectedProduct: (state) => {
       state.selectedProduct = [];
       localStorage.setItem(
         "selectedProduct",
-        JSON.stringify(state.selectedProduct)
+        JSON.stringify(state.selectedProduct),
       );
     },
     updateCartProductQuantity: (
       state,
-      action: PayloadAction<{ id: string; value: number }>
+      action: PayloadAction<{ id: string; value: number }>,
     ) => {
       const product = state.cart.find((p) => p.id === action.payload.id);
       if (product) {
@@ -70,17 +70,17 @@ export const cartSlice = createSlice({
     },
     updateProductQuantity: (
       state,
-      action: PayloadAction<{ id: string; value: number }>
+      action: PayloadAction<{ id: string; value: number }>,
     ) => {
       const product = state.selectedProduct.find(
-        (p) => p.id === action.payload.id
+        (p) => p.id === action.payload.id,
       );
       if (product) {
         product.quantity = (product.quantity || 1) + action.payload.value;
       }
       localStorage.setItem(
         "selectedProduct",
-        JSON.stringify(state.selectedProduct)
+        JSON.stringify(state.selectedProduct),
       );
     },
   },

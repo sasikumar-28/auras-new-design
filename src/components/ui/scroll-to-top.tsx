@@ -5,7 +5,9 @@ interface ScrollToTopButtonProps {
   themeColor?: string;
 }
 
-const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({ themeColor = "#333" }) => {
+const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({
+  themeColor = "#333",
+}) => {
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   useEffect(() => {
