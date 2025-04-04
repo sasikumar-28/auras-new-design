@@ -36,7 +36,7 @@ const SignUp = () => {
   });
 
   const handleSubmit = (
-    values: typeof initialValues & { rememberMe?: boolean }
+    values: typeof initialValues & { rememberMe?: boolean },
   ) => {
     const { rememberMe, ...rest } = values; // Create a new object without rememberMe
     signUp(rest).then((res) => {
