@@ -29,8 +29,6 @@ const CategoryProductList = ({
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
 
-  console.log(error);
-
   const getAllCategories = async () => {
     try {
       const token = await getAccessToken();
@@ -62,7 +60,6 @@ const CategoryProductList = ({
     try {
       const limit = 4;
       const token = await getAccessToken();
-
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
       }api/productByCategoryId/${categoryId}?hitsPerPage=${limit}&page=${pageNum}`;

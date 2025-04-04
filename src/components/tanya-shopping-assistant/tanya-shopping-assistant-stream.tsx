@@ -18,6 +18,8 @@ import { useSearchParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ProductDisplay from "../carousel/ProductDisplay";
 import { useSelector } from "react-redux";
+import useSessionTracker from "@/hooks/useSessionTracker";
+
 
 const TanyaShoppingAssistantStream = () => {
   // Shopping options
@@ -51,6 +53,7 @@ const TanyaShoppingAssistantStream = () => {
     Others: "Shopping for someone special? Let’s make it amazing!",
   };
 
+  const sessionData = useSessionTracker();
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(
     searchParams.get("shoppingassist") === "true"
@@ -70,7 +73,7 @@ const TanyaShoppingAssistantStream = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const storeCode =
     searchParams.get("storeCode") || localStorage.getItem("storeCode");
-  const storeDetails = useSelector((s: any) => s.store.store);
+  const storeDetails = useSelector((s: any) => s.store.store);  
 
   // Handle selecting "whom" option
   const handleWhomSelection = (selected: string) => {
@@ -121,6 +124,8 @@ const TanyaShoppingAssistantStream = () => {
           input: {
             userPrompt: newQuery,
             whom: sanatizedWhom,
+            storeCode: storeCode,
+            sessionMetadata: sessionData,
           },
         }),
       });
@@ -244,7 +249,10 @@ const TanyaShoppingAssistantStream = () => {
         <button
           className="flex gap-2 rounded-bl-[25px] rounded-tl-[25px] w-auto fixed right-0 bottom-[100px]"
           onClick={() => setIsOpen(true)}
-          style={{ alignItems: "center", background: storeDetails.tanyaThemeColor }}
+          style={{
+            alignItems: "center",
+            background: storeDetails.tanyaThemeColor,
+          }}
         >
           <img
             src={tanyaChatBotIcon}
@@ -313,8 +321,8 @@ const TanyaShoppingAssistantStream = () => {
               className="mx-3 p-3 rounded-2xl"
               style={{
                 color: storeDetails.themeContrastColor,
-                backgroundColor: storeDetails.tanyaThemeColor,
-                width: "fit-content"
+                backgroundColor: storeDetails.themeColor,
+                width: "fit-content",
               }}
             >
               <div className="flex gap-2">
