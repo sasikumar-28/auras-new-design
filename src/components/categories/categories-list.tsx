@@ -75,7 +75,7 @@ const CategoriesList: React.FC = () => {
             className="w-24 h-24 bg-[#FFFFFF] p-6 text-center rounded-3xl border border-[#C1C1C1] drop-shadow-[0px_3px_6px_#00000029] flex flex-col items-center justify-center"
             onClick={() =>
               navigate(
-                `/product-listing?category=${category.categoryId}&sortFilter=true`
+                `/product-listing?category=${category.categoryId}&sortFilter=true`,
               )
             }
           >

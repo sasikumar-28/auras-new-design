@@ -131,7 +131,7 @@ const TanyaShoppingAssistant: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       console.log("chatbot res", response);
@@ -174,7 +174,7 @@ const TanyaShoppingAssistant: React.FC = () => {
 
   const handleCarouselResultsUpdate = (
     keyword: string,
-    hasResults: boolean
+    hasResults: boolean,
   ) => {
     console.log(`Keyword ${keyword} has results: ${hasResults}`); // Debug log
     setKeywordResults((prev) => ({
@@ -192,7 +192,7 @@ const TanyaShoppingAssistant: React.FC = () => {
   useEffect(() => {
     if (chatBodyRef.current) {
       const responseContainers = chatBodyRef.current.querySelectorAll(
-        "div[data-response-index]"
+        "div[data-response-index]",
       );
       const lastResponseContainer =
         responseContainers[responseContainers.length - 1];
@@ -355,7 +355,7 @@ const TanyaShoppingAssistant: React.FC = () => {
                               onResultsUpdate={(hasResults) =>
                                 handleCarouselResultsUpdate(
                                   keyword.trim(),
-                                  hasResults
+                                  hasResults,
                                 )
                               }
                             />

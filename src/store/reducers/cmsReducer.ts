@@ -26,7 +26,7 @@ export const fetchSquareImages = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 // Thunk to fetch carousel images
@@ -40,7 +40,7 @@ export const fetchCarouselImages = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 const imageSlice = createSlice({

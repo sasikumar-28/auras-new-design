@@ -11,7 +11,7 @@ export const fetchStoreConfig = async (storeCode: string) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     return response.data;

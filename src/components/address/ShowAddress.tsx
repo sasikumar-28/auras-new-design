@@ -52,7 +52,7 @@ const ShowAddress = () => {
           key: String(new Date().getTime()),
           id: String(new Date().getTime()),
         },
-        addressList.length * 2 + 1
+        addressList.length * 2 + 1,
       );
       setNewAddress(false);
       setFormData({
