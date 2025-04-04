@@ -11,23 +11,16 @@ const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   useEffect(() => {
-    const scrollContainer = document.querySelector(
-      ".scrollable-content",
-    ) as HTMLElement;
-    if (!scrollContainer) return;
-
     const handleScroll = () => {
-      setShowScrollButton(scrollContainer.scrollTop > 50);
+      setShowScrollButton(window.scrollY > 50);
     };
 
-    scrollContainer.addEventListener("scroll", handleScroll);
-    return () => scrollContainer.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToTop = useCallback(() => {
-    document
-      .querySelector(".scrollable-content")
-      ?.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   return (

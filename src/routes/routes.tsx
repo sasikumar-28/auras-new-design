@@ -38,7 +38,7 @@ const routes = createBrowserRouter([
         element: <ErrorBoundary> {withSuspense(Home)}</ErrorBoundary>,
       },
       {
-        path: "/product-listing",
+        path: "/product-listing/:categoryId?/:subCategoryId?/:subSubCategoryId?",
         element: (
           <ErrorBoundary> {withSuspense(ProductListingPage)}</ErrorBoundary>
         ),

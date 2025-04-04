@@ -5,6 +5,7 @@ import sessionReducer from "./reducers/authReducer";
 import storeReducer from "./reducers/storeReducer";
 import imageReducer from "./reducers/cmsReducer";
 import accountReducer from "./reducers/accountReducer";
+import categoryReducer from "./reducers/categoryReducer";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     store: storeReducer,
     cmsImage: imageReducer,
     customerAccount: accountReducer,
+    category: categoryReducer,
   },
 });
 
