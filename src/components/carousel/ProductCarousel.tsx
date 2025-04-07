@@ -56,12 +56,12 @@ const ProductCarousel = ({
             .slice(startIndex, startIndex + productsPerPage)
             .map((prod) => (
               <div
-                key={prod.objectID}
+                key={prod.id}
                 className="flex flex-col w-[150px] h-[180px] items-center justify-between cursor-pointer shadow-lg"
                 onClick={() => {
-                  localStorage.setItem("product", JSON.stringify(prod));
+                  // localStorage.setItem("product", JSON.stringify(prod));
                   navigate(
-                    `/product/${prod.objectID}?category=${prod.categoryPageId[0]}&productCard=true`,
+                    `/product/${prod.id}?category=${prod.category}`,
                   );
                 }}
               >
