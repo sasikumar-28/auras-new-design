@@ -12,7 +12,7 @@ const ProductDisplay = ({ chat, storeDetails }: any) => {
             style={{
               color: storeDetails.themeDarkColor,
               border: `1px solid ${storeDetails.themeColor}`,
-              backgroundColor: storeDetails.tanyaThemeColorLight,
+              backgroundColor: storeDetails.tanyaThemeColorLight
             }}
           >
             {initialCapital(products.keyword) || "No keyword"}
