@@ -24,7 +24,6 @@ function Account() {
             <ArrowRight size={16} />
           </div> */}
         </div>
-        {/* Right content */}
         <div className="flex-1 max-h-[calc(100vh-6.5rem)] overflow-y-auto">
           {activeSection === "orders" && <Order />}
           {activeSection === "security" && <LoginSecurity />}

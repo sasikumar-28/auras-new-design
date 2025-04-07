@@ -44,6 +44,7 @@ const Login = () => {
           <div className="mb-4">
             <label className="block text-gray-700">Email</label>
             <input
+              required
               type="email"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter your email"
@@ -55,6 +56,7 @@ const Login = () => {
           <div className="mb-4 relative">
             <label className="block text-gray-700">Password</label>
             <input
+              required
               type={showPassword ? "text" : "password"}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter your password"
