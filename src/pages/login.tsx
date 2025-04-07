@@ -57,7 +57,7 @@ const Login = () => {
           if (rememberMe) {
             localStorage.setItem(
               "user_keys",
-              encryptData(JSON.stringify(values))
+              encryptData(JSON.stringify(values)),
             );
           } else {
             localStorage.removeItem("user_keys");
@@ -66,7 +66,7 @@ const Login = () => {
           dispatch(login({ ...res, cartId: res.id }));
           localStorage.setItem(
             "user",
-            encryptData(JSON.stringify({ ...res, cartId: res.id }))
+            encryptData(JSON.stringify({ ...res, cartId: res.id })),
           );
           toast.success("Log in successful");
           navigate(redirect || "/");

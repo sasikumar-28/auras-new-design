@@ -79,7 +79,7 @@ const TopPicks: React.FC = () => {
     } catch (error) {
       console.error(
         `Error fetching product for category ${categoryId}:`,
-        error
+        error,
       );
     }
     return null;
@@ -98,14 +98,14 @@ const TopPicks: React.FC = () => {
           category.children
             .slice(0, 3)
             .map((subCategory: Category) =>
-              getProductByCategory(subCategory.categoryId)
-            )
+              getProductByCategory(subCategory.categoryId),
+            ),
         );
         productsResults = await Promise.all(nestedPromises);
       } else {
         // Handle regular categories
         const categoryPromises = categories.map((category: Category) =>
-          getProductByCategory(category.categoryId)
+          getProductByCategory(category.categoryId),
         );
         productsResults = await Promise.all(categoryPromises);
       }

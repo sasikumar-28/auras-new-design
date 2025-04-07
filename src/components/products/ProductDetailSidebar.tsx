@@ -29,7 +29,7 @@ const ProductDetailSidebar = () => {
             {product &&
               currencyFormatter(
                 priceFormatter(product)?.centAmount || 0,
-                priceFormatter(product)?.currencyCode || "USD"
+                priceFormatter(product)?.currencyCode || "USD",
               )}
           </span>
         </div>
@@ -42,10 +42,10 @@ const ProductDetailSidebar = () => {
                   setProductsAction({
                     ...product,
                     quantity: product?.quantity + 1,
-                  })
+                  }),
                 );
                 dispatch(
-                  updateCartProductQuantity({ id: product.id, value: 1 })
+                  updateCartProductQuantity({ id: product.id, value: 1 }),
                 );
               }}
               className="cursor-pointer"
@@ -60,10 +60,10 @@ const ProductDetailSidebar = () => {
                     ...product,
                     quantity:
                       product?.quantity - 1 <= 0 ? 0 : product?.quantity - 1,
-                  })
+                  }),
                 );
                 dispatch(
-                  updateCartProductQuantity({ id: product.id, value: -1 })
+                  updateCartProductQuantity({ id: product.id, value: -1 }),
                 );
               }}
               className="cursor-pointer"
@@ -118,7 +118,7 @@ const ProductDetailSidebar = () => {
                   style: "currency",
                   currency:
                     product?.masterVariant?.prices[0].value.currencyCode,
-                }
+                },
               )}
             </div>
           </div>

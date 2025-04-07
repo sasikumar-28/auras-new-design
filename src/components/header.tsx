@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { decryptData, displayData, imageUrlArray } from "@/utils/helper";
-import { login, logout } from "@/store/reducers/authReducer";
+import { login } from "@/store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart, setSelectedProduct } from "@/store/reducers/cartReducer";
 import { getShoppingAssistantForStore } from "@/utils/store-helper";
@@ -29,34 +29,40 @@ import {
   setError,
 } from "@/store/reducers/categoryReducer";
 
+const logout = () => {
+  localStorage.clear();
+  window.location.reload();
+};
+
 export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedProduct = useSelector((state: any) => state.cart.cart);
+  const { customerNumber } = useSelector(
+    (state: any) => state?.customerAccount,
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const store = useSelector((s: any) => s.store.store);
-
-  const { categories, error } = useSelector(
-    (state: any) => state?.category
-  );
+  const isLogin = customerNumber || localStorage.getItem("customerNumber");
+  const { categories, error } = useSelector((state: any) => state?.category);
 
   const storeCode = useMemo(
     () => searchParams.get("storeCode") || localStorage.getItem("storeCode"),
-    [searchParams]
+    [searchParams],
   );
 
   const logo = useMemo(
     () => store?.logoTransparent || store?.logoDarkBg || store?.logoLightBg,
-    [store]
+    [store],
   );
   const themeColor = useMemo(() => store?.themeColor, [store]);
 
   const handleSearch = async () => {
     const results: SearchProduct[] = await getSearchResults(
       searchQuery,
-      store.searchConfigs
+      store.searchConfigs,
     );
     setSearchResults(results);
   };
@@ -195,7 +201,7 @@ export default function Header() {
                             storeCode == "applebees"
                               ? result?.categoryId
                               : result?.categoryPageId[0]
-                          }&productCard=true`
+                          }&productCard=true`,
                         );
                         setSearchResults([]);
                       }}
@@ -249,10 +255,25 @@ export default function Header() {
                 <DropdownMenuContent className="w-44 bg-white shadow-xl p-2 rounded">
                   <DropdownMenuGroup className="flex flex-col gap-y-2 text-black">
                     <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
-                      <div>
-                        <Icon icon="prime:user" width="24" height="24" />
-                      </div>
-                      <div>My Account</div>
+                      {isLogin !== null ? (
+                        <button
+                          onClick={() => {
+                            navigate("/account");
+                          }}
+                          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md border border-blue-600"
+                        >
+                          My Account
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            navigate("/login");
+                          }}
+                          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md border border-blue-600"
+                        >
+                          Sign In
+                        </button>
+                      )}
                     </DropdownMenuItem>
                     <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
                       <div>
@@ -282,22 +303,23 @@ export default function Header() {
                       </div>
                       <div>Buy it Again</div>
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-[13px] cursor-pointer flex gap-4 items-center"
-                      onClick={() => {
-                        dispatch(logout());
-                        navigate("/login");
-                      }}
-                    >
-                      <div>
-                        <Icon
-                          icon="qlementine-icons:log-out-16"
-                          width="24"
-                          height="24"
-                        />
-                      </div>
-                      <div>Logout</div>
-                    </DropdownMenuItem>
+                    {isLogin !== null && (
+                      <DropdownMenuItem
+                        className="text-[13px] cursor-pointer flex gap-4 items-center"
+                        onClick={() => {
+                          logout();
+                        }}
+                      >
+                        <div>
+                          <Icon
+                            icon="qlementine-icons:log-out-16"
+                            width="24"
+                            height="24"
+                          />
+                        </div>
+                        <div>Logout</div>
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -325,7 +347,7 @@ export default function Header() {
               <p className="absolute  -right-1 bg-white text-black text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
                 {selectedProduct.reduce(
                   (acc: number, item: Product) => acc + (item.quantity || 0),
-                  0
+                  0,
                 )}
               </p>
             </div>

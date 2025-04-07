@@ -88,7 +88,7 @@ const CategoryTabs = ({ data, activeTab, setActiveTab }: CategoryTabsProps) => {
               onClick={() => {
                 setActiveTab(index);
                 navigate(
-                  `/product-listing?category=${category.categoryId}&sortFilter=true`
+                  `/product-listing?category=${category.categoryId}&sortFilter=true`,
                 );
               }}
             >

@@ -2,13 +2,14 @@ import React, { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 
 import { ErrorBoundary } from "@/components/errorBoundary";
+import PrivateRoute from "./PrivateRoute";
 const AppLayout = lazy(() => import("@/layout/app-layout"));
 const NotFound = lazy(() => import("@/components/not-found"));
 const Home = lazy(() => import("@/pages/home"));
 const ProductListingPage = lazy(() => import("@/pages/productListingPage"));
 const ProductDetailsPage = lazy(() => import("@/pages/productDetailsPage"));
 const CartPage = lazy(() => import("@/pages/cartPage"));
-//const Account = lazy(() => import("@/pages/account/Account"));
+const Account = lazy(() => import("@/pages/account/Account"));
 const Login = lazy(() => import("@/pages/loginPage/Login"));
 const SignUp = lazy(() => import("@/pages/signUp"));
 const Checkout = lazy(() => import("@/pages/checkout"));
@@ -52,10 +53,14 @@ const routes = createBrowserRouter([
         path: "/cart",
         element: <ErrorBoundary> {withSuspense(CartPage)}</ErrorBoundary>,
       },
-      // {
-      //   path: "/account",
-      //   element: <ErrorBoundary> {withSuspense(Account)}</ErrorBoundary>,
-      // },
+      {
+        path: "/account",
+        element: (
+          <PrivateRoute>
+            <ErrorBoundary>{withSuspense(Account)}</ErrorBoundary>
+          </PrivateRoute>
+        ),
+      },
       {
         path: "/checkout",
         element: <ErrorBoundary> {withSuspense(Checkout)}</ErrorBoundary>,

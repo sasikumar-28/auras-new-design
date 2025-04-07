@@ -35,7 +35,7 @@ const CartPage = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product[]>([]);
   const initialActiveTab =
     data?.categories.results.findIndex(
-      (c) => c.categoryId === categoryFromUrl
+      (c) => c.categoryId === categoryFromUrl,
     ) ?? 0;
   const [activeTab, setActiveTab] = useState(initialActiveTab);
   const [categories, setCategories] = useState<CategoriesResponse | null>(null);
@@ -128,7 +128,7 @@ const CartPage = () => {
               Subtotal (
               {selectedProduct.reduce(
                 (acc: number, item: Product) => acc + (item.quantity || 0),
-                0
+                0,
               )}{" "}
               items):{" "}
               {selectedProduct
@@ -137,7 +137,7 @@ const CartPage = () => {
                     acc +
                     (item?.masterVariant?.prices[0].value.centAmount || 0) *
                       (item.quantity || 1),
-                  0
+                  0,
                 )
                 .toLocaleString("en-US", {
                   style: "currency",

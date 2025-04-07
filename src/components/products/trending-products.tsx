@@ -70,7 +70,7 @@ const TrendingProducts: React.FC = () => {
     } catch (error) {
       console.error(
         `Error fetching product for category ${categoryId}:`,
-        error
+        error,
       );
     }
     return null;
@@ -96,14 +96,14 @@ const TrendingProducts: React.FC = () => {
       } else {
         // Handle regular categories
         const categoryPromises = categories.map((category: Category) =>
-          getProductByCategory(category.categoryId)
+          getProductByCategory(category.categoryId),
         );
         productsResults = await Promise.all(categoryPromises);
       }
 
       // Filter out null responses and ensure type safety
       const filteredProducts = productsResults.filter(
-        (product): product is Product => product !== null
+        (product): product is Product => product !== null,
       );
 
       setProducts(filteredProducts);

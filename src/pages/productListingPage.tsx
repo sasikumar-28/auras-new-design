@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import BreadCrumb from "@/components/breadcrumb/BreadCrumb";
 import { ClipLoader } from "react-spinners";
@@ -15,6 +15,7 @@ interface Product {
   name: string;
   image: string;
   price: number;
+  category: string;
 }
 
 interface Category {
@@ -33,8 +34,9 @@ const ProductListingPage = () => {
   const [productsError, setProductsError] = useState<string | null>(null);
   const [productsLoading, setProductsLoading] = useState<boolean>(true);
   const [productDetails, setProductsDetails] = useState<Record<string, number>>(
-    {}
+    {},
   );
+  const navigate = useNavigate();
   const [priceRange, setPriceRange] = useState<string>("");
   const [selectedRatings, setSelectedRatings] = useState<string>("0TO5");
   const [currentPage, setCurrentPage] = useState(0);
@@ -44,7 +46,7 @@ const ProductListingPage = () => {
 
   // Only find selected category after categories are loaded and categoryId is available
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
+    null,
   );
 
   const store = useSelector((s: any) => s.store.store);
@@ -52,7 +54,7 @@ const ProductListingPage = () => {
   useEffect(() => {
     if (categories && categoryId) {
       const category = categories.find(
-        (c: Category) => c.categoryId === categoryId
+        (c: Category) => c.categoryId === categoryId,
       );
       if (category) {
         setSelectedCategory(category);
@@ -65,11 +67,11 @@ const ProductListingPage = () => {
 
   const findCategoryRequestParams = (
     categories: Category[],
-    selectedCategoryIds: string[]
+    selectedCategoryIds: string[],
   ): number[] | null => {
     const currentCategoryId = selectedCategoryIds[0];
     const category = categories.find(
-      (cat) => cat.categoryId === currentCategoryId
+      (cat) => cat.categoryId === currentCategoryId,
     );
     if (!category) return null;
 
@@ -78,7 +80,7 @@ const ProductListingPage = () => {
     }
 
     const subCategory = category.children.find(
-      (child) => child.categoryId === selectedCategoryIds[1]
+      (child) => child.categoryId === selectedCategoryIds[1],
     );
     if (subCategory && selectedCategoryIds.length === 2) {
       return subCategory.requestParam;
@@ -86,7 +88,7 @@ const ProductListingPage = () => {
 
     if (subCategory && selectedCategoryIds.length === 3) {
       const subSubCategory = subCategory.children.find(
-        (child) => child.categoryId === selectedCategoryIds[2]
+        (child) => child.categoryId === selectedCategoryIds[2],
       );
       return subSubCategory ? subSubCategory.requestParam : null;
     }
@@ -116,11 +118,11 @@ const ProductListingPage = () => {
       ].filter(Boolean);
 
       const filteredCategoryIds = selectedCategoryIds.filter(
-        (id): id is string => typeof id === "string"
+        (id): id is string => typeof id === "string",
       );
       const requestParams = findCategoryRequestParams(
         categories,
-        filteredCategoryIds
+        filteredCategoryIds,
       );
 
       if (!requestParams) {
@@ -192,16 +194,16 @@ const ProductListingPage = () => {
       return categories
         ?.find((cat: Category) => cat.categoryId === categoryId)
         ?.children.find(
-          (subCat: Category) => subCat.categoryId === subCategoryId
+          (subCat: Category) => subCat.categoryId === subCategoryId,
         )
         ?.children.find(
-          (subSubCat: Category) => subSubCat.categoryId === subSubCategoryId
+          (subSubCat: Category) => subSubCat.categoryId === subSubCategoryId,
         );
     } else if (subCategoryId) {
       return categories
         ?.find((cat: Category) => cat.categoryId === categoryId)
         ?.children.find(
-          (subCat: Category) => subCat.categoryId === subCategoryId
+          (subCat: Category) => subCat.categoryId === subCategoryId,
         );
     } else if (selectedCategory) {
       return selectedCategory;
@@ -210,7 +212,6 @@ const ProductListingPage = () => {
   };
 
   const lastCategory = getLastCategory();
-
 
   const handleRatingFilterChange = (selected: number | string | null) => {
     setSelectedRatings(`${selected}TO5`);
@@ -235,7 +236,7 @@ const ProductListingPage = () => {
                   categories
                     ?.find((cat: Category) => cat.categoryId === categoryId)
                     ?.children.find(
-                      (subCat: Category) => subCat.categoryId === subCategoryId
+                      (subCat: Category) => subCat.categoryId === subCategoryId,
                     )?.categoryName || "Subcategory",
                 link: `/product-listing/${categoryId}/${subCategoryId}`,
               }
@@ -246,17 +247,17 @@ const ProductListingPage = () => {
                   categories
                     ?.find((cat: Category) => cat.categoryId === categoryId)
                     ?.children.find(
-                      (subCat: Category) => subCat.categoryId === subCategoryId
+                      (subCat: Category) => subCat.categoryId === subCategoryId,
                     )
                     ?.children.find(
                       (subSubCat: Category) =>
-                        subSubCat.categoryId === subSubCategoryId
+                        subSubCat.categoryId === subSubCategoryId,
                     )?.categoryName || "Sub-subcategory",
                 link: `/product-listing/${categoryId}/${subCategoryId}/${subSubCategoryId}`,
               }
             : undefined,
         ].filter(
-          (item): item is { name: string; link: string } => item !== undefined
+          (item): item is { name: string; link: string } => item !== undefined,
         )}
       />
 
@@ -298,7 +299,9 @@ const ProductListingPage = () => {
                   products.map((product) => (
                     <div
                       key={product.id}
-                      className="p-4 border border-gray-200 rounded-lg shadow-sm transition-all hover:shadow-md"
+                      className="p-4 border border-gray-200 rounded-lg shadow-sm transition-all hover:shadow-md cursor-pointer"
+                      onClick={() => navigate(`/product/${product?.id}?category=${product?.category}`)}
+                      
                     >
                       <img
                         src={product.image}
@@ -312,7 +315,7 @@ const ProductListingPage = () => {
                           WebkitBoxOrient: "vertical",
                           WebkitLineClamp: 2,
                         }}
-                        title={product.title} // Tooltip on hover
+                        title={product.title}
                       >
                         {product.title}
                       </h3>

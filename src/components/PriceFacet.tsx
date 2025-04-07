@@ -30,10 +30,7 @@ const PriceFacet: React.FC<PriceFacetProps> = ({
   };
 
   // Apply slider values when released
-  const handleSliderCommit = (
-    _: unknown, 
-    newValue: number | number[]
-  ) => {
+  const handleSliderCommit = (_: unknown, newValue: number | number[]) => {
     if (loading) return;
     if (Array.isArray(newValue)) {
       setSliderRange(newValue);
@@ -123,10 +120,11 @@ const PriceFacet: React.FC<PriceFacetProps> = ({
                 },
               }}
               sx={{
-                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                  WebkitAppearance: "none",
-                  margin: 0,
-                },
+                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                  {
+                    WebkitAppearance: "none",
+                    margin: 0,
+                  },
                 "& input[type=number]": {
                   MozAppearance: "textfield",
                 },
@@ -149,10 +147,11 @@ const PriceFacet: React.FC<PriceFacetProps> = ({
                 },
               }}
               sx={{
-                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                  WebkitAppearance: "none",
-                  margin: 0,
-                },
+                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                  {
+                    WebkitAppearance: "none",
+                    margin: 0,
+                  },
                 "& input[type=number]": {
                   MozAppearance: "textfield",
                 },
