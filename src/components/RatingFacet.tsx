@@ -60,10 +60,14 @@ const RatingFacet: React.FC<RatingFacetProps> = ({
             <label
               key={option.value}
               className={`text-sm flex items-center gap-2 mb-2 ml-5 cursor-pointer ${
-                selectedRatings.includes(option.value) ? "font-semibold" : "text-gray-700"
+                selectedRatings.includes(option.value)
+                  ? "font-semibold"
+                  : "text-gray-700"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               style={{
-                color: selectedRatings.includes(option.value) ? themeColor : undefined,
+                color: selectedRatings.includes(option.value)
+                  ? themeColor
+                  : undefined,
               }}
             >
               <input

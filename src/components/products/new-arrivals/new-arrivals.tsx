@@ -37,7 +37,7 @@ const NewArrivals: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (categoriesResponse.status === 200) {
@@ -45,9 +45,7 @@ const NewArrivals: React.FC = () => {
 
         // Find categories matching REQUIRED_CATEGORY_NAMES
         const matchedCategories = categories.filter((category) =>
-          REQUIRED_CATEGORY_NAMES.includes(
-            category.categoryName.toUpperCase()
-          )
+          REQUIRED_CATEGORY_NAMES.includes(category.categoryName.toUpperCase()),
         );
 
         if (matchedCategories.length > 0) {
@@ -55,14 +53,16 @@ const NewArrivals: React.FC = () => {
 
           // Fetch products for each matched category
           for (const matchedCategory of matchedCategories) {
-            const categoryProducts = await getProductByCategory(matchedCategory.categoryId);
+            const categoryProducts = await getProductByCategory(
+              matchedCategory.categoryId,
+            );
             allProducts.push(...categoryProducts);
           }
 
           setProducts(allProducts.slice(0, 4)); // Show only 4 products
         } else {
           setError(
-            `Categories "${REQUIRED_CATEGORY_NAMES.join(", ")}" not found.`
+            `Categories "${REQUIRED_CATEGORY_NAMES.join(", ")}" not found.`,
           );
         }
       }
@@ -90,7 +90,10 @@ const NewArrivals: React.FC = () => {
         return response.data.hits;
       }
     } catch (error) {
-      console.error(`Error fetching products for category ${categoryId}:`, error);
+      console.error(
+        `Error fetching products for category ${categoryId}:`,
+        error,
+      );
     }
     return [];
   };

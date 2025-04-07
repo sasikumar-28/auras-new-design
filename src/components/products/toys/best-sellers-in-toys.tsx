@@ -34,7 +34,7 @@ const BestSellersInToys: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (categoriesResponse.status === 200) {
@@ -42,7 +42,7 @@ const BestSellersInToys: React.FC = () => {
         const toysCategory = categories.find(
           (category) =>
             category.categoryName.toLowerCase() ===
-            REQUIRED_CATEGORY_NAME.toLowerCase()
+            REQUIRED_CATEGORY_NAME.toLowerCase(),
         );
 
         if (toysCategory) {
@@ -80,7 +80,7 @@ const BestSellersInToys: React.FC = () => {
     } catch (error) {
       console.error(
         `Error fetching products for category ${categoryId}:`,
-        error
+        error,
       );
     }
     return [];

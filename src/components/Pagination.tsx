@@ -17,8 +17,16 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="flex justify-center mt-6">
       <ReactPaginate
-        previousLabel={<span className="w-full h-full flex items-center justify-center">«</span>}
-        nextLabel={<span className="w-full h-full flex items-center justify-center">»</span>}
+        previousLabel={
+          <span className="w-full h-full flex items-center justify-center">
+            «
+          </span>
+        }
+        nextLabel={
+          <span className="w-full h-full flex items-center justify-center">
+            »
+          </span>
+        }
         breakLabel={"..."}
         pageCount={pageCount}
         forcePage={currentPage}

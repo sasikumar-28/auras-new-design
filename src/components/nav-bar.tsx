@@ -34,7 +34,7 @@ const NavBar: React.FC<NavBarProps> = ({ categories, error }) => {
               <button
                 onClick={() =>
                   navigate(
-                    `/product-listing/${category.categoryId}?sortFilter=true`
+                    `/product-listing/${category.categoryId}?sortFilter=true`,
                   )
                 }
                 className="text-sm font-medium hover:text-black transition-colors duration-200 relative"
@@ -52,9 +52,9 @@ const NavBar: React.FC<NavBarProps> = ({ categories, error }) => {
                       <li key={subCategory.categoryId} className="px-4 py-2">
                         <button
                           onClick={() => {
-                              navigate(
-                                `/product-listing/${category.categoryId}/${subCategory.categoryId}`
-                              );
+                            navigate(
+                              `/product-listing/${category.categoryId}/${subCategory.categoryId}`,
+                            );
                           }}
                           className="flex items-start justify-start w-full text-gray-800 hover:text-black font-medium text-left text-sm"
                         >
@@ -75,7 +75,7 @@ const NavBar: React.FC<NavBarProps> = ({ categories, error }) => {
                                   <button
                                     onClick={() =>
                                       navigate(
-                                        `/product-listing/${category.categoryId}/${subCategory.categoryId}/${childCategory.categoryId}`
+                                        `/product-listing/${category.categoryId}/${subCategory.categoryId}/${childCategory.categoryId}`,
                                       )
                                     }
                                     className="text-gray-600 hover:text-black w-full text-left text-sm"

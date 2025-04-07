@@ -33,7 +33,9 @@ interface SessionMetadata {
 
 const useSessionTracker = (): SessionMetadata => {
   const [geoData, setGeoData] = useState<GeoLocation | null>(null);
-  const [pushEnabled, setPushEnabled] = useState<boolean>(Notification.permission === "granted");
+  const [pushEnabled, setPushEnabled] = useState<boolean>(
+    Notification.permission === "granted",
+  );
   const [locationGranted, setLocationGranted] = useState<boolean | null>(null);
   const sessionStartTime = useState(Date.now())[0];
 
@@ -69,7 +71,7 @@ const useSessionTracker = (): SessionMetadata => {
       (error) => {
         console.warn("Geolocation permission denied:", error);
         setLocationGranted(false);
-      }
+      },
     );
   }
 
@@ -105,7 +107,9 @@ const useSessionTracker = (): SessionMetadata => {
         appVersion: "2.1.0",
         pushNotifications: {
           enabled: pushEnabled,
-          lastNotificationReceived: pushEnabled ? new Date().toISOString() : null,
+          lastNotificationReceived: pushEnabled
+            ? new Date().toISOString()
+            : null,
         },
         screenResolution: {
           width: window.screen.width,
@@ -116,16 +120,23 @@ const useSessionTracker = (): SessionMetadata => {
     };
   }
 
-  async function getCityCountry(lat: number, lng: number): Promise<{ city: string; country: string } | null> {
+  async function getCityCountry(
+    lat: number,
+    lng: number,
+  ): Promise<{ city: string; country: string } | null> {
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
       );
       const data = await response.json();
 
       if (data.address) {
         return {
-          city: data.address.city || data.address.town || data.address.village || null,
+          city:
+            data.address.city ||
+            data.address.town ||
+            data.address.village ||
+            null,
           country: data.address.country || null,
         };
       }
