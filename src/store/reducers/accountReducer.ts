@@ -12,7 +12,7 @@ const accountSlice = createSlice({
   name: "account",
   initialState,
   reducers: {
-    setAccountInfo: (state, action: PayloadAction<AccountState>) => {
+    setAccountInfo: (_state, action: PayloadAction<AccountState>) => {
       return action.payload;
     },
     updateCustomerNumber: (state, action: PayloadAction<AccountState>) => {
