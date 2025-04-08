@@ -87,7 +87,10 @@ const Login = () => {
         </form>
 
         <div className="mt-4 text-center">
-          <button className="w-full border border-blue-600 text-blue-600 py-2 rounded-lg hover:bg-blue-100 transition">
+          <button
+            onClick={() => navigate("/SignUp")}
+            className="w-full border border-blue-600 text-blue-600 py-2 rounded-lg hover:bg-blue-100 transition"
+          >
             Create Account
           </button>
         </div>

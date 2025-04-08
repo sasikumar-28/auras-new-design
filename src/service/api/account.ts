@@ -49,3 +49,35 @@ export const getCustomerInfoById = async (): Promise<CustomerResponse[]> => {
     throw new Error("customer request failed");
   }
 };
+
+export const addAddress = async (payLoad): Promise<LoginResponse> => {
+  const customerNumber = localStorage.getItem("customerNumber");
+  const emailld = "manoj@gmail.com";
+  try {
+    const axiosInstance = await getAxiosInstance();
+    const response = await axiosInstance.post<LoginResponse>(
+      `${import.meta.env.VITE_SERVER_BASE_URL}${ENDPOINTS.ADD_ADDRESS}${customerNumber}/${emailld}`,
+      payLoad,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Get Order failed:", error);
+    throw new Error("order request failed");
+  }
+};
+
+export const signUp = async (
+  credentials: LoginRequest,
+): Promise<LoginResponse> => {
+  try {
+    const axiosInstance = await getAxiosInstance();
+    const response = await axiosInstance.post<LoginResponse>(
+      `${import.meta.env.VITE_SERVER_BASE_URL}${ENDPOINTS.SIGNIN}`,
+      credentials,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Login failed:", error);
+    throw new Error("Login request failed");
+  }
+};
