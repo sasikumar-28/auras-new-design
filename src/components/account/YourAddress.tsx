@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { EditAddress } from "@/components/account";
+
 interface AddressData {
   name: string;
   addressLine1: string;
@@ -21,13 +24,18 @@ function YourAddress({
     },
   ],
 }: YourAddressProps) {
+  const [showSidebar, setShowSidebar] = useState(false);
+
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white z-[0]">
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-4">Add Address</h2>
         <div className="border border-dashed border-[rgb(229_231_235)] rounded p-8 flex justify-center items-center">
           <div className="flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full bg-pink-500 flex items-center justify-center text-white mb-2">
+            <div
+              className="w-16 h-16 rounded-full bg-pink-500 flex items-center justify-center text-white mb-2"
+              onClick={() => setShowSidebar(true)}
+            >
               <svg
                 width="24"
                 height="24"
@@ -72,6 +80,10 @@ function YourAddress({
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="relative w-full z-[9999] sm:w-[400px] h-full bg-white p-6 overflow-y-auto no-scrollbar">
+        {showSidebar && <EditAddress onClose={() => setShowSidebar(false)} />}
       </div>
     </div>
   );

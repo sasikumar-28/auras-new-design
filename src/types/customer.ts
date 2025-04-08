@@ -4,6 +4,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+  success:string;
   message: string;
   customerNumber: number;
 }

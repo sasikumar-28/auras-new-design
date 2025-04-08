@@ -275,6 +275,18 @@ export default function Header() {
                         </button>
                       )}
                     </DropdownMenuItem>
+                    {isLogin === null && (
+                      <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
+                        <button
+                          onClick={() => {
+                            navigate("/SignUp");
+                          }}
+                          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md border border-blue-600"
+                        >
+                          Create Account
+                        </button>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
                       <div>
                         <Icon icon="ph:chat-light" width="24" height="24" />
