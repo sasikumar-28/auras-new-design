@@ -60,8 +60,11 @@ const EditAddress: React.FC<AddressSidebarProps> = ({ onClose }) => {
     setMessage("");
     try {
       const res = await addAddress(formData);
-      if (!res.success == "Existing User address added successfully")
+      if (res.success == "Existing User address added successfully"){
+        setMessage("Address added successfully!");
+      }else{
         throw new Error("Failed to save address");
+      }
 
       setMessage("Address added successfully!");
       setFormData({
