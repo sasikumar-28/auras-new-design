@@ -116,6 +116,8 @@ export interface SearchProduct {
   title?: string;
   price?: string;
   categoryId?: string;
+  id?: number,
+  category?: string, 
 }
 
 export type UpdatePaymentType = {

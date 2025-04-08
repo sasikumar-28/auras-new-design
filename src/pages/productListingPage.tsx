@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import BreadCrumb from "@/components/breadcrumb/BreadCrumb";
 import { ClipLoader } from "react-spinners";
@@ -15,6 +15,7 @@ interface Product {
   name: string;
   image: string;
   price: number;
+  category: string;
 }
 
 interface Category {
@@ -35,6 +36,7 @@ const ProductListingPage = () => {
   const [productDetails, setProductsDetails] = useState<Record<string, number>>(
     {},
   );
+  const navigate = useNavigate();
   const [priceRange, setPriceRange] = useState<string>("");
   const [selectedRatings, setSelectedRatings] = useState<string>("0TO5");
   const [currentPage, setCurrentPage] = useState(0);
@@ -297,7 +299,9 @@ const ProductListingPage = () => {
                   products.map((product) => (
                     <div
                       key={product.id}
-                      className="p-4 border border-gray-200 rounded-lg shadow-sm transition-all hover:shadow-md"
+                      className="p-4 border border-gray-200 rounded-lg shadow-sm transition-all hover:shadow-md cursor-pointer"
+                      onClick={() => navigate(`/product/${product?.id}?category=${product?.category}`)}
+                      
                     >
                       <img
                         src={product.image}
@@ -311,7 +315,7 @@ const ProductListingPage = () => {
                           WebkitBoxOrient: "vertical",
                           WebkitLineClamp: 2,
                         }}
-                        title={product.title} // Tooltip on hover
+                        title={product.title}
                       >
                         {product.title}
                       </h3>
