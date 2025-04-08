@@ -11,7 +11,7 @@ const ProductDetailsPage = lazy(() => import("@/pages/productDetailsPage"));
 const CartPage = lazy(() => import("@/pages/cartPage"));
 const Account = lazy(() => import("@/pages/account/Account"));
 const Login = lazy(() => import("@/pages/loginPage/Login"));
-const SignUp = lazy(() => import("@/pages/signUp"));
+const SignUp = lazy(() => import("@/pages/loginPage/SignUp"));
 const Checkout = lazy(() => import("@/pages/checkout"));
 
 const withSuspense = (
