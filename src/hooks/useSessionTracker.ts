@@ -1,7 +1,47 @@
 import { useState, useEffect, useRef } from "react";
 
-const useSessionTracker = () => {
-  const [sessionMetadata, setSessionMetadata] = useState<any>(null);
+interface GeoLocation {
+  latitude: number;
+  longitude: number;
+  city: string | null;
+  country: string | null;
+}
+
+interface DeviceInfo {
+  model: string;
+  os: string;
+}
+
+interface ScreenResolution {
+  width: number;
+  height: number;
+}
+
+interface PushNotifications {
+  enabled: boolean;
+  lastNotificationReceived: string | null;
+}
+
+interface SessionMetadata {
+  geoLocation: GeoLocation | null;
+  platform: "web";
+  webMetadata: {
+    userAgent: string;
+    os: string | null;
+    ipAddress: string | null;
+    screenResolution: ScreenResolution;
+  };
+  appVersion: string;
+  pushNotifications: PushNotifications;
+  mobileMetadata: {
+    device: DeviceInfo;
+    screenResolution: ScreenResolution;
+  } | null;
+  sessionDuration: number;
+}
+
+const useSessionTracker = (): SessionMetadata | null => {
+  const [sessionMetadata, setSessionMetadata] = useState<SessionMetadata | null>(null);
   const sessionStartTime = useRef(Date.now());
 
   useEffect(() => {
@@ -32,7 +72,7 @@ const useSessionTracker = () => {
     const osMatch = userAgent.match(/\((.*?)\)/);
     const os = osMatch ? osMatch[1] : null;
 
-    const session = {
+    const session: SessionMetadata = {
       geoLocation,
       platform: "web",
       webMetadata: {
@@ -72,13 +112,13 @@ const useSessionTracker = () => {
     setSessionMetadata(session);
   }
 
-  function getMobileModel(ua: string) {
+  function getMobileModel(ua: string): string {
     if (/iPhone/.test(ua)) return "iPhone";
     if (/Android/.test(ua)) return "Android Device";
     return "Unknown";
   }
 
-  function getMobileOS(ua: string) {
+  function getMobileOS(ua: string): string {
     const iosMatch = ua.match(/OS (\d+_\d+)/);
     const androidMatch = ua.match(/Android (\d+(?:\.\d+)?)/);
     if (iosMatch) return `iOS ${iosMatch[1].replace("_", ".")}`;
@@ -86,7 +126,7 @@ const useSessionTracker = () => {
     return "Unknown";
   }
 
-  async function getGeoLocation() {
+  async function getGeoLocation(): Promise<GeoLocation | null> {
     return new Promise((resolve) => {
       if (!navigator.geolocation) return resolve(null);
 
@@ -106,7 +146,7 @@ const useSessionTracker = () => {
     });
   }
 
-  async function getCityCountry(lat: number, lng: number) {
+  async function getCityCountry(lat: number, lng: number): Promise<{ city: string | null; country: string | null } | null> {
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
@@ -125,7 +165,7 @@ const useSessionTracker = () => {
     }
   }
 
-  async function getIpAddress() {
+  async function getIpAddress(): Promise<string | null> {
     try {
       const res = await fetch("https://api.ipify.org?format=json");
       const data = await res.json();
