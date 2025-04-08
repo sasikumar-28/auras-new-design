@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface GeoLocation {
-  latitude: number | null;
-  longitude: number | null;
+  latitude: number;
+  longitude: number;
   city: string | null;
   country: string | null;
 }
 
-interface PushNotifications {
-  enabled: boolean;
-  lastNotificationReceived: string | null;
+interface DeviceInfo {
+  model: string;
+  os: string;
 }
 
 interface ScreenResolution {
@@ -17,137 +17,165 @@ interface ScreenResolution {
   height: number;
 }
 
-interface WebMetaData {
-  os: string | null;
-  appVersion: string;
-  pushNotifications: PushNotifications;
-  screenResolution: ScreenResolution;
-  sessionDuration: number;
+interface PushNotifications {
+  enabled: boolean;
+  lastNotificationReceived: string | null;
 }
 
 interface SessionMetadata {
   geoLocation: GeoLocation | null;
-  platform: string; // Always "web"
-  webMetaData: WebMetaData;
+  platform: "web";
+  webMetadata: {
+    userAgent: string;
+    os: string | null;
+    ipAddress: string | null;
+    screenResolution: ScreenResolution;
+  };
+  appVersion: string;
+  pushNotifications: PushNotifications;
+  mobileMetadata: {
+    device: DeviceInfo;
+    screenResolution: ScreenResolution;
+  } | null;
+  sessionDuration: number;
 }
 
-const useSessionTracker = (): SessionMetadata => {
-  const [geoData, setGeoData] = useState<GeoLocation | null>(null);
-  const [pushEnabled, setPushEnabled] = useState<boolean>(
-    Notification.permission === "granted",
-  );
-  const [locationGranted, setLocationGranted] = useState<boolean | null>(null);
-  const sessionStartTime = useState(Date.now())[0];
+const useSessionTracker = (): SessionMetadata | null => {
+  const [sessionMetadata, setSessionMetadata] = useState<SessionMetadata | null>(null);
+  const sessionStartTime = useRef(Date.now());
 
   useEffect(() => {
-    requestLocationPermission();
-    requestPushNotificationPermission();
+    collectSessionData();
   }, []);
 
-  /** Request Location Permission */
-  function requestLocationPermission() {
-    if (!navigator.geolocation) {
-      console.warn("Geolocation is not supported.");
-      setLocationGranted(false);
-      return;
+  async function collectSessionData() {
+    const [geoLocation, ipAddress] = await Promise.all([
+      getGeoLocation(),
+      getIpAddress(),
+    ]);
+
+    function getBrowserName(userAgent: string): string {
+      if (/Edg/i.test(userAgent)) return "Edge";
+      if (/OPR/i.test(userAgent)) return "Opera";
+      if (/Chrome/i.test(userAgent)) return "Chrome";
+      if (/Safari/i.test(userAgent) && !/Chrome/i.test(userAgent))
+        return "Safari";
+      if (/Firefox/i.test(userAgent)) return "Firefox";
+      if (/MSIE|Trident/i.test(userAgent)) return "Internet Explorer";
+      return "Unknown";
     }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        setLocationGranted(true);
-        const { latitude, longitude } = position.coords;
-        try {
+    const userAgent = navigator.userAgent;
+    const browserName = getBrowserName(userAgent);
+
+    const isMobile = /Mobi|Android/i.test(userAgent);
+    const osMatch = userAgent.match(/\((.*?)\)/);
+    const os = osMatch ? osMatch[1] : null;
+
+    const session: SessionMetadata = {
+      geoLocation,
+      platform: "web",
+      webMetadata: {
+        userAgent: browserName,
+        os,
+        ipAddress,
+        screenResolution: {
+          width: window.screen.width,
+          height: window.screen.height,
+        },
+      },
+      appVersion: "2.1.0",
+      pushNotifications: {
+        enabled: Notification.permission === "granted",
+        lastNotificationReceived:
+          Notification.permission === "granted"
+            ? new Date().toISOString()
+            : null,
+      },
+      mobileMetadata: isMobile
+        ? {
+            device: {
+              model: getMobileModel(userAgent),
+              os: getMobileOS(userAgent),
+            },
+            screenResolution: {
+              width: window.screen.width,
+              height: window.screen.height,
+            },
+          }
+        : null,
+      sessionDuration: Math.floor(
+        (Date.now() - sessionStartTime.current) / 1000
+      ),
+    };
+
+    setSessionMetadata(session);
+  }
+
+  function getMobileModel(ua: string): string {
+    if (/iPhone/.test(ua)) return "iPhone";
+    if (/Android/.test(ua)) return "Android Device";
+    return "Unknown";
+  }
+
+  function getMobileOS(ua: string): string {
+    const iosMatch = ua.match(/OS (\d+_\d+)/);
+    const androidMatch = ua.match(/Android (\d+(?:\.\d+)?)/);
+    if (iosMatch) return `iOS ${iosMatch[1].replace("_", ".")}`;
+    if (androidMatch) return `Android ${androidMatch[1]}`;
+    return "Unknown";
+  }
+
+  async function getGeoLocation(): Promise<GeoLocation | null> {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) return resolve(null);
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
           const location = await getCityCountry(latitude, longitude);
-          setGeoData({
+          resolve({
             latitude,
             longitude,
             city: location?.city || null,
             country: location?.country || null,
           });
-        } catch (error) {
-          console.error("Error fetching city/country:", error);
-        }
-      },
-      (error) => {
-        console.warn("Geolocation permission denied:", error);
-        setLocationGranted(false);
-      },
-    );
-  }
-
-  /** Request Push Notification Permission */
-  function requestPushNotificationPermission() {
-    if (!("Notification" in window)) {
-      console.warn("Push Notifications are not supported.");
-      return;
-    }
-
-    Notification.requestPermission().then((permission) => {
-      setPushEnabled(permission === "granted");
+        },
+        () => resolve(null)
+      );
     });
   }
 
-  function generateSessionMetadata(): SessionMetadata {
-    const userAgent = navigator.userAgent;
-    let os: string | null = null;
-
-    if (/Mac/i.test(userAgent)) {
-      os = "MacOS";
-    } else if (/Windows/i.test(userAgent)) {
-      os = "Windows";
-    } else if (/Linux/i.test(userAgent)) {
-      os = "Linux";
-    }
-
-    return {
-      geoLocation: locationGranted === false ? null : geoData,
-      platform: "web",
-      webMetaData: {
-        os,
-        appVersion: "2.1.0",
-        pushNotifications: {
-          enabled: pushEnabled,
-          lastNotificationReceived: pushEnabled
-            ? new Date().toISOString()
-            : null,
-        },
-        screenResolution: {
-          width: window.screen.width,
-          height: window.screen.height,
-        },
-        sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000),
-      },
-    };
-  }
-
-  async function getCityCountry(
-    lat: number,
-    lng: number,
-  ): Promise<{ city: string; country: string } | null> {
+  async function getCityCountry(lat: number, lng: number): Promise<{ city: string | null; country: string | null } | null> {
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
       );
-      const data = await response.json();
-
-      if (data.address) {
-        return {
-          city:
-            data.address.city ||
-            data.address.town ||
-            data.address.village ||
-            null,
-          country: data.address.country || null,
-        };
-      }
-      return null;
-    } catch (error) {
-      console.error("Error fetching city/country:", error);
+      const data = await res.json();
+      return {
+        city:
+          data.address.city ||
+          data.address.town ||
+          data.address.village ||
+          null,
+        country: data.address.country || null,
+      };
+    } catch {
       return null;
     }
   }
 
-  return generateSessionMetadata();
+  async function getIpAddress(): Promise<string | null> {
+    try {
+      const res = await fetch("https://api.ipify.org?format=json");
+      const data = await res.json();
+      return data.ip || null;
+    } catch {
+      return null;
+    }
+  }
+
+  return sessionMetadata;
 };
 
 export default useSessionTracker;
