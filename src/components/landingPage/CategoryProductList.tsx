@@ -27,7 +27,7 @@ const CategoryProductList = ({
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(0);
 
   const getAllCategories = async () => {
     try {
