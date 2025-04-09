@@ -59,7 +59,6 @@ const useSessionTracker = (): SessionMetadata | null => {
     const userAgent = navigator.userAgent;
     const browserName = getBrowserName(userAgent);
 
-    const isMobile = /Mobi|Android/i.test(userAgent);
     const osMatch = userAgent.match(/\((.*?)\)/);
     const os = osMatch ? osMatch[1] : null;
 
