@@ -27,7 +27,7 @@ const CategoryProductList = ({
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(0);
 
   const getAllCategories = async () => {
     try {
@@ -63,7 +63,7 @@ const CategoryProductList = ({
 
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
-      }api/productByCategoryId/${categoryId}?hitsPerPage=${limit}&page=${pageNum}`;
+      }api/productByCategoryId/${categoryId}?storeCode=${storeCode}&hitsPerPage=${limit}&page=${pageNum}`;
 
       console.log(`Requesting: ${URL}`);
 

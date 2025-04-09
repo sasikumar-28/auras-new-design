@@ -7,11 +7,6 @@ interface GeoLocation {
   country: string | null;
 }
 
-interface DeviceInfo {
-  model: string;
-  os: string;
-}
-
 interface ScreenResolution {
   width: number;
   height: number;
@@ -33,10 +28,6 @@ interface SessionMetadata {
   };
   appVersion: string;
   pushNotifications: PushNotifications;
-  mobileMetadata: {
-    device: DeviceInfo;
-    screenResolution: ScreenResolution;
-  } | null;
   sessionDuration: number;
 }
 
@@ -92,38 +83,12 @@ const useSessionTracker = (): SessionMetadata | null => {
             ? new Date().toISOString()
             : null,
       },
-      mobileMetadata: isMobile
-        ? {
-            device: {
-              model: getMobileModel(userAgent),
-              os: getMobileOS(userAgent),
-            },
-            screenResolution: {
-              width: window.screen.width,
-              height: window.screen.height,
-            },
-          }
-        : null,
       sessionDuration: Math.floor(
         (Date.now() - sessionStartTime.current) / 1000
       ),
     };
 
     setSessionMetadata(session);
-  }
-
-  function getMobileModel(ua: string): string {
-    if (/iPhone/.test(ua)) return "iPhone";
-    if (/Android/.test(ua)) return "Android Device";
-    return "Unknown";
-  }
-
-  function getMobileOS(ua: string): string {
-    const iosMatch = ua.match(/OS (\d+_\d+)/);
-    const androidMatch = ua.match(/Android (\d+(?:\.\d+)?)/);
-    if (iosMatch) return `iOS ${iosMatch[1].replace("_", ".")}`;
-    if (androidMatch) return `Android ${androidMatch[1]}`;
-    return "Unknown";
   }
 
   async function getGeoLocation(): Promise<GeoLocation | null> {
