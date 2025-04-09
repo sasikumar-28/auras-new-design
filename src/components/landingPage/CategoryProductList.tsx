@@ -63,7 +63,7 @@ const CategoryProductList = ({
 
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
-      }api/productByCategoryId/${categoryId}?hitsPerPage=${limit}&page=${pageNum}`;
+      }api/productByCategoryId/${categoryId}?storeCode=${storeCode}&hitsPerPage=${limit}&page=${pageNum}`;
 
       console.log(`Requesting: ${URL}`);
 
