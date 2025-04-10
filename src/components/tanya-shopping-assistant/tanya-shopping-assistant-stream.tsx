@@ -55,7 +55,7 @@ const TanyaShoppingAssistantStream = () => {
   const sessionData = useSessionTracker();
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(
-    searchParams.get("shoppingassist") === "true",
+    searchParams.get("shoppingassist") === "true"
   );
   const [isLoading, setIsLoading] = useState(false);
   const [inputText, setInputText] = useState("");
@@ -161,8 +161,8 @@ const TanyaShoppingAssistantStream = () => {
                             ? "keywords"
                             : "potentialQuestions"]: parsedData.data,
                       }
-                    : msg,
-                ),
+                    : msg
+                )
               );
             } catch (error) {
               console.error("Error parsing JSON:", error);
@@ -180,7 +180,7 @@ const TanyaShoppingAssistantStream = () => {
 
   const sanitizeKeywords = (response: string) => {
     const keywordMatch = response.match(
-      /top five relevant product or category names are: (.*)/i,
+      /top five relevant product or category names are: (.*)/i
     );
     const keywordsString = keywordMatch ? keywordMatch[1] : response;
     const keywordsArray = keywordsString.split(", ");
@@ -198,7 +198,7 @@ const TanyaShoppingAssistantStream = () => {
       for (const keyword of splitedKeywords) {
         const results = await getSearchResults(
           keyword,
-          storeDetails.searchConfigs,
+          storeDetails.searchConfigs
         );
         if (results.length > 0) {
           setChatHistory((prev) =>
@@ -211,8 +211,8 @@ const TanyaShoppingAssistantStream = () => {
                       { keyword: keyword, items: results },
                     ],
                   }
-                : msg,
-            ),
+                : msg
+            )
           );
         }
       }
@@ -221,7 +221,7 @@ const TanyaShoppingAssistantStream = () => {
       for (const keyword of keywords) {
         const results = await getSearchResults(
           keyword,
-          storeDetails.searchConfigs,
+          storeDetails.searchConfigs
         );
         if (results.length > 0) {
           setChatHistory((prev) =>
@@ -234,8 +234,8 @@ const TanyaShoppingAssistantStream = () => {
                       { keyword: keyword, items: results },
                     ],
                   }
-                : msg,
-            ),
+                : msg
+            )
           );
         }
       }
@@ -271,18 +271,19 @@ const TanyaShoppingAssistantStream = () => {
         {/* Header */}
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            borderTopLeftRadius: '0.75rem',
-            borderBottomLeftRadius: '0.75rem',
-            padding: '0.25rem',
-            background: storeDetails?.tanyaThemeColor
+            display: "flex",
+            justifyContent: "space-between",
+            borderTopLeftRadius: "0.75rem",
+            borderBottomLeftRadius: "0.75rem",
+            padding: "0.25rem",
+            background: storeDetails?.tanyaThemeColor,
           }}
         >
           <div
             style={{
               display: "flex",
-              color: storeDetails.themeContrastColor }}
+              color: storeDetails.themeContrastColor,
+            }}
           >
             <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} />
             <div>
@@ -295,12 +296,12 @@ const TanyaShoppingAssistantStream = () => {
               </p>
             </div>
           </div>
-          <div 
+          <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1.25rem',
-              margin: '0.75rem',
+              display: "flex",
+              alignItems: "center",
+              gap: "1.25rem",
+              margin: "0.75rem",
             }}
           >
             <Icon
@@ -385,7 +386,7 @@ const TanyaShoppingAssistantStream = () => {
               >
                 {(() => {
                   const selectedKey = Object.keys(payloadMapping).find(
-                    (key) => payloadMapping[key] === whom,
+                    (key) => payloadMapping[key] === whom
                   );
                   return selectedKey ? messageMapping[selectedKey] : "";
                 })()}
