@@ -21,18 +21,19 @@ interface SessionMetadata {
   geoLocation: GeoLocation | null;
   platform: "web";
   webMetadata: {
-    userAgent: string;
     os: string | null;
+    userAgent: string;
     ipAddress: string | null;
+    appVersion: string;
     screenResolution: ScreenResolution;
+    pushNotifications: PushNotifications;
   };
-  appVersion: string;
-  pushNotifications: PushNotifications;
   sessionDuration: number;
 }
 
 const useSessionTracker = (): SessionMetadata | null => {
-  const [sessionMetadata, setSessionMetadata] = useState<SessionMetadata | null>(null);
+  const [sessionMetadata, setSessionMetadata] =
+    useState<SessionMetadata | null>(null);
   const sessionStartTime = useRef(Date.now());
 
   useEffect(() => {
@@ -66,21 +67,21 @@ const useSessionTracker = (): SessionMetadata | null => {
       geoLocation,
       platform: "web",
       webMetadata: {
-        userAgent: browserName,
         os,
+        userAgent: browserName,
         ipAddress,
+        appVersion: "2.1.0",
         screenResolution: {
           width: window.screen.width,
           height: window.screen.height,
         },
-      },
-      appVersion: "2.1.0",
-      pushNotifications: {
-        enabled: Notification.permission === "granted",
-        lastNotificationReceived:
-          Notification.permission === "granted"
-            ? new Date().toISOString()
-            : null,
+        pushNotifications: {
+          enabled: Notification.permission === "granted",
+          lastNotificationReceived:
+            Notification.permission === "granted"
+              ? new Date().toISOString()
+              : null,
+        },
       },
       sessionDuration: Math.floor(
         (Date.now() - sessionStartTime.current) / 1000
@@ -110,7 +111,10 @@ const useSessionTracker = (): SessionMetadata | null => {
     });
   }
 
-  async function getCityCountry(lat: number, lng: number): Promise<{ city: string | null; country: string | null } | null> {
+  async function getCityCountry(
+    lat: number,
+    lng: number
+  ): Promise<{ city: string | null; country: string | null } | null> {
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
