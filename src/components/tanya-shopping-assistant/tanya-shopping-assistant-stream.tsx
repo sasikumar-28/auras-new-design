@@ -270,11 +270,19 @@ const TanyaShoppingAssistantStream = () => {
       <PopoverContent className="relative top-[5vh] w-[64.7vw] h-screen border-0 bg-white p-0 rounded-xl overflow-hidden flex flex-col z-50">
         {/* Header */}
         <div
-          className="flex justify-between rounded-l-xl p-1"
-          style={{ background: storeDetails.tanyaThemeColor }}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            borderTopLeftRadius: '0.75rem',
+            borderBottomLeftRadius: '0.75rem',
+            padding: '0.25rem',
+            background: storeDetails?.tanyaThemeColor
+          }}
         >
-          <div className="flex"
-            style={{ color: storeDetails.themeContrastColor }}
+          <div
+            style={{
+              display: "flex",
+              color: storeDetails.themeContrastColor }}
           >
             <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} />
             <div>
@@ -287,7 +295,14 @@ const TanyaShoppingAssistantStream = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-5 m-3">
+          <div 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1.25rem',
+              margin: '0.75rem',
+            }}
+          >
             <Icon
               icon="fluent:dismiss-24-filled"
               color="#FFFFFF"
