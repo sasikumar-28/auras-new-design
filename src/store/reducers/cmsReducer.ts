@@ -6,6 +6,8 @@ interface ImageState {
   squareImages: string[];
   loading: boolean;
   error: string | null;
+  favicon: string | null;
+  logo: string | null;
 }
 
 const initialState: ImageState = {
@@ -13,6 +15,8 @@ const initialState: ImageState = {
   squareImages: [],
   loading: false,
   error: null,
+  favicon: "",
+  logo: "",
 };
 
 // Thunk to fetch square images
@@ -41,6 +45,24 @@ export const fetchCarouselImages = createAsyncThunk(
       return rejectWithValue(error.message);
     }
   },
+);
+
+
+export const fetchStoreAssets = createAsyncThunk(
+  "images/fetchStoreAssets",
+  async (storeCode: string, { rejectWithValue }) => {
+    try {
+      const fieldName = `${storeCode}Images`; 
+      const assets = await getContentfulImages(fieldName);
+
+      const favicon = assets[0];
+      const logo = assets[1];
+
+      return { favicon, logo };
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
 );
 
 const imageSlice = createSlice({
@@ -77,6 +99,19 @@ const imageSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchCarouselImages.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchStoreAssets.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchStoreAssets.fulfilled, (state, action) => {
+        state.favicon = action.payload.favicon || "";
+        state.logo = action.payload.logo || ""
+        state.loading = false;
+      })
+      .addCase(fetchStoreAssets.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

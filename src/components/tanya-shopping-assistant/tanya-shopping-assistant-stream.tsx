@@ -55,7 +55,7 @@ const TanyaShoppingAssistantStream = () => {
   const sessionData = useSessionTracker();
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(
-    searchParams.get("shoppingassist") === "true",
+    searchParams.get("shoppingassist") === "true"
   );
   const [isLoading, setIsLoading] = useState(false);
   const [inputText, setInputText] = useState("");
@@ -161,8 +161,8 @@ const TanyaShoppingAssistantStream = () => {
                             ? "keywords"
                             : "potentialQuestions"]: parsedData.data,
                       }
-                    : msg,
-                ),
+                    : msg
+                )
               );
             } catch (error) {
               console.error("Error parsing JSON:", error);
@@ -180,7 +180,7 @@ const TanyaShoppingAssistantStream = () => {
 
   const sanitizeKeywords = (response: string) => {
     const keywordMatch = response.match(
-      /top five relevant product or category names are: (.*)/i,
+      /top five relevant product or category names are: (.*)/i
     );
     const keywordsString = keywordMatch ? keywordMatch[1] : response;
     const keywordsArray = keywordsString.split(", ");
@@ -198,7 +198,7 @@ const TanyaShoppingAssistantStream = () => {
       for (const keyword of splitedKeywords) {
         const results = await getSearchResults(
           keyword,
-          storeDetails.searchConfigs,
+          storeDetails.searchConfigs
         );
         if (results.length > 0) {
           setChatHistory((prev) =>
@@ -211,8 +211,8 @@ const TanyaShoppingAssistantStream = () => {
                       { keyword: keyword, items: results },
                     ],
                   }
-                : msg,
-            ),
+                : msg
+            )
           );
         }
       }
@@ -221,7 +221,7 @@ const TanyaShoppingAssistantStream = () => {
       for (const keyword of keywords) {
         const results = await getSearchResults(
           keyword,
-          storeDetails.searchConfigs,
+          storeDetails.searchConfigs
         );
         if (results.length > 0) {
           setChatHistory((prev) =>
@@ -234,8 +234,8 @@ const TanyaShoppingAssistantStream = () => {
                       { keyword: keyword, items: results },
                     ],
                   }
-                : msg,
-            ),
+                : msg
+            )
           );
         }
       }
@@ -270,11 +270,20 @@ const TanyaShoppingAssistantStream = () => {
       <PopoverContent className="relative top-[5vh] w-[64.7vw] h-screen border-0 bg-white p-0 rounded-xl overflow-hidden flex flex-col z-50">
         {/* Header */}
         <div
-          className="flex justify-between rounded-l-xl p-1"
-          style={{ background: storeDetails.tanyaThemeColor }}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            borderTopLeftRadius: "0.75rem",
+            borderBottomLeftRadius: "0.75rem",
+            padding: "0.25rem",
+            background: storeDetails?.tanyaThemeColor,
+          }}
         >
-          <div className="flex"
-            style={{ color: storeDetails.themeContrastColor }}
+          <div
+            style={{
+              display: "flex",
+              color: storeDetails.themeContrastColor,
+            }}
           >
             <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} />
             <div>
@@ -285,6 +294,16 @@ const TanyaShoppingAssistantStream = () => {
                   (AI Shopping Assistant)
                 </span>
               </p>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1.25rem",
+              margin: "0.75rem",
+            }}
+          >
             <Icon
               icon="fluent:dismiss-24-filled"
               color="#FFFFFF"
@@ -293,7 +312,6 @@ const TanyaShoppingAssistantStream = () => {
               onClick={() => setIsOpen(false)}
             />
           </div>
-        </div>
         </div>
 
         {/* Chat Body - Scrollable */}
@@ -367,7 +385,7 @@ const TanyaShoppingAssistantStream = () => {
               >
                 {(() => {
                   const selectedKey = Object.keys(payloadMapping).find(
-                    (key) => payloadMapping[key] === whom,
+                    (key) => payloadMapping[key] === whom
                   );
                   return selectedKey ? messageMapping[selectedKey] : "";
                 })()}
