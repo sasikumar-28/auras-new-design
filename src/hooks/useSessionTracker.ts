@@ -101,8 +101,8 @@ const useSessionTracker = (): SessionMetadata | null => {
           resolve({
             latitude,
             longitude,
-            city: location?.city || null,
-            country: location?.country || null,
+            city: location?.city || "city",
+            country: location?.country || "country",
           });
         },
         () => resolve(null)
@@ -121,8 +121,8 @@ const useSessionTracker = (): SessionMetadata | null => {
           data.address.city ||
           data.address.town ||
           data.address.village ||
-          null,
-        country: data.address.country || null,
+          "city",
+        country: data.address.country || "country",
       };
     } catch {
       return null;
@@ -133,9 +133,9 @@ const useSessionTracker = (): SessionMetadata | null => {
     try {
       const res = await fetch("https://api.ipify.org?format=json");
       const data = await res.json();
-      return data.ip || null;
+      return data.ip || "ip";
     } catch {
-      return null;
+      return "";
     }
   }
 

@@ -273,8 +273,7 @@ const TanyaShoppingAssistantStream = () => {
           className="flex justify-between rounded-l-xl p-1"
           style={{ background: storeDetails.tanyaThemeColor }}
         >
-          <div
-            className="flex"
+          <div className="flex"
             style={{ color: storeDetails.themeContrastColor }}
           >
             <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} />
