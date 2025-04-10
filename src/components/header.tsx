@@ -16,7 +16,6 @@ import { decryptData, displayData, imageUrlArray } from "@/utils/helper";
 import { login } from "@/store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart, setSelectedProduct } from "@/store/reducers/cartReducer";
-import { getShoppingAssistantForStore } from "@/utils/store-helper";
 import { fetchStoreConfig } from "@/server/api";
 import { setStore } from "@/store/reducers/storeReducer";
 import NavBar from "./nav-bar";
