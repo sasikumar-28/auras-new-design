@@ -31,6 +31,7 @@ export interface Product {
   };
   image?: string;
   price?: number;
+  category: string;
 }
 
 export interface Image {

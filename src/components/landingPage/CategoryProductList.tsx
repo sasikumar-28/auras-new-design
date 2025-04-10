@@ -5,6 +5,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 
 const CategoryProductList = ({
   category,
@@ -23,12 +25,15 @@ const CategoryProductList = ({
         title: string;
         image: string;
         price: number;
+        category: string
       }[]
     | Product[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(0);
+  const navigate = useNavigate();
+
 
   const store = useSelector((s: any) => s.store.store);
 
@@ -185,7 +190,10 @@ const CategoryProductList = ({
                 : products.map((product) => (
                     <div
                       key={product.id}
-                      className="bg-white p-4 rounded-xl shadow-xl w-full max-w-[250px] text-center"
+                      className="bg-white p-4 rounded-xl shadow-xl cursor-pointer w-full max-w-[250px] text-center"
+                      onClick={() => navigate(
+                        `/product/${product.id}?category=${product?.category}`,
+                      )}
                     >
                       <div className="aspect-square overflow-hidden rounded-lg mb-4">
                         <img
