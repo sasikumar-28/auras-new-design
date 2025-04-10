@@ -7,10 +7,8 @@ const DefaultSkeleton = () => {
     (state: RootState) =>
       state?.store?.store ?? { homePageCategories: [], storeCode: "" },
   );
-
-  const squareImages = useSelector(
-    (state: RootState) => state.cmsImage.squareImages,
-  );
+  
+  const squareImages = useSelector((state: RootState) => state.cmsImage.squareImages);
   const selectedCategories = homePageCategories?.slice(0, 3) || [];
 
   return (
