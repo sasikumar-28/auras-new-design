@@ -307,12 +307,12 @@ const TanyaShoppingAssistantStream = () => {
             <Icon
               icon="fluent:dismiss-24-filled"
               color="#FFFFFF"
-              width="24"
               height="24"
               className="cursor-pointer"
               onClick={() => setIsOpen(false)}
             />
           </div>
+        </div>
         </div>
 
         {/* Chat Body - Scrollable */}
@@ -332,10 +332,10 @@ const TanyaShoppingAssistantStream = () => {
           {/* Shopping Options */}
           {storeDetails?.whomRequired && (
             <div
-              className="mx-3 p-3 rounded-2xl"
+              className="mx-3 p-3 rounded-2xl w-[85%]"
               style={{
                 color: storeDetails.themeContrastColor,
-                backgroundColor: storeDetails.tanyaThemeColor,
+                backgroundColor: storeDetails.themeColor,
                 width: "fit-content",
               }}
             >
@@ -484,7 +484,7 @@ const TanyaShoppingAssistantStream = () => {
             ) : (
               <Icon
                 icon="fluent:send-48-filled"
-                color={storeDetails.tanyaThemeColor}
+                color={storeDetails.themeColor}
                 width="24"
                 height="24"
               />

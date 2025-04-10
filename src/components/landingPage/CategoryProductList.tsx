@@ -37,6 +37,7 @@ const CategoryProductList = ({
 
   const store = useSelector((s: any) => s.store.store);
 
+
   const getAllCategories = async () => {
     try {
       const token = await getAccessToken();
