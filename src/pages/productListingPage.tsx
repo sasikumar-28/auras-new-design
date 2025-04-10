@@ -43,13 +43,13 @@ const ProductListingPage = () => {
   const itemsPerPage = 60;
 
   const { categories, loading } = useSelector((state: any) => state?.category);
+  const store = useSelector((s: any) => s.store.store);
 
   // Only find selected category after categories are loaded and categoryId is available
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null,
   );
 
-  const store = useSelector((s: any) => s.store.store);
 
   useEffect(() => {
     if (categories && categoryId) {
@@ -143,6 +143,7 @@ const ProductListingPage = () => {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            "x-search-endpoint": store?.searchConfigs?.endpoint,
           },
         });
 
@@ -178,6 +179,7 @@ const ProductListingPage = () => {
     currentPage,
     selectedRatings,
     priceRange,
+    store
   ]);
 
   const handlePageChange = ({ selected }: { selected: number }) => {

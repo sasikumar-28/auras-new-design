@@ -4,6 +4,7 @@ import { getAccessToken } from "@/utils/getAccessToken";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
+import { useSelector } from "react-redux";
 
 const CategoryProductList = ({
   category,
@@ -28,6 +29,8 @@ const CategoryProductList = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(0);
+
+  const store = useSelector((s: any) => s.store.store);
 
   const getAllCategories = async () => {
     try {
@@ -71,6 +74,7 @@ const CategoryProductList = ({
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "x-search-endpoint": store?.searchConfigs?.endpoint,
         },
       });
 
