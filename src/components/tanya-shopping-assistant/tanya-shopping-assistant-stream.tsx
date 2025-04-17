@@ -5,11 +5,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import tanyaChatBotIcon from "@/assets/tanya-chatbot/chat-with-tanya.png";
+// import tanyaChatBotIcon from "@/assets/tanya-chatbot/chat-with-tanya.png";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { getSearchResults } from "@/utils";
 import { SearchProduct } from "@/graphQL/queries/types";
 import {
+  // decryptData,
   // currencyFormatter,
   formatStringToHtml,
   // priceFormatter,
@@ -103,13 +104,14 @@ const TanyaShoppingAssistantStream = () => {
     ]);
 
     try {
-      const sanatizedWhom = whom.replace(/\s/g, "").toLowerCase();
+      const sanitizedWhom = whom.replace(/\s/g, "").toLowerCase();
       const token = await getAccessToken();
       if (!token) throw new Error("Failed to fetch token");
-
+      const user = localStorage.getItem("customerNumber");
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
-      }api/web-bff/assistantStream`;
+      }api/web-bff/assistantStream?application=tanya&userId=${user || new Date().getTime()}&registered=${isLoggedIn}`;
       const response = await fetch(`${URL}`, {
         signal: AbortSignal.timeout(30000),
         method: "POST",
@@ -122,7 +124,7 @@ const TanyaShoppingAssistantStream = () => {
           flowAliasId: storeDetails.aliasId,
           input: {
             userPrompt: newQuery,
-            whom: sanatizedWhom,
+            whom: sanitizedWhom,
             storeCode: storeCode,
             sessionMetadata: sessionData,
           },
@@ -253,13 +255,21 @@ const TanyaShoppingAssistantStream = () => {
             background: storeDetails.tanyaThemeColor,
           }}
         >
-          <img
+          {/* <img
             src={tanyaChatBotIcon}
             alt="Chat with Tanya"
             className="w-[20%] pl-[5px] pt-[2px]"
+          /> */}
+          <Icon
+            icon="fluent:search-sparkle-28-filled"
+            width="28"
+            height="28"
+            color="white"
+            className="ml-3"
           />
+
           <div className="flex flex-col p-[5px]">
-            <span className="text-white text-[14px]">TANYA</span>
+            <span className="text-white text-[14px]">{storeDetails?.tanyaName ? storeDetails.tanyaName : "TANYA"}</span>
             <span className="text-white text-[12px]">
               Your AI Shopping Assistant
             </span>
@@ -283,9 +293,18 @@ const TanyaShoppingAssistantStream = () => {
             style={{
               display: "flex",
               color: storeDetails.themeContrastColor,
+              alignItems: "center",
+              gap: "0.5rem",
+
             }}
           >
-            <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} />
+            {/* <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} /> */}
+            <Icon
+              icon="fluent:search-sparkle-28-filled"
+              width="38"
+              height="38"
+              color="white"
+            />
             <div>
               <p className="text-xs font-light mt-1">Chat with</p>
               <p className="font-bold">

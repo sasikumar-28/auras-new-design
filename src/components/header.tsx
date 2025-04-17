@@ -41,9 +41,7 @@ export default function Header() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedProduct = useSelector((state: any) => state.cart.cart);
-  const { customerNumber } = useSelector(
-    (state: any) => state?.customerAccount
-  );
+  
   const storeFavicon = useSelector(
     (state: RootState) => state.cmsImage.favicon || ""
   );
@@ -53,7 +51,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const store = useSelector((s: any) => s.store.store);
-  const isLogin = customerNumber || localStorage.getItem("customerNumber");
+  const isLogin = localStorage.getItem("isLoggedIn");
   const { categories, error } = useSelector((state: any) => state?.category);
 
   const storeCode = useMemo(
@@ -105,6 +103,15 @@ export default function Header() {
 
   useEffect(() => {
     if (storeCode) {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      if (!isLoggedIn) {
+        localStorage.setItem("isLoggedIn", "false");
+        localStorage.setItem(
+          "customerNumber",
+          JSON.stringify(new Date().getTime())
+        );
+      }
+
       dispatch(fetchStoreAssets(storeCode));
       fetchStoreConfig(storeCode).then((res) => {
         dispatch(setStore({ ...res, storeCode }));
@@ -147,6 +154,23 @@ export default function Header() {
   if (window.location.pathname.includes("checkout")) {
     return <></>;
   }
+
+  const BagIcon = ({ size = 24, color = "black" }) => (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="7" width="18" height="14" rx="2" />
+      <path d="M7 7V6a5 5 0 0 1 10 0v1" />
+    </svg>
+  );
+  
 
   return (
     <>
@@ -263,7 +287,7 @@ export default function Header() {
                 <DropdownMenuContent className="w-44 bg-white shadow-xl p-2 rounded">
                   <DropdownMenuGroup className="flex flex-col gap-y-2 text-black">
                     <DropdownMenuItem className="text-[13px] cursor-pointer flex gap-4 items-center">
-                      {isLogin !== null ? (
+                      {isLogin === "true" ? (
                         <button
                           onClick={() => {
                             navigate("/account");
@@ -344,12 +368,7 @@ export default function Header() {
             </div>
 
             <div className="p-1 relative flex flex-col items-center text-white cursor-pointer">
-              <Icon
-                icon="mdi:shopping-outline"
-                className="text-white opacity-90"
-                width={25}
-                height={25}
-              />
+            <BagIcon size={24} color={"white"} />
               <span className="text-sm font-medium">Cart</span>
               {/* Product count badge */}
               <p className="absolute  -right-1 bg-white text-black text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
