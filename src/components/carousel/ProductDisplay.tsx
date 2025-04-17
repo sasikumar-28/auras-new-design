@@ -6,27 +6,31 @@ const ProductDisplay = ({ chat, storeDetails }: any) => {
   return (
     <div className="text-sm text-[#232323] bg-[#FFFFFF] px-7 py-4 rounded-r-xl rounded-bl-2xl w-full">
       {chat.map((products: any, i: number) => (
-        <div key={i}>
+        <div
+          key={i}
+          className="mb-4 p-3 rounded-xl"
+          style={{ backgroundColor: storeDetails.tanyaThemeColorLight }} // slightly darker grey // light grey section bg
+        >
           <div
-            className={`font-semibold mb-2 border p-2 w-fit rounded-[20px]`}
+            className="font-semibold mb-2 border p-2 w-fit rounded-[20px]"
             style={{
-              color: storeDetails.themeDarkColor,
+              color: "white",
               border: `1px solid ${storeDetails.themeColor}`,
-              backgroundColor: storeDetails.tanyaThemeColorLight,
+              backgroundColor: storeDetails.themeColor,
             }}
           >
             {initialCapital(products.keyword) || "No keyword"}
           </div>
+
           <ProductCarousel
             product={products.items}
             storeDetails={storeDetails}
           />
         </div>
       ))}
-
-      {/* Navigation Buttons */}
     </div>
   );
 };
+
 
 export default ProductDisplay;
