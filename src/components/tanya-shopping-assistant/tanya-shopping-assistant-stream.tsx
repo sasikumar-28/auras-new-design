@@ -104,7 +104,7 @@ const TanyaShoppingAssistantStream = () => {
     ]);
 
     try {
-      const sanitizedWhom = whom.replace(/\s/g, "").toLowerCase();
+      const sanatizedWhom = whom;
       const token = await getAccessToken();
       if (!token) throw new Error("Failed to fetch token");
       const user = localStorage.getItem("customerNumber");
