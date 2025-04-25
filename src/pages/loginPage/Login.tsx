@@ -20,12 +20,13 @@ const Login = () => {
       toast.success("Log in successful");
       localStorage.setItem(
         "customerNumber",
-        JSON.stringify(data.customerNumber),
+        JSON.stringify(data.customerNumber)
       );
+      localStorage.setItem("isLoggedIn", "true");
       dispatch(
         updateCustomerNumber({
           customerNumber: data.customerNumber,
-        }),
+        })
       );
       navigate("/account");
     } catch (err) {

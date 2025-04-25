@@ -5,11 +5,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import tanyaChatBotIcon from "@/assets/tanya-chatbot/chat-with-tanya.png";
+// import tanyaChatBotIcon from "@/assets/tanya-chatbot/chat-with-tanya.png";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { getSearchResults } from "@/utils";
 import { SearchProduct } from "@/graphQL/queries/types";
 import {
+  // decryptData,
   // currencyFormatter,
   formatStringToHtml,
   // priceFormatter,
@@ -55,7 +56,7 @@ const TanyaShoppingAssistantStream = () => {
   const sessionData = useSessionTracker();
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(
-    searchParams.get("shoppingassist") === "true",
+    searchParams.get("shoppingassist") === "true"
   );
   const [isLoading, setIsLoading] = useState(false);
   const [inputText, setInputText] = useState("");
@@ -106,10 +107,11 @@ const TanyaShoppingAssistantStream = () => {
       const sanatizedWhom = whom;
       const token = await getAccessToken();
       if (!token) throw new Error("Failed to fetch token");
-
+      const user = localStorage.getItem("customerNumber");
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
-      }api/web-bff/assistantStream`;
+      }api/web-bff/assistantStream?application=tanya&userId=${user || new Date().getTime()}&registered=${isLoggedIn}`;
       const response = await fetch(`${URL}`, {
         signal: AbortSignal.timeout(30000),
         method: "POST",
@@ -122,7 +124,7 @@ const TanyaShoppingAssistantStream = () => {
           flowAliasId: storeDetails.aliasId,
           input: {
             userPrompt: newQuery,
-            whom: sanatizedWhom,
+            whom: sanitizedWhom,
             storeCode: storeCode,
             sessionMetadata: sessionData,
           },
@@ -161,8 +163,8 @@ const TanyaShoppingAssistantStream = () => {
                             ? "keywords"
                             : "potentialQuestions"]: parsedData.data,
                       }
-                    : msg,
-                ),
+                    : msg
+                )
               );
             } catch (error) {
               console.error("Error parsing JSON:", error);
@@ -180,7 +182,7 @@ const TanyaShoppingAssistantStream = () => {
 
   const sanitizeKeywords = (response: string) => {
     const keywordMatch = response.match(
-      /top five relevant product or category names are: (.*)/i,
+      /top five relevant product or category names are: (.*)/i
     );
     const keywordsString = keywordMatch ? keywordMatch[1] : response;
     const keywordsArray = keywordsString.split(", ");
@@ -198,7 +200,7 @@ const TanyaShoppingAssistantStream = () => {
       for (const keyword of splitedKeywords) {
         const results = await getSearchResults(
           keyword,
-          storeDetails.searchConfigs,
+          storeDetails.searchConfigs
         );
         if (results.length > 0) {
           setChatHistory((prev) =>
@@ -211,8 +213,8 @@ const TanyaShoppingAssistantStream = () => {
                       { keyword: keyword, items: results },
                     ],
                   }
-                : msg,
-            ),
+                : msg
+            )
           );
         }
       }
@@ -221,7 +223,7 @@ const TanyaShoppingAssistantStream = () => {
       for (const keyword of keywords) {
         const results = await getSearchResults(
           keyword,
-          storeDetails.searchConfigs,
+          storeDetails.searchConfigs
         );
         if (results.length > 0) {
           setChatHistory((prev) =>
@@ -234,8 +236,8 @@ const TanyaShoppingAssistantStream = () => {
                       { keyword: keyword, items: results },
                     ],
                   }
-                : msg,
-            ),
+                : msg
+            )
           );
         }
       }
@@ -253,13 +255,21 @@ const TanyaShoppingAssistantStream = () => {
             background: storeDetails.tanyaThemeColor,
           }}
         >
-          <img
+          {/* <img
             src={tanyaChatBotIcon}
             alt="Chat with Tanya"
             className="w-[20%] pl-[5px] pt-[2px]"
+          /> */}
+          <Icon
+            icon="fluent:search-sparkle-28-filled"
+            width="28"
+            height="28"
+            color="white"
+            className="ml-3"
           />
+
           <div className="flex flex-col p-[5px]">
-            <span className="text-white text-[14px]">TANYA</span>
+            <span className="text-white text-[14px]">{storeDetails?.tanyaName ? storeDetails.tanyaName : "TANYA"}</span>
             <span className="text-white text-[12px]">
               Your AI Shopping Assistant
             </span>
@@ -271,20 +281,29 @@ const TanyaShoppingAssistantStream = () => {
         {/* Header */}
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            borderTopLeftRadius: '0.75rem',
-            borderBottomLeftRadius: '0.75rem',
-            padding: '0.25rem',
-            background: storeDetails?.tanyaThemeColor
+            display: "flex",
+            justifyContent: "space-between",
+            borderTopLeftRadius: "0.75rem",
+            borderBottomLeftRadius: "0.75rem",
+            padding: "0.25rem",
+            background: storeDetails?.tanyaThemeColor,
           }}
         >
           <div
             style={{
               display: "flex",
-              color: storeDetails.themeContrastColor }}
+              color: storeDetails.themeContrastColor,
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
           >
-            <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} />
+            {/* <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} /> */}
+            <Icon
+              icon="fluent:search-sparkle-28-filled"
+              width="38"
+              height="38"
+              color="white"
+            />
             <div>
               <p className="text-xs font-light mt-1">Chat with</p>
               <p className="font-bold">
@@ -295,12 +314,12 @@ const TanyaShoppingAssistantStream = () => {
               </p>
             </div>
           </div>
-          <div 
+          <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1.25rem',
-              margin: '0.75rem',
+              display: "flex",
+              alignItems: "center",
+              gap: "1.25rem",
+              margin: "0.75rem",
             }}
           >
             <Icon
@@ -385,7 +404,7 @@ const TanyaShoppingAssistantStream = () => {
               >
                 {(() => {
                   const selectedKey = Object.keys(payloadMapping).find(
-                    (key) => payloadMapping[key] === whom,
+                    (key) => payloadMapping[key] === whom
                   );
                   return selectedKey ? messageMapping[selectedKey] : "";
                 })()}

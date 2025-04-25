@@ -27,6 +27,7 @@ import useShareState from "./use-share-state";
 import { useBetween } from "use-between";
 import ProductCarousel from "./product-carousel";
 import { getAccessToken } from "@/utils/getAccessToken";
+import { decryptData } from "@/utils/helper";
 
 // Define types for our response data
 interface ResponseData {
@@ -120,6 +121,8 @@ const TanyaShoppingAssistant: React.FC = () => {
       console.log("getAccessTokenChatBot", token);
 
       if (!token) throw new Error("Failed to fetch token");
+      const user = JSON.parse(decryptData(localStorage.getItem("user") || ""));
+      console.log(user, "user");
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
       }api/web-bff/assistant?pdp=false&whom=grandchild&userId=123456`;
@@ -131,7 +134,7 @@ const TanyaShoppingAssistant: React.FC = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       console.log("chatbot res", response);
@@ -174,7 +177,7 @@ const TanyaShoppingAssistant: React.FC = () => {
 
   const handleCarouselResultsUpdate = (
     keyword: string,
-    hasResults: boolean,
+    hasResults: boolean
   ) => {
     console.log(`Keyword ${keyword} has results: ${hasResults}`); // Debug log
     setKeywordResults((prev) => ({
@@ -192,7 +195,7 @@ const TanyaShoppingAssistant: React.FC = () => {
   useEffect(() => {
     if (chatBodyRef.current) {
       const responseContainers = chatBodyRef.current.querySelectorAll(
-        "div[data-response-index]",
+        "div[data-response-index]"
       );
       const lastResponseContainer =
         responseContainers[responseContainers.length - 1];
@@ -355,7 +358,7 @@ const TanyaShoppingAssistant: React.FC = () => {
                               onResultsUpdate={(hasResults) =>
                                 handleCarouselResultsUpdate(
                                   keyword.trim(),
-                                  hasResults,
+                                  hasResults
                                 )
                               }
                             />

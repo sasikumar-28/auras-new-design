@@ -27,7 +27,7 @@ const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({
     showScrollButton && (
       <button
         onClick={scrollToTop}
-        className="fixed right-3 bottom-5 p-3 rounded-full shadow-lg transition-all duration-300 z-[999]"
+        className="fixed right-3 bottom-5 p-3 rounded-full shadow-lg transition-all duration-300 z-[40]"
         style={{ color: "white", background: themeColor }}
       >
         <ArrowUp size={24} />

@@ -26,7 +26,7 @@ const ProductCarousel = ({
     setStartIndex((prevIndex) =>
       prevIndex + productsPerPage >= product.length
         ? 0
-        : prevIndex + productsPerPage,
+        : prevIndex + productsPerPage
     );
   };
 
@@ -34,61 +34,60 @@ const ProductCarousel = ({
     setStartIndex((prevIndex) =>
       prevIndex - productsPerPage < 0
         ? product.length - (product.length % productsPerPage || productsPerPage)
-        : prevIndex - productsPerPage,
+        : prevIndex - productsPerPage
     );
   };
 
   return (
     <div className="mb-4">
-      <div className="flex justify-between items-center mt-4 gap-[20px]">
+      <div className="flex items-center justify-center mt-4 gap-4">
         {product?.length > productsPerPage && (
           <button
             onClick={prevProducts}
-            className={`text-white p-2 rounded flex items-center h-fit`}
+            className="text-white p-2 rounded flex items-center h-fit"
             style={{ color: storeDetails.themeColor }}
           >
             <Icon icon="mdi:chevron-left" width="25" />
           </button>
         )}
 
-        <div className="flex gap-4 justify-start w-full">
+        <div className="flex gap-4 justify-center flex-1">
           {product
             .slice(startIndex, startIndex + productsPerPage)
             .map((prod) => (
               <div
                 key={prod.id}
-                className="flex flex-col w-[150px] h-[180px] items-center justify-between cursor-pointer shadow-lg"
+                className="flex flex-col w-[150px] h-[200px] items-center justify-between cursor-pointer shadow-lg bg-white rounded-[8px] overflow-visible" // Make sure overflow is visible
                 onClick={() => {
-                  // localStorage.setItem("product", JSON.stringify(prod));
-                  navigate(
-                    `/product/${prod.id}?category=${prod.category}`,
-                  );
+                  navigate(`/product/${prod.id}?category=${prod.category}`);
                 }}
               >
-                {/* Product Image */}
-                <img
-                  src={imageUrlArray(prod)[0]}
-                  alt={
-                    prod?.title ? prod.title : displayData(prod?.name["en-US"])
-                  }
-                  className="w-16 h-16 rounded-[3px] scale-125 transition-transform duration-300 hover:scale-150 object-cover"
-                />
+                {/* Image */}
+                <div className="w-full flex items-center justify-center p-2 bg-white">
+                  <img
+                    src={imageUrlArray(prod)[0]}
+                    alt={
+                      prod?.title
+                        ? prod.title
+                        : displayData(prod?.name["en-US"])
+                    }
+                    className="w-16 h-16 rounded-[3px] transition-transform duration-300 hover:scale-125 object-cover"
+                  />
+                </div>
 
-                {/* Price & Name Container */}
+                {/* Price & Name */}
                 <div
-                  className={`text-black w-full rounded-[3px] p-2 text-[12px] font-bold text-center`}
-                  style={{ background: storeDetails.tanyaThemeColorLight }}
+                  className="text-white w-full rounded-[8px] p-2 text-[12px] text-center h-[60px]"
+                  style={{ background: storeDetails.tanyaThemeColor }}
                 >
-                  {/* Product Price */}
-                  <div className="text-[14px] font-semibold">
+                  <div className="text-[14px] mb-1">
                     {currencyFormatter(
                       prod?.price
                         ? Number(prod?.price)
                         : priceFormatter(prod).centAmount || 0,
-                      priceFormatter(prod)?.currencyCode,
+                      priceFormatter(prod)?.currencyCode
                     )}
                   </div>
-                  {/* Product Name - 2 Lines & Overflow */}
                   <div className="relative inline-block group">
                     <div className="w-full line-clamp-1 overflow-hidden text-ellipsis">
                       {prod?.title
@@ -96,8 +95,17 @@ const ProductCarousel = ({
                         : stringReducer(displayData(prod?.name["en-US"]), 60)}
                     </div>
 
-                    {/* Full Text on Hover - Only Shows When Hovering on Text */}
-                    <div className="absolute left-0 top-full mt-1 w-max max-w-[200px] p-2 bg-white shadow-lg text-black text-xs rounded opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-50 pointer-events-none">
+                    {/* Tooltip */}
+                    <div
+                      className="absolute left-0 top-full mt-1 w-max max-w-[200px] p-2 bg-white shadow-lg text-black text-xs rounded opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-50 pointer-events-auto"
+                      style={{
+                        position: "absolute",
+                        top: "-100%",
+                        left: "0",
+                        marginBottom: "5px",
+                        zIndex: 50,
+                      }}
+                    >
                       {prod?.title
                         ? prod.title
                         : stringReducer(displayData(prod?.name["en-US"]), 60)}
@@ -111,7 +119,7 @@ const ProductCarousel = ({
         {product?.length > productsPerPage && (
           <button
             onClick={nextProducts}
-            className={`text-white p-2 rounded flex items-center h-fit`}
+            className="text-white p-2 rounded flex items-center h-fit"
             style={{ color: storeDetails.themeColor }}
           >
             <Icon icon="mdi:chevron-right" width="25" />
