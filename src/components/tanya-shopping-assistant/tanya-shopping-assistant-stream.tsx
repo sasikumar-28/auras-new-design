@@ -264,12 +264,14 @@ const TanyaShoppingAssistantStream = () => {
             icon="fluent:search-sparkle-28-filled"
             width="28"
             height="28"
-            color="white"
+            color={storeDetails?.tanyaThemeContrastColor}
             className="ml-3"
           />
 
           <div className="flex flex-col p-[5px]">
-            <span className="text-white text-[14px]">{storeDetails?.tanyaName ? storeDetails.tanyaName : "TANYA"}</span>
+            <span className="text-white text-[14px]">
+              {storeDetails?.tanyaName ? storeDetails.tanyaName : "TANYA"}
+            </span>
             <span className="text-white text-[12px]">
               Your AI Shopping Assistant
             </span>
@@ -292,7 +294,7 @@ const TanyaShoppingAssistantStream = () => {
           <div
             style={{
               display: "flex",
-              color: storeDetails.themeContrastColor,
+              color: storeDetails.tanyaThemeContrastColor,
               alignItems: "center",
               gap: "0.5rem",
 
@@ -325,7 +327,8 @@ const TanyaShoppingAssistantStream = () => {
           >
             <Icon
               icon="fluent:dismiss-24-filled"
-              color="#FFFFFF"
+              color={storeDetails?.tanyaThemeContrastColor}
+              width="24"
               height="24"
               className="cursor-pointer"
               onClick={() => setIsOpen(false)}
@@ -352,8 +355,8 @@ const TanyaShoppingAssistantStream = () => {
             <div
               className="mx-3 p-3 rounded-2xl w-[85%]"
               style={{
-                color: storeDetails.themeContrastColor,
-                backgroundColor: storeDetails.themeColor,
+                color: storeDetails?.tanyaThemeContrastColor,
+                backgroundColor: storeDetails.tanyaThemeColor,
                 width: "fit-content",
               }}
             >
@@ -374,13 +377,17 @@ const TanyaShoppingAssistantStream = () => {
                   <button
                     key={option}
                     onClick={() => handleWhomSelection(option)}
-                    className={`px-4 py-2 text-sm border-2 rounded-xl ${whom === payloadMapping[option] ? "text-black" : "bg-transparent"}`}
+                    className="px-4 py-2 text-sm border-2 rounded-xl"
                     style={{
                       backgroundColor:
                         whom === payloadMapping[option]
-                          ? storeDetails.tanyaThemeColorLight
+                          ? storeDetails?.tanyaThemeColorLight
                           : "transparent",
-                      borderColor: storeDetails.tanyaThemeColorLight,
+                      borderColor: storeDetails?.tanyaThemeColorLight,
+                      color:
+                        whom === payloadMapping[option]
+                          ? storeDetails?.tanyaThemeColor || "#ffffff"
+                          : storeDetails?.tanyaThemeContrastColor || "#000000",
                     }}
                   >
                     {option}
@@ -419,7 +426,7 @@ const TanyaShoppingAssistantStream = () => {
                 <p
                   className="text-sm rounded-l-xl p-3 m-3 mb-4 rounded-br-xl max-w-[75%]"
                   style={{
-                    color: storeDetails.themeContrastColor,
+                    color: storeDetails?.tanyaThemeContrastColor,
                     backgroundColor: storeDetails.tanyaThemeColor,
                   }}
                 >

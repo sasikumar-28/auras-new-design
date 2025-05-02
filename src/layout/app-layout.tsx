@@ -27,7 +27,7 @@ const AppLayout = () => {
   }, [storeCode, navigate]);
 
   // 🎨 Select Theme Color Based on storeCode
-  const themeColor = storeDetails.themeColor;
+  const themeColor = storeDetails.themeContrastColor;
 
   return (
     <>

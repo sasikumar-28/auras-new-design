@@ -277,11 +277,11 @@ export default function Header() {
                   <div className="flex flex-col items-center cursor-pointer">
                     <Icon
                       icon="mdi:account-outline"
-                      className="text-white opacity-90"
+                      style={{ color: store?.themeContrastColor || "#ffffff", opacity: 0.9 }}
                       width={26}
                       height={26}
                     />
-                    <span className="text-sm font-medium">Account</span>
+                    <span className="text-sm font-medium"  style={{ color: store?.themeContrastColor || "#ffffff", opacity: 0.9 }}>Account</span>
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-44 bg-white shadow-xl p-2 rounded">
@@ -360,16 +360,16 @@ export default function Header() {
             <div className="p-1 relative flex flex-col items-center text-white cursor-pointer">
               <Icon
                 icon="mdi:heart-outline"
-                className="text-white opacity-90"
+                style={{ color: store?.themeContrastColor || "#ffffff", opacity: 0.9 }}
                 width={25}
                 height={25}
               />
-              <span className="text-sm font-medium">Wishlist</span>
+              <span className="text-sm font-medium"  style={{ color: store?.themeContrastColor || "#ffffff", opacity: 0.9 }}>Wishlist</span>
             </div>
 
             <div className="p-1 relative flex flex-col items-center text-white cursor-pointer">
-            <BagIcon size={24} color={"white"} />
-              <span className="text-sm font-medium">Cart</span>
+            <BagIcon size={24} color={store?.themeContrastColor || "white"} />
+              <span className="text-sm font-medium"  style={{ color: store?.themeContrastColor || "#ffffff", opacity: 0.9 }}>Cart</span>
               {/* Product count badge */}
               <p className="absolute  -right-1 bg-white text-black text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
                 {selectedProduct.reduce(
