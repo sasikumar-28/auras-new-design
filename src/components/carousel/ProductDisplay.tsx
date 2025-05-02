@@ -14,9 +14,9 @@ const ProductDisplay = ({ chat, storeDetails }: any) => {
           <div
             className="font-semibold mb-2 border p-2 w-fit rounded-[20px]"
             style={{
-              color: "white",
-              border: `1px solid ${storeDetails.themeColor}`,
-              backgroundColor: storeDetails.themeColor,
+              color: storeDetails?.tanyaThemeContrastColor,
+              border: `1px solid ${storeDetails.tanyaThemeColor}`,
+              backgroundColor: storeDetails.tanyaThemeColor,
             }}
           >
             {initialCapital(products.keyword) || "No keyword"}
