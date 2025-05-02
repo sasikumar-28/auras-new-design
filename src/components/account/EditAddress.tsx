@@ -66,7 +66,6 @@ const EditAddress: React.FC<AddressSidebarProps> = ({ onClose }) => {
         throw new Error("Failed to save address");
       }
 
-      setMessage("Address added successfully!");
       setFormData({
         addressLine1: "",
         addressLine2: "",

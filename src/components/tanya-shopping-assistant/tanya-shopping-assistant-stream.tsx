@@ -297,6 +297,7 @@ const TanyaShoppingAssistantStream = () => {
               color: storeDetails.tanyaThemeContrastColor,
               alignItems: "center",
               gap: "0.5rem",
+
             }}
           >
             {/* <img src={tanyaChatBotIcon} alt="Chat with Tanya" width={50} /> */}
@@ -352,7 +353,7 @@ const TanyaShoppingAssistantStream = () => {
           {/* Shopping Options */}
           {storeDetails?.whomRequired && (
             <div
-              className="mx-3 p-3 rounded-2xl"
+              className="mx-3 p-3 rounded-2xl w-[85%]"
               style={{
                 color: storeDetails?.tanyaThemeContrastColor,
                 backgroundColor: storeDetails.tanyaThemeColor,
@@ -508,7 +509,7 @@ const TanyaShoppingAssistantStream = () => {
             ) : (
               <Icon
                 icon="fluent:send-48-filled"
-                color={storeDetails.tanyaThemeColor}
+                color={storeDetails.themeColor}
                 width="24"
                 height="24"
               />
