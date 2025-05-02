@@ -45,7 +45,7 @@ const ProductCarousel = ({
           <button
             onClick={prevProducts}
             className="text-white p-2 rounded flex items-center h-fit"
-            style={{ color: storeDetails.themeColor }}
+            style={{ color: storeDetails.tanyaThemeColor }}
           >
             <Icon icon="mdi:chevron-left" width="25" />
           </button>
@@ -120,7 +120,7 @@ const ProductCarousel = ({
           <button
             onClick={nextProducts}
             className="text-white p-2 rounded flex items-center h-fit"
-            style={{ color: storeDetails.themeColor }}
+            style={{ color: storeDetails.tanyaThemeColor }}
           >
             <Icon icon="mdi:chevron-right" width="25" />
           </button>
