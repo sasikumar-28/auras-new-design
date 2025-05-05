@@ -193,7 +193,7 @@ export default function Header() {
                 <img
                   src={storeLogo}
                   alt="logo"
-                  className="max-w-[110px] max-h-[50px] object-contain"
+                  className="max-h-[50px] object-contain"
                 />
               )}
             </div>
